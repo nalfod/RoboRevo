@@ -1,0 +1,44 @@
+@startuml
+
+start
+:UR3 start;
+:write_output_integer_register_0 = 1;
+
+repeat :Robot program;
+  if (input_int_register_0 == 1 \nAND valid position?) then (yes)
+    :move to position;
+    :write_output_integer_register_0 = 0;
+
+    repeat
+    backward:sync;
+    repeat while (input_int_register_0 == 1?)
+
+    :write_output_integer_register_0 = 1;
+
+  else (no)
+  endif
+  :sync;
+repeat while (Is program running?)
+stop
+
+start
+:Python script connects;
+:Move command called;
+:move_completed = True;
+repeat :Move command cycle;
+if ( move_completed == True \nAND output_int_register_0 == 1) then (yes)
+    :move_completed = False;
+    :Determine current position;
+    :Send new setpoint;
+    :input_int_register_0 = 1;
+elseif ( move_completed == False \nAND output_int_register_0 == 0 )
+    :move_completed = True;
+    :input_int_register_0 = 0;
+    :BREAK;
+endif
+repeat while ()
+:Next move command;
+stop
+
+@enduml
+
