@@ -3,8 +3,8 @@
 actor User as user
 participant Main as main
 participant source_code_generator as coder
-participant object_detector_YOLO as yolo
-participant UR3_module as ur3
+participant button_locator as yolo
+participant UR3 as ur3
 participant Camera as camera
 
 
@@ -26,6 +26,23 @@ activate camera
 main -> ur3: send it home
 main -> user: asks to start UR3 script
 
+
+'From now on, it is a loop
+loop while there is letter in the soruce code
+    main -> ur3: send to camera position
+    ur3 -> main: signal when camera position reached
+
+    main -> camera: asks for a picture
+    camera -> main: send the current picture
+
+    main -> yolo: send new picture
+    yolo -> main: send current button positions in a dictionary
+
+    main -> main: next letter
+
+    main -> ur3: send new button to press respected to KRP
+    ur3 -> main: signal that button is pressed
+end
 
 
 
