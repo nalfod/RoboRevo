@@ -1,0 +1,32 @@
+@startuml
+
+actor User as user
+participant Main as main
+participant source_code_generator as coder
+participant object_detector_YOLO as yolo
+participant UR3_module as ur3
+participant Camera as camera
+
+
+
+
+user -> main: Source code request in english
+main -> coder: request in english
+coder -> main: source code as plain text
+
+main -> yolo: Instantiate with:\n-pre-trained model\n-pre-measured w_real\n-pre-measured h_real
+activate yolo
+
+main -> ur3: Instantiate with:\n-pre-measured KRP
+activate ur3
+
+main -> camera: Instantiate with: ?TBD?
+activate camera
+
+main -> ur3: send it home
+main -> user: asks to start UR3 script
+
+
+
+
+@enduml
