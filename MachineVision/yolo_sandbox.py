@@ -191,6 +191,7 @@ model = YOLO(r"neural_networks\best2_1.pt")
 results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\ObjectDetection\Images\v2\raw_images\both\c6.jpg', show = True, save=True, imgsz=1472, conf=0.5, show_labels=False)
 
 # stores the midpoints of the detected objects in listst
+# buttons looks like this: [[midpoint_pixel_x, midpoint_pixel_y],[midpoint_to0_x, midpoint_to0_y]]
 buttons = []
 refs = []
 
@@ -258,10 +259,15 @@ theta_rad = 0
 t = np.array([0, 0])
 
 if orientation == KeyboardOrientation.A:
-    theta_rad = - np.arctan( ( p_ymax[0] - p_xmin[0] ) / ( p_ymax[1] - p_xmin[1] ) )
+    # Note: the first method uses the vector between 0 and left control, not so precise
+    # theta_rad = - np.arctan( ( p_ymax[0] - p_xmin[0] ) / ( p_ymax[1] - p_xmin[1] ) )
+    # Note: this method uses the vector between 0 and NumPad subtraction --> much better!
+    theta_rad = - np.arctan( ( p_xmin[1] - p_ymin[1] ) / ( p_ymin[0] - p_xmin[0] ) )
     t = np.array([p_xmin[0], p_xmin[1]])
 else:
-    theta_rad = np.arctan( ( p_ymin[0] - p_xmin[0] ) / ( p_ymin[1] - p_xmin[1] ) )
+    # Note: the first method uses the vector between 0 and left control, not so precise
+    # theta_rad = np.arctan( ( p_ymin[0] - p_xmin[0] ) / ( p_ymin[1] - p_xmin[1] ) )
+    theta_rad = np.arctan( ( p_xmax[1] - p_ymin[1] ) / ( p_xmax[0] - p_ymin[0] ) )
     t = np.array([p_ymin[0], p_ymin[1]])
 
 print(f"The rotational angle is= {theta_rad}")
@@ -270,26 +276,66 @@ print(f"The translation is= {t}")
 transformator = CoordinateTransformator(theta_rad, t[0], t[1])
 
 # Define the point in homogeneous coordinates
-point_x, point_y = transformator.transform_point(buttons[0][0][0], buttons[0][0][1])
-point_x2, point_y2 = transformator.transform_point(p_xmin[0], p_xmin[1])
-point_x5, point_y5 = transformator.transform_point(buttons[5][0][0], buttons[5][0][1])
-point_x6, point_y6 = transformator.transform_point(623, 568)
-point_x7, point_y7 = transformator.transform_point(577, 630)
-print(f"From point x= {buttons[0][0][0]}, y= {buttons[0][0][1]} End result is, x'= {point_x}, y'= {point_y}")
-print(f"From point x= {p_xmin[0]}, y= {p_xmin[1]} End result is, x'= {point_x2}, y'= {point_y2}")
-print(f"From point x= {buttons[5][0][0]}, y= {buttons[5][0][1]} End result is, x'= {point_x5}, y'= {point_y5}")
-print(f"From point x= {623}, y= {568} End result is, x'= {point_x6}, y'= {point_y6}")
-print(f"From point x= {577}, y= {630} End result is, x'= {point_x7}, y'= {point_y7}")
+#point_x, point_y = transformator.transform_point(buttons[0][0][0], buttons[0][0][1])
+#point_x2, point_y2 = transformator.transform_point(p_xmin[0], p_xmin[1])
+#point_x5, point_y5 = transformator.transform_point(buttons[5][0][0], buttons[5][0][1])
+#point_x6, point_y6 = transformator.transform_point(623, 568)
+#point_x7, point_y7 = transformator.transform_point(577, 630)
+#print(f"From point x= {buttons[0][0][0]}, y= {buttons[0][0][1]} End result is, x'= {point_x}, y'= {point_y}")
+#print(f"From point x= {p_xmin[0]}, y= {p_xmin[1]} End result is, x'= {point_x2}, y'= {point_y2}")
+#print(f"From point x= {buttons[5][0][0]}, y= {buttons[5][0][1]} End result is, x'= {point_x5}, y'= {point_y5}")
+#print(f"From point x= {623}, y= {568} End result is, x'= {point_x6}, y'= {point_y6}")
+#print(f"From point x= {577}, y= {630} End result is, x'= {point_x7}, y'= {point_y7}")
 
 print("---------- BUTTONS MIDPOINT COMPARED TO 0 ----------")
 for i in range( len(buttons) ):
     midpoint_compared_to_0 = list( transformator.transform_point(buttons[i][0][0], buttons[i][0][1]) )
-    buttons[i].append( list() )
-    buttons[i][1].append( midpoint_compared_to_0 )
+    buttons[i].append( midpoint_compared_to_0 )
+    #buttons[i][1].append( midpoint_compared_to_0 )
 
 for i in range( len(buttons) ):
-    print(f"The midpoint of the {i}. button on the picture= {buttons[i][0]} compared to 0= {buttons[i][1]}")
+    print(f"The midpoint of the {i}. button on the picture= {buttons[i][0]} relativ to button '0'= {buttons[i][1]}")
 
+
+print("---------- DETERMINING WHICH BUTTON IS WHICH MIDPOINT ----------")
+
+# In one row, every button is 
+def determine_row(first_index_of_row_element, last_index_of_row_element, buttons, empty_target_list):
+    # buttons looks like this: [[midpoint_pixel_x, midpoint_pixel_y],[midpoint_to0_x, midpoint_to0_y]]
+    # so first we sort based on the midpoint_to0_y --> rows in ascending order
+    print(f"PROBA= {buttons[0]}")
+    print(f"PROBA= {buttons[0][0]}")
+    print(f"PROBA= {buttons[0][0][0]}")
+    print(f"PROBA= {buttons[0][0][1]}")
+    print(f"PROBA= {buttons[0][1]}")
+    print(f"PROBA= {buttons[0][1][0]}")
+    print(f"PROBA= {buttons[0][1][1]}")
+    buttons_rows_sorted = sorted(buttons, key=lambda x: x[1][1])
+    current_row = buttons_rows_sorted[first_index_of_row_element:last_index_of_row_element+1]
+
+    # we sort the row based on midpoint_to0_x, so we got exactly the row order!
+    current_row_sorted = sorted(current_row, key=lambda x: x[1][0])
+
+    # fill the results to the target list
+    for i in range( len(current_row_sorted) ):
+        empty_target_list.append(current_row_sorted[i])
+
+
+rows = []
+
+for i in range(5):
+    rows.append(list())
+
+determine_row(0, 20, buttons, rows[0])
+determine_row(21, 41, buttons, rows[1])
+determine_row(42, 57, buttons, rows[2])
+determine_row(58, 75, buttons, rows[3])
+determine_row(76, 87, buttons, rows[4])
+
+for i in range( len(rows) ):
+    print(f"---------- ROW {i}.----------")
+    for j in range( len(rows[i]) ):
+        print(rows[i][j])
 
 
 
