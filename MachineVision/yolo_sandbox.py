@@ -65,7 +65,7 @@ button_collection = {
     "Numpad1": Button(14, 3), "Numpad2": Button(15, 3), "Numpad3": Button(16, 3), "NumpadEnter": Button(17, 3),
     # Fifth row
     "Control": Button(0, 4), "Windows": Button(1, 4), "Alt": Button(2, 4), "Space": Button(3, 4), "AltGr": Button(4, 4), "fn": Button(5, 4), "ControlR": Button(6, 4),
-    "ArrowDown": Button(7, 4), "ArrowLeft": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
+    "ArrowLeft": Button(7, 4), "ArrowDown": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
 }
 
 #print(button_collection)
@@ -121,7 +121,7 @@ print(os.getcwd())
 print(os.path.isfile(r'neural_networks\best3_0_small_epoch40.pt'))
 model = YOLO(r"neural_networks\best3_0_small_epoch40.pt")
 
-results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\IMG_4223.jpg', show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
+results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\3.jpg', show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
 
 # stores the midpoints of the detected objects in listst
 # buttons looks like this: [[midpoint_pixel_x, midpoint_pixel_y],[midpoint_to0_x, midpoint_to0_y]]
@@ -292,8 +292,21 @@ for index, (button_name, button_properties) in enumerate(button_collection.items
     print(f"{button_name} is on pixels x= {button_properties.pixels_from_0_x}, y= {button_properties.pixels_from_0_y}")
 
 
+print("---------- DETERMINING THE DISTANCES BETWEEN BUTTONS ----------")
 
+# These are measured values from the keyboard and they are in mm
+h = 125
+w = 445
 
+print(f"Pixel difference between the two lefter corner in y {lower_left_corner[1] - upper_left_corner[1]}")
+h_coeff = h / (lower_left_corner[1] - upper_left_corner[1])
+print(f"Pixel difference between the two upper corner in x {upper_right_corner[0] - upper_left_corner[0]}")
+w_coeff = w / (upper_right_corner[0] - upper_left_corner[0])
 
-
-
+print(f"****Distance between 0 and 1 is in x (~20)= { (button_collection['1'].pixels_from_0_x - button_collection['0'].pixels_from_0_x) * w_coeff }")
+print(f"    X coordinate of 0= {button_collection['0'].pixels_from_0_x} and 1= {button_collection['1'].pixels_from_0_x}")
+print(f"****Distance between 0 and tab is in y (~20)= { (button_collection['Tab'].pixels_from_0_y - button_collection['0'].pixels_from_0_y) * h_coeff }")
+print(f"****Distance between alt and space is in x (~65)= { (button_collection['Space'].pixels_from_0_x - button_collection['Alt'].pixels_from_0_x) * w_coeff }")
+print(f"****Distance between 4 and space is in y (~80)= { (button_collection['Space'].pixels_from_0_y - button_collection['4'].pixels_from_0_y) * h_coeff }")
+print(f"****Distance between 6 and space is in y (~80)= { (button_collection['Space'].pixels_from_0_y - button_collection['6'].pixels_from_0_y) * h_coeff }")
+print(f"****Distance between s and k is in x (~120)= { (button_collection['k'].pixels_from_0_x - button_collection['s'].pixels_from_0_x) * w_coeff }")
