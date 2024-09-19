@@ -118,10 +118,10 @@ def convert_box_corners_to_midpoint(yolo_result):
 
 os.chdir(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\URSim_shared\RoboRevo\MachineVision')
 print(os.getcwd())
-print(os.path.isfile(r'neural_networks\best2_1.pt'))
-model = YOLO(r"neural_networks\best2_1.pt")
+print(os.path.isfile(r'neural_networks\best3_0_small_epoch40.pt'))
+model = YOLO(r"neural_networks\best3_0_small_epoch40.pt")
 
-results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\ObjectDetection\Images\v2\raw_images\both\c6.jpg', show = True, save=True, imgsz=1472, conf=0.5, show_labels=False)
+results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\IMG_4223.jpg', show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
 
 # stores the midpoints of the detected objects in listst
 # buttons looks like this: [[midpoint_pixel_x, midpoint_pixel_y],[midpoint_to0_x, midpoint_to0_y]]
@@ -162,14 +162,23 @@ for i in range( len(buttons) ):
     print(f"The midpoint of the {i}. button is {buttons[i][0]}")
 
 print("")
-    
-p_xmin = min(buttons, key=lambda x: x[0][0])[0]
-p_xmax = max(buttons, key=lambda x: x[0][0])[0]
 
-p_ymin = min(buttons, key=lambda x: x[0][1])[0]
-p_ymax = max(buttons, key=lambda x: x[0][1])[0]
-print(f"P_xmin= {p_xmin}, P_xmax = {p_xmax}, P_ymin= {p_ymin}, P_ymax= {p_ymax}")
+# FIXME: this is not a good method to determine the orientation.....   
+# p_xmin = min(buttons, key=lambda x: x[0][0])[0]
+# p_xmax = max(buttons, key=lambda x: x[0][0])[0]
 
+# p_ymin = min(buttons, key=lambda x: x[0][1])[0]
+# p_ymax = max(buttons, key=lambda x: x[0][1])[0]
+# print(f"P_xmin= {p_xmin}, P_xmax = {p_xmax}, P_ymin= {p_ymin}, P_ymax= {p_ymax}")
+
+# FIXME: for this method, keyboard should be quite horizontal. Find a better way to determine the orientation
+buttons_sorted_based_on_x = sorted(buttons, key=lambda x: x[0][0]) 
+upper_left_corner = min(buttons_sorted_based_on_x[:2], key=lambda x: x[0][1])[0]
+lower_left_corner = max(buttons_sorted_based_on_x[:2], key=lambda x: x[0][1])[0]
+
+upper_right_corner = min(buttons_sorted_based_on_x[-2:], key=lambda x: x[0][1])[0]
+lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x[0][1])[0]
+print(f"upper_left_corner= {upper_left_corner}, lower_left_corner = {lower_left_corner}, upper_right_corner= {upper_right_corner}, lower_right_corner= {lower_right_corner}")
 
 print("---------- COORDINATE TRANSFORMATION ----------")
 orientation = KeyboardOrientation.A
@@ -179,10 +188,10 @@ orientation = KeyboardOrientation.A
 #       it can happen that in certain cases numlock will be P_ymin!!! BE AWARE
 #       maybe the stickers should be redone, or more clever method should be implemented to determine the orientation!
 #       c6.jpg in C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\URSim_shared\RoboRevo\MachineVision\runs\detect\predict13 was used....
-if p_ymin[0] > p_ymax[0]:
+if upper_right_corner[1] > upper_left_corner[1]:
     print("Case A, so left ctrl is the lowest key!")
     orientation = KeyboardOrientation.A
-elif p_ymin[0] < p_ymax[0]:
+elif upper_right_corner[1] < upper_left_corner[1]:
     print("Case B, so numpad enter is the lowest key!")
     orientation = KeyboardOrientation.B
 else:
@@ -195,13 +204,13 @@ if orientation == KeyboardOrientation.A:
     # Note: the first method uses the vector between 0 and left control, not so precise
     # theta_rad = - np.arctan( ( p_ymax[0] - p_xmin[0] ) / ( p_ymax[1] - p_xmin[1] ) )
     # Note: this method uses the vector between 0 and NumPad subtraction --> much better!
-    theta_rad = - np.arctan( ( p_xmin[1] - p_ymin[1] ) / ( p_ymin[0] - p_xmin[0] ) )
-    t = np.array([p_xmin[0], p_xmin[1]])
+    theta_rad = - np.arctan( ( upper_left_corner[1] - upper_right_corner[1] ) / ( upper_right_corner[0] - upper_left_corner[0] ) )
+    t = np.array([upper_left_corner[0], upper_left_corner[1]])
 else:
     # Note: the first method uses the vector between 0 and left control, not so precise
     # theta_rad = np.arctan( ( p_ymin[0] - p_xmin[0] ) / ( p_ymin[1] - p_xmin[1] ) )
-    theta_rad = np.arctan( ( p_xmax[1] - p_ymin[1] ) / ( p_xmax[0] - p_ymin[0] ) )
-    t = np.array([p_ymin[0], p_ymin[1]])
+    theta_rad = np.arctan( ( upper_right_corner[1] - upper_left_corner[1] ) / ( upper_right_corner[0] - upper_left_corner[0] ) )
+    t = np.array([upper_left_corner[0], upper_left_corner[1]])
 
 print(f"The rotational angle is= {theta_rad}")
 print(f"The translation is= {t}")
@@ -220,14 +229,14 @@ transformator = CoordinateTransformator(theta_rad, t[0], t[1])
 #print(f"From point x= {623}, y= {568} End result is, x'= {point_x6}, y'= {point_y6}")
 #print(f"From point x= {577}, y= {630} End result is, x'= {point_x7}, y'= {point_y7}")
 
-print("---------- BUTTONS MIDPOINT COMPARED TO 0 ----------")
+print("---------- BUTTONS MIDPOINT COMPARED TO UPPER LEFT REF ----------")
 for i in range( len(buttons) ):
     midpoint_compared_to_0 = list( transformator.transform_point(buttons[i][0][0], buttons[i][0][1]) )
     buttons[i].append( midpoint_compared_to_0 )
     #buttons[i][1].append( midpoint_compared_to_0 )
 
 for i in range( len(buttons) ):
-    print(f"The midpoint of the {i}. button on the picture= {buttons[i][0]} relativ to button '0'= {buttons[i][1]}")
+    print(f"The midpoint of the {i}. button on the picture= {buttons[i][0]} relativ to upper left ref= {buttons[i][1]}")
 
 
 print("---------- DETERMINING THE ROWS OF BUTTONS ----------")
@@ -236,13 +245,13 @@ print("---------- DETERMINING THE ROWS OF BUTTONS ----------")
 def determine_row(first_index_of_row_element, last_index_of_row_element, buttons, empty_target_list):
     # buttons looks like this: [[midpoint_pixel_x, midpoint_pixel_y],[midpoint_to0_x, midpoint_to0_y]]
     # so first we sort based on the midpoint_to0_y --> rows in ascending order
-    print(f"PROBA= {buttons[0]}")
-    print(f"PROBA= {buttons[0][0]}")
-    print(f"PROBA= {buttons[0][0][0]}")
-    print(f"PROBA= {buttons[0][0][1]}")
-    print(f"PROBA= {buttons[0][1]}")
-    print(f"PROBA= {buttons[0][1][0]}")
-    print(f"PROBA= {buttons[0][1][1]}")
+    #print(f"PROBA= {buttons[0]}")
+    #print(f"PROBA= {buttons[0][0]}")
+    #print(f"PROBA= {buttons[0][0][0]}")
+    #print(f"PROBA= {buttons[0][0][1]}")
+    #print(f"PROBA= {buttons[0][1]}")
+    #print(f"PROBA= {buttons[0][1][0]}")
+    #print(f"PROBA= {buttons[0][1][1]}")
     buttons_rows_sorted = sorted(buttons, key=lambda x: x[1][1])
     current_row = buttons_rows_sorted[first_index_of_row_element:last_index_of_row_element+1]
 
@@ -260,24 +269,22 @@ for i in range(5):
     rows.append(list())
 
 # 21 elements in the first row
-determine_row(0, 20, buttons, rows[0])
+determine_row(2, 22, buttons, rows[0])
 # 21 elements in the second row
-determine_row(21, 41, buttons, rows[1])
+determine_row(23, 43, buttons, rows[1])
 # 16 elements in the third row
-determine_row(42, 57, buttons, rows[2])
+determine_row(44, 59, buttons, rows[2])
 # 18 elements in the fourth row
-determine_row(58, 75, buttons, rows[3])
+determine_row(60, 77, buttons, rows[3])
 # 12 elements in the fifth row
-determine_row(76, 87, buttons, rows[4])
+determine_row(78, 89, buttons, rows[4])
 
 for i in range( len(rows) ):
     print(f"---------- ROW {i}.----------")
     for j in range( len(rows[i]) ):
         print(rows[i][j])
 
-
 print("---------- DETERMINING WHICH BUTTON IS WHICH POINT ----------")
-
 
 for index, (button_name, button_properties) in enumerate(button_collection.items()):
     button_properties.pixels_from_0_x = rows[button_properties.rel_from_0_y][button_properties.rel_from_0_x][0][0]
