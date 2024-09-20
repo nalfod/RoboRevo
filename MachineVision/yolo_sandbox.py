@@ -307,6 +307,9 @@ print(f"****Distance between 0 and 1 is in x (~20)= { (button_collection['1'].pi
 print(f"    X coordinate of 0= {button_collection['0'].pixels_from_0_x} and 1= {button_collection['1'].pixels_from_0_x}")
 print(f"****Distance between 0 and tab is in y (~20)= { (button_collection['Tab'].pixels_from_0_y - button_collection['0'].pixels_from_0_y) * h_coeff }")
 print(f"****Distance between alt and space is in x (~65)= { (button_collection['Space'].pixels_from_0_x - button_collection['Alt'].pixels_from_0_x) * w_coeff }")
+# TODO: there is a difference betweeen the real distance and the calculated one when it comes to direction "y". Maybe beacuse the keyboard is not parallel but tilted
+# in that direction? find out and compensate it!
 print(f"****Distance between 4 and space is in y (~80)= { (button_collection['Space'].pixels_from_0_y - button_collection['4'].pixels_from_0_y) * h_coeff }")
 print(f"****Distance between 6 and space is in y (~80)= { (button_collection['Space'].pixels_from_0_y - button_collection['6'].pixels_from_0_y) * h_coeff }")
 print(f"****Distance between s and k is in x (~120)= { (button_collection['k'].pixels_from_0_x - button_collection['s'].pixels_from_0_x) * w_coeff }")
+print(f"****Distance between q and p is in x (~180)= { (button_collection['p'].pixels_from_0_x - button_collection['q'].pixels_from_0_x) * w_coeff }")
