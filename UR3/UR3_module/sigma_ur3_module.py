@@ -273,8 +273,9 @@ def create_server_to_listen_pushbutton(button_is_pushed):
     
 
 if __name__ == "__main__":
-    # KRP = [-0.085, -0.250, 0.01]
-    KRP = [130/1000, -430/1000, -390/1000]
+    
+    KRP = [-0.085, -0.250, 0.01]
+    # KRP = [130/1000, -430/1000, -390/1000]
     robot = UR3(KRP)
     robot.init_myself()
 
