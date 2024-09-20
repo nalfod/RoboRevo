@@ -1,0 +1,1220 @@
+<URProgram name="rtde_control_loop_sigma" installation="default" installationRelativePath="../default" directory="/home/ur/ursim-current/programs/programs" createdIn="3.2.19275.0" lastSavedIn="5.6.0.90886" robotSerialNumber="20195399999" crcValue="3683737400">
+  <kinematics status="NOT_INITIALIZED" validChecksum="false">
+    <deltaTheta value="0.0, 0.0, 0.0, 0.0, 0.0, 0.0"/>
+    <a value="0.0, -0.24355, -0.2132, 0.0, 0.0, 0.0"/>
+    <d value="0.15185, 0.0, 0.0, 0.13105, 0.08535, 0.0921"/>
+    <alpha value="1.570796327, 0.0, 0.0, 1.570796327, -1.570796327, 0.0"/>
+    <jointChecksum value="-1, -1, -1, -1, -1, -1"/>
+  </kinematics>
+  <children>
+    <SpecialSequence type="BeforeStart">
+      <children>
+        <Assignment valueSource="Expression">
+          <variable name="setp_p" prefersPersistentValue="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionChar character="p"/>
+            <ExpressionChar character="["/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="]"/>
+          </expression>
+        </Assignment>
+        <Assignment valueSource="Expression">
+          <variable name="setp_j" prefersPersistentValue="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionChar character="["/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="]"/>
+          </expression>
+        </Assignment>
+        <Assignment valueSource="Expression">
+          <variable name="inp_int_reg_0" prefersPersistentValue="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionChar character="0"/>
+          </expression>
+        </Assignment>
+        <Assignment valueSource="Expression">
+          <variable name="button_push_dis" prefersPersistentValue="false">
+            <initializeExpression/>
+          </variable>
+          <expression>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="."/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="2"/>
+          </expression>
+        </Assignment>
+        <Script type="Line">
+          <expression>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="d"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="s"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="w"/>
+            <ExpressionChar character="a"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="c"/>
+            <ExpressionChar character="h"/>
+            <ExpressionChar character="d"/>
+            <ExpressionChar character="o"/>
+            <ExpressionChar character="g"/>
+            <ExpressionChar character="("/>
+            <ExpressionChar character="&quot;"/>
+            <ExpressionChar character="i"/>
+            <ExpressionChar character="n"/>
+            <ExpressionChar character="p"/>
+            <ExpressionChar character="u"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="i"/>
+            <ExpressionChar character="n"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="g"/>
+            <ExpressionChar character="i"/>
+            <ExpressionChar character="s"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character="&quot;"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character=" "/>
+            <ExpressionChar character="1"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character=" "/>
+            <ExpressionChar character="&quot;"/>
+            <ExpressionChar character="P"/>
+            <ExpressionChar character="A"/>
+            <ExpressionChar character="U"/>
+            <ExpressionChar character="S"/>
+            <ExpressionChar character="E"/>
+            <ExpressionChar character="&quot;"/>
+            <ExpressionChar character=")"/>
+          </expression>
+        </Script>
+        <Script type="Line">
+          <expression>
+            <ExpressionChar character="w"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="i"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="o"/>
+            <ExpressionChar character="u"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="p"/>
+            <ExpressionChar character="u"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="i"/>
+            <ExpressionChar character="n"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="g"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="_"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="g"/>
+            <ExpressionChar character="i"/>
+            <ExpressionChar character="s"/>
+            <ExpressionChar character="t"/>
+            <ExpressionChar character="e"/>
+            <ExpressionChar character="r"/>
+            <ExpressionChar character="("/>
+            <ExpressionChar character="0"/>
+            <ExpressionChar character=","/>
+            <ExpressionChar character=" "/>
+            <ExpressionChar character="1"/>
+            <ExpressionChar character=")"/>
+          </expression>
+        </Script>
+      </children>
+    </SpecialSequence>
+    <MainProgram runOnlyOnce="false" InitVariablesNode="false">
+      <children>
+        <If type="If" checkContinuously="false">
+          <expression>
+            <ExpressionVariable>
+              <ProgramVariable reference="../../../../../../SpecialSequence/children/Assignment[3]/variable"/>
+            </ExpressionVariable>
+            <ExpressionChar character="≟"/>
+            <ExpressionChar character="1"/>
+          </expression>
+          <children>
+            <Comment comment="Valid pose received from client"/>
+            <Assignment valueSource="Expression">
+              <variable reference="../../../../../../SpecialSequence/children/Assignment[3]/variable"/>
+              <expression>
+                <ExpressionChar character="0"/>
+              </expression>
+            </Assignment>
+            <Comment comment="Next time only with new position can be entered"/>
+            <If type="If" checkContinuously="false">
+              <expression>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="a"/>
+                <ExpressionChar character="d"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="1"/>
+                <ExpressionChar character=")"/>
+                <ExpressionChar character=" "/>
+                <ExpressionChar character="≟"/>
+                <ExpressionChar character=" "/>
+                <ExpressionChar character="1"/>
+              </expression>
+              <children>
+                <Move motionType="MoveL" speed="0.08" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose">
+                  <feature class="GeomFeatureReference" referencedName="Joint_0_name"/>
+                  <children>
+                    <Waypoint type="Variable" name="Waypoint" kinematicsFlags="-1">
+                      <motionParameters/>
+                      <variable reference="../../../../../../../../../../SpecialSequence/children/Assignment/variable"/>
+                    </Waypoint>
+                  </children>
+                </Move>
+              </children>
+            </If>
+            <If type="ElseIf" checkContinuously="false">
+              <expression>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="a"/>
+                <ExpressionChar character="d"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="1"/>
+                <ExpressionChar character=")"/>
+                <ExpressionChar character="≟"/>
+                <ExpressionChar character="2"/>
+              </expression>
+              <children>
+                <Comment comment="Pushing a button"/>
+                <Assignment valueSource="Expression">
+                  <variable name="current_pos" prefersPersistentValue="false">
+                    <initializeExpression/>
+                  </variable>
+                  <expression>
+                    <ExpressionToken token="get_actual_tcp_pose"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Assignment>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="c"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="c"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="-"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionVariable>
+                      <ProgramVariable reference="../../../../../../../../../../SpecialSequence/children/Assignment[4]/variable"/>
+                    </ExpressionVariable>
+                  </expression>
+                </Script>
+                <Move motionType="MoveL" speed="0.25" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose">
+                  <feature class="GeomFeatureReference" reference="../../../../If/children/Move/feature"/>
+                  <children>
+                    <Waypoint type="Variable" name="Waypoint_1" kinematicsFlags="-1">
+                      <motionParameters/>
+                      <variable reference="../../../../Assignment/variable"/>
+                    </Waypoint>
+                  </children>
+                </Move>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="c"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="c"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="+"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionVariable>
+                      <ProgramVariable reference="../../../../../../../../../../SpecialSequence/children/Assignment[4]/variable"/>
+                    </ExpressionVariable>
+                  </expression>
+                </Script>
+                <Move motionType="MoveL" speed="0.25" acceleration="1.2" useActiveTCP="true" positionType="CartesianPose">
+                  <feature class="GeomFeatureReference" reference="../../../../If/children/Move/feature"/>
+                  <children>
+                    <Waypoint type="Variable" name="Waypoint_1" kinematicsFlags="-1">
+                      <motionParameters/>
+                      <variable reference="../../../../Assignment/variable"/>
+                    </Waypoint>
+                  </children>
+                </Move>
+              </children>
+            </If>
+            <If type="Else" checkContinuously="false">
+              <expression/>
+              <children>
+                <Move motionType="MoveJ" speed="1.0471975511965976" acceleration="1.3962634015954636" useActiveTCP="true" positionType="JointAngles">
+                  <feature class="GeomFeatureReference" reference="../../../../If/children/Move/feature"/>
+                  <children>
+                    <Waypoint type="Variable" name="Waypoint" kinematicsFlags="-1">
+                      <motionParameters/>
+                      <variable reference="../../../../../../../../../../SpecialSequence/children/Assignment[2]/variable"/>
+                    </Waypoint>
+                  </children>
+                </Move>
+              </children>
+            </If>
+            <Comment comment="Confirm that move was executed"/>
+            <Script type="Line">
+              <expression>
+                <ExpressionChar character="w"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="o"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="0"/>
+                <ExpressionChar character=","/>
+                <ExpressionChar character=" "/>
+                <ExpressionChar character="0"/>
+                <ExpressionChar character=")"/>
+              </expression>
+            </Script>
+            <Comment comment="Wait until script acknowledges confirmation"/>
+            <Loop type="While" checkContinuously="false">
+              <expression>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="a"/>
+                <ExpressionChar character="d"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="0"/>
+                <ExpressionChar character=")"/>
+                <ExpressionChar character="≟"/>
+                <ExpressionChar character="1"/>
+              </expression>
+              <children>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="y"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="c"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+              </children>
+            </Loop>
+            <Comment comment="Request next pose"/>
+            <Script type="Line">
+              <expression>
+                <ExpressionChar character="w"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="o"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="0"/>
+                <ExpressionChar character=","/>
+                <ExpressionChar character=" "/>
+                <ExpressionChar character="1"/>
+                <ExpressionChar character=")"/>
+              </expression>
+            </Script>
+          </children>
+        </If>
+        <Script type="Line">
+          <expression>
+            <ExpressionChar character="s"/>
+            <ExpressionChar character="y"/>
+            <ExpressionChar character="n"/>
+            <ExpressionChar character="c"/>
+            <ExpressionChar character="("/>
+            <ExpressionChar character=")"/>
+          </expression>
+        </Script>
+      </children>
+    </MainProgram>
+    <Thread name="Thread_1" runOnlyOnce="false">
+      <children>
+        <Loop type="Forever">
+          <children>
+            <If type="If" checkContinuously="false">
+              <expression>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="a"/>
+                <ExpressionChar character="d"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="1"/>
+                <ExpressionChar character=")"/>
+                <ExpressionChar character=" "/>
+                <ExpressionChar character="≟"/>
+                <ExpressionChar character=" "/>
+                <ExpressionChar character="1"/>
+              </expression>
+              <children>
+                <Assignment valueSource="Expression">
+                  <variable name="tmp_p" prefersPersistentValue="false">
+                    <initializeExpression/>
+                  </variable>
+                  <expression>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character="]"/>
+                  </expression>
+                </Assignment>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="1"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="1"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="3"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="3"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="4"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="4"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="5"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="5"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Assignment valueSource="Expression">
+                  <variable reference="../../../../../../../../SpecialSequence/children/Assignment/variable"/>
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="p"/>
+                  </expression>
+                </Assignment>
+              </children>
+            </If>
+            <If type="Else" checkContinuously="false">
+              <expression/>
+              <children>
+                <Assignment valueSource="Expression">
+                  <variable name="tmp_j" prefersPersistentValue="false">
+                    <initializeExpression/>
+                  </variable>
+                  <expression>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=","/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character="]"/>
+                  </expression>
+                </Assignment>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="0"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="1"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="1"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="2"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="3"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="3"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="4"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="4"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Script type="Line">
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                    <ExpressionChar character="["/>
+                    <ExpressionChar character="5"/>
+                    <ExpressionChar character="]"/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="="/>
+                    <ExpressionChar character=" "/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="d"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="n"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="u"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="f"/>
+                    <ExpressionChar character="l"/>
+                    <ExpressionChar character="o"/>
+                    <ExpressionChar character="a"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="g"/>
+                    <ExpressionChar character="i"/>
+                    <ExpressionChar character="s"/>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="e"/>
+                    <ExpressionChar character="r"/>
+                    <ExpressionChar character="("/>
+                    <ExpressionChar character="5"/>
+                    <ExpressionChar character=")"/>
+                  </expression>
+                </Script>
+                <Assignment valueSource="Expression">
+                  <variable reference="../../../../../../../../SpecialSequence/children/Assignment[2]/variable"/>
+                  <expression>
+                    <ExpressionChar character="t"/>
+                    <ExpressionChar character="m"/>
+                    <ExpressionChar character="p"/>
+                    <ExpressionChar character="_"/>
+                    <ExpressionChar character="j"/>
+                  </expression>
+                </Assignment>
+              </children>
+            </If>
+            <Assignment valueSource="Expression">
+              <variable reference="../../../../../../SpecialSequence/children/Assignment[3]/variable"/>
+              <expression>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="a"/>
+                <ExpressionChar character="d"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="p"/>
+                <ExpressionChar character="u"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="_"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="g"/>
+                <ExpressionChar character="i"/>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="t"/>
+                <ExpressionChar character="e"/>
+                <ExpressionChar character="r"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character="0"/>
+                <ExpressionChar character=")"/>
+              </expression>
+            </Assignment>
+            <Script type="Line">
+              <expression>
+                <ExpressionChar character="s"/>
+                <ExpressionChar character="y"/>
+                <ExpressionChar character="n"/>
+                <ExpressionChar character="c"/>
+                <ExpressionChar character="("/>
+                <ExpressionChar character=")"/>
+              </expression>
+            </Script>
+          </children>
+        </Loop>
+      </children>
+    </Thread>
+  </children>
+</URProgram>

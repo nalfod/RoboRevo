@@ -1,6 +1,7 @@
 import sys
 import math
 import threading
+import socket
 
 sys.path.append("..")
 # import logging
@@ -14,7 +15,7 @@ class UR3:
         # TODO: note, that KRP is 3 dimensions now, but it has to be four! The keyboard is not strictly alligned with the robot's coordinate system
         #       Z axis should be parallel, but the other two can deviate!! FIXME
         self.KRP = KRP
-        self.home_pos_of_joints = [ math.radians(-90), math.radians(-90), math.radians(-130), math.radians(-50), math.radians(90), math.radians(0)  ]
+        self.home_pos_of_joints = [ math.radians(90), math.radians(-90), math.radians(65), math.radians(-65), math.radians(-90), math.radians(0)  ]
 
         self.ROBOT_HOST = "192.168.56.101"
         self.ROBOT_PORT = 30004
@@ -25,6 +26,7 @@ class UR3:
         setp_names, setp_types = self.conf.get_recipe("setp")
         mode_names, mode_types = self.conf.get_recipe("mode")
         watchdog_names, watchdog_types = self.conf.get_recipe("watchdog")
+        #pushbutton_names, pushbutton_types = self.conf.get_recipe("pushbutton")
 
         self.con = rtde.RTDE(self.ROBOT_HOST, self.ROBOT_PORT)
         print("----------------------------------------------\n")
@@ -39,6 +41,7 @@ class UR3:
         self.setp = self.con.send_input_setup(setp_names, setp_types)
         self.mode = self.con.send_input_setup(mode_names, mode_types)
         self.watchdog = self.con.send_input_setup(watchdog_names, watchdog_types)
+        #self.pushbutton = self.con.send_input_setup(pushbutton_names, pushbutton_types)
 
         # setpoints
         self.setp.input_double_register_0 = 0
@@ -148,7 +151,7 @@ class UR3:
             # kick watchdog
             self.con.send(self.watchdog)
 
-    def push_button(self):
+    def push_button(self, button_is_pushed):
         print( "*****BEGIN - push_button *****")
         self.move_completed = True
 
@@ -157,6 +160,10 @@ class UR3:
             if state is None:
                 print("Recieved state is None, aborting method...")
                 break
+
+            if button_is_pushed[0] == 1:
+                # self.pushbutton.standard_digital_output_0 = 1
+                button_is_pushed[0] = 0
 
             if self.move_completed and state.output_int_register_0 == 1:
                 # output_int_register_0 == 1 --> robot ready to recieve a new command
@@ -177,7 +184,9 @@ class UR3:
             elif not self.move_completed and state.output_int_register_0 == 0:
                 self.move_completed = True
                 self.watchdog.input_int_register_0 = 0
+                #self.pushbutton.standard_digital_output_0 = 0
                 self.con.send(self.watchdog)
+                #self.con.send(self.pushbutton)
                 print("*****END\n")
                 return
 
@@ -207,13 +216,13 @@ class UR3:
         self.touch_KRP()
 
     # NOTE: this is only for testing!!! final version may be more sofisticated...
-    def main_loop(self, input_list, new_data):
+    def main_loop(self, input_list, new_data, button_is_pushed):
         while True:
             # Do something with the input_list
             if new_data[0] == 1:
                 print("Moving to position= " + str(input_list) + " and pushing a button")
                 robot.move_robot("TCP", [input_list[0] + self.KRP[0], input_list[1] + self.KRP[1], input_list[2] + self.KRP[2]] + [None, None, None])
-                robot.push_button()
+                robot.push_button(button_is_pushed)
                 new_data[0] = 0
             else:
                 # kick watchdog
@@ -236,13 +245,47 @@ def get_user_input(input_list, new_data):
         else:
             print("Please enter exactly three numbers.")
 
+# Note: this function should be replaced to one which listens on the serial part for arduino
+def create_server_to_listen_pushbutton(button_is_pushed):
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind(('localhost', 12345))  # Bind to localhost on port 12345
+    server_socket.listen(1)  # Allow only one connection at a time
+
+    print("Server is listening for incoming connections...")
+
+    # Accept the connection
+    conn, addr = server_socket.accept()
+    # print(f"Connected by {addr}")
+
+    while True:
+        data = conn.recv(1024)  # Receive up to 1024 bytes of data
+        if not data:
+            break
+        #print(f"Received from client: {data.decode()}")
+
+        button_is_pushed[0] = 1
+        # Echo the received message back to the client
+        conn.sendall("Got it.".encode())
+
+    conn.close()
+    server_socket.close()
+
+    
+
 if __name__ == "__main__":
-    KRP = [-0.085, -0.250, 0.01]
+    # KRP = [-0.085, -0.250, 0.01]
+    KRP = [130/1000, -430/1000, -390/1000]
     robot = UR3(KRP)
     robot.init_myself()
 
     input_list = []
     new_data = [0]
+    button_is_pushed = [0]
+
+    # Start the server side
+    # server_thread = threading.Thread(target=create_server_to_listen_pushbutton, args=(button_is_pushed,))
+    # server_thread.daemon = True
+    # server_thread.start()
 
     # Start a thread to get user input
     input_thread = threading.Thread(target=get_user_input, args=(input_list, new_data,))
@@ -250,7 +293,7 @@ if __name__ == "__main__":
     input_thread.start()
 
     # Start the main loop
-    robot.main_loop(input_list, new_data)
+    robot.main_loop(input_list, new_data, button_is_pushed)
 
 
     #robot.move_robot("joint", [ math.radians(-90), None, None, None, None, None ])

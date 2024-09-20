@@ -24,4 +24,8 @@
 	<recipe key="mode">
 		<field name="input_int_register_1" type="INT32"/>
 	</recipe>
+
+	<recipe key="pushbutton">
+		<field name="standard_digital_output_mask_0" type="UINT8"/>
+	</recipe>
 </rtde_config>
