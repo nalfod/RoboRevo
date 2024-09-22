@@ -2,6 +2,7 @@ import sys
 import math
 import threading
 import socket
+import time
 
 sys.path.append("..")
 # import logging
@@ -88,6 +89,55 @@ class UR3:
             else:
                 print("     My " + str(i) + ". value is= " + str( round(position[i] * 1000, 2) ) + " mm")
 
+    def send_movement_mode_to_robot(self):
+        while True:
+            self.con.send(self.mode)
+            time.sleep(5/1000)
+            state = self.con.receive()
+
+            target_value = self.mode.input_int_register_1
+            actual_value = state.input_int_register_1
+
+            if target_value == actual_value:
+                break
+            else:
+                print("Target value is= " + str(target_value) + " but input_int_register_1 is= " + str(actual_value) )
+
+    def send_sync_flag_to_robot(self):
+        while True:
+            self.con.send(self.watchdog)
+            time.sleep(5/1000)
+            state = self.con.receive()
+
+            target_value = self.watchdog.input_int_register_0
+            actual_value = state.input_int_register_0
+
+            if target_value == actual_value:
+                break
+            else:
+                print("Target value is= " + str(target_value) + " but input_int_register_0 is= " + str(actual_value) )
+
+    def send_setp_to_robot(self):
+        while True:
+            self.con.send(self.setp)
+            time.sleep(5/1000)
+            state = self.con.receive()
+
+            register_has_been_updated = True
+            
+            for i in range(0, 6):
+                target_value = self.setp.__dict__["input_double_register_%i" % i]
+                actual_value = state.__dict__["input_double_register_%i" % i]
+                if round(target_value, 3) != round(actual_value, 3):
+                    print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
+                    register_has_been_updated = False
+                    break
+
+
+            if register_has_been_updated:
+                break
+                
+
     def move_robot(self, type_of_movement, list_of_sp):
         print( "*****BEGIN - move_robot *****")
         print("My type of movement is= " + str(type_of_movement) + " My position is= " + str(list_of_sp) )
@@ -129,17 +179,18 @@ class UR3:
                 UR3.list_to_setp(self.setp, target_position_list)
 
                 # changing the mode
-                self.con.send(self.mode)
+                self.send_movement_mode_to_robot()
                 # sending new setpoint!
-                self.con.send(self.setp)
+                self.send_setp_to_robot()
 
                 # input_int_register_0 == 1 --> new command is sent!
                 self.watchdog.input_int_register_0 = 1
+                self.send_sync_flag_to_robot()
  
             elif not self.move_completed and state.output_int_register_0 == 0:
                 self.move_completed = True
                 self.watchdog.input_int_register_0 = 0
-                self.con.send(self.watchdog)
+                self.send_sync_flag_to_robot()
                 print("I finished the movement, and currently in= ")            
                 if type_of_movement == "joint":
                     UR3.print_position_from_list(state.actual_q, type_of_movement)
@@ -180,12 +231,13 @@ class UR3:
 
                 # input_int_register_0 == 1 --> new command is sent!
                 self.watchdog.input_int_register_0 = 1
+                self.send_sync_flag_to_robot()
  
             elif not self.move_completed and state.output_int_register_0 == 0:
                 self.move_completed = True
                 self.watchdog.input_int_register_0 = 0
                 #self.pushbutton.standard_digital_output_0 = 0
-                self.con.send(self.watchdog)
+                self.send_sync_flag_to_robot()
                 #self.con.send(self.pushbutton)
                 print("*****END\n")
                 return
