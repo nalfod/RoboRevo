@@ -227,7 +227,7 @@ class UR3:
                 UR3.print_position_from_list(state.actual_TCP_pose, "TCP")
 
                 # changing the mode
-                self.con.send(self.mode)
+                self.send_movement_mode_to_robot()
 
                 # input_int_register_0 == 1 --> new command is sent!
                 self.watchdog.input_int_register_0 = 1
