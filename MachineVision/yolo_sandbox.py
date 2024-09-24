@@ -121,8 +121,8 @@ print(os.getcwd())
 print(os.path.isfile(r'neural_networks\best3_0_small_epoch40.pt'))
 model = YOLO(r"neural_networks\best3_0_small_epoch40.pt")
 
-results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\3.jpg', show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
-
+results = model.predict(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\4.jpg', show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
+# results = model.predict('1', show = True, save=True, imgsz=720, conf=0.5, show_labels=False, stream_buffer=True)
 # stores the midpoints of the detected objects in listst
 # buttons looks like this: [[midpoint_pixel_x, midpoint_pixel_y],[midpoint_to0_x, midpoint_to0_y]]
 buttons = []
@@ -172,6 +172,8 @@ print("")
 # print(f"P_xmin= {p_xmin}, P_xmax = {p_xmax}, P_ymin= {p_ymin}, P_ymax= {p_ymax}")
 
 # FIXME: for this method, keyboard should be quite horizontal. Find a better way to determine the orientation
+#        determine the distance in case of every button pairs, and the four ref points will be the ones 
+#        which belongs to the two longest distances
 buttons_sorted_based_on_x = sorted(buttons, key=lambda x: x[0][0]) 
 upper_left_corner = min(buttons_sorted_based_on_x[:2], key=lambda x: x[0][1])[0]
 lower_left_corner = max(buttons_sorted_based_on_x[:2], key=lambda x: x[0][1])[0]
