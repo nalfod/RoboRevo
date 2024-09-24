@@ -101,7 +101,8 @@ class UR3:
             if target_value == actual_value:
                 break
             else:
-                print("Target value is= " + str(target_value) + " but input_int_register_1 is= " + str(actual_value) )
+                # print("Target value is= " + str(target_value) + " but input_int_register_1 is= " + str(actual_value) )
+                pass
 
     def send_sync_flag_to_robot(self):
         while True:
@@ -115,7 +116,8 @@ class UR3:
             if target_value == actual_value:
                 break
             else:
-                print("Target value is= " + str(target_value) + " but input_int_register_0 is= " + str(actual_value) )
+                # print("Target value is= " + str(target_value) + " but input_int_register_0 is= " + str(actual_value) )
+                pass
 
     def send_setp_to_robot(self):
         while True:
@@ -129,7 +131,7 @@ class UR3:
                 target_value = self.setp.__dict__["input_double_register_%i" % i]
                 actual_value = state.__dict__["input_double_register_%i" % i]
                 if round(target_value, 3) != round(actual_value, 3):
-                    print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
+                    # print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
                     register_has_been_updated = False
                     break
 
@@ -212,9 +214,9 @@ class UR3:
                 print("Recieved state is None, aborting method...")
                 break
 
-            if button_is_pushed[0] == 1:
+            # if button_is_pushed[0] == 1:
                 # self.pushbutton.standard_digital_output_0 = 1
-                button_is_pushed[0] = 0
+                # button_is_pushed[0] = 0
 
             if self.move_completed and state.output_int_register_0 == 1:
                 # output_int_register_0 == 1 --> robot ready to recieve a new command
@@ -326,8 +328,10 @@ def create_server_to_listen_pushbutton(button_is_pushed):
 
 if __name__ == "__main__":
     
-    KRP = [-0.085, -0.250, 0.01]
-    # KRP = [130/1000, -430/1000, -390/1000]
+    KRP = [-0.085, -0.250, 0.01] # for simulation purpose
+    # KRP = [115/1000, -420/1000, 25/1000] # first working version in real life
+    # KRP = [363/1000, -223/1000, 3/1000] # This is how it will probably look like in final version
+    camera_position = [100/1000, -340/1000, 200/1000]
     robot = UR3(KRP)
     robot.init_myself()
 
