@@ -1,1 +1,4 @@
+# ignore all detect results
+
 MachineVision/runs/
+venv/*
