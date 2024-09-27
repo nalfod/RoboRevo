@@ -405,19 +405,24 @@ class button_locator:
         if self.verbose_mode:
             print(f"upper_left_corner= {upper_left_corner}, \nlower_left_corner = {lower_left_corner}, \nupper_right_corner= {upper_right_corner}, \nlower_right_corner= {lower_right_corner}")
 
-        w_coeff = measured_w / (upper_right_corner.midpoint_rel_to_pic.x - upper_left_corner.midpoint_rel_to_pic.x)
-        h_coeff = measured_h / (lower_left_corner.midpoint_rel_to_pic.y - upper_left_corner.midpoint_rel_to_pic.y)
+        w_coeff = measured_w / (upper_right_corner.midpoint_rel_to_keyboard.x - upper_left_corner.midpoint_rel_to_keyboard.x)
+        h_coeff = measured_h / (lower_left_corner.midpoint_rel_to_keyboard.y - upper_left_corner.midpoint_rel_to_keyboard.y)
 
         key0 = self.detected_buttons_in_rows[0][0]
 
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
-            pixel_distance_from_key0_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x - key0.midpoint_rel_to_pic.x
-            pixel_distance_from_key0_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - key0.midpoint_rel_to_pic.y
+            pixel_position_of_current_key_rel_to_keyboard_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_keyboard.x
+            pixel_position_of_current_key_rel_to_keyboard_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_keyboard.y
+
+            pixel_distance_from_key0_x = pixel_position_of_current_key_rel_to_keyboard_x - key0.midpoint_rel_to_keyboard.x
+            pixel_distance_from_key0_y = pixel_position_of_current_key_rel_to_keyboard_y - key0.midpoint_rel_to_keyboard.y
 
             relative_distance_from_key0_x = pixel_distance_from_key0_x * w_coeff
             relative_distance_from_key0_y= pixel_distance_from_key0_y * h_coeff
             if self.verbose_mode:
-                print(f"{button_name} distance from key 0 is (x,y)= {relative_distance_from_key0_x} , {relative_distance_from_key0_y} ")
+                pixel_position_of_current_key_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x
+                pixel_position_of_current_key_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y
+                print(f"{button_name} distance from key 0 is (x,y)= {relative_distance_from_key0_x} , {relative_distance_from_key0_y} on pixels (x,y) = {pixel_position_of_current_key_x}, {pixel_position_of_current_key_y} ")
             else:
                 print(f"{button_name} {relative_distance_from_key0_x} {relative_distance_from_key0_y}")
 
