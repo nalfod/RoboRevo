@@ -32,7 +32,7 @@ class Point:
 #   this distance is determined by the module button_locator and used by the robot as a destination coordinate
 class Button:
     def __init__(self, rel_from_button0_x, rel_from_button0_y) -> None:
-        # relative position of the button to button 0
+        # relative position of the button to button 0 (unit: -)
         self.rel_from_button0_x = rel_from_button0_x
         self.rel_from_button0_y = rel_from_button0_y
 
@@ -64,6 +64,7 @@ class KeyboardOrientation(Enum):
 
 class detected_button:
     def __init__(self, x_to_pic=0, y_to_pic=0, x_to_keyboard=0, y_to_keyboard=0) -> None:
+        # the unit of these two point are pixels!
         self.midpoint_rel_to_pic = Point(x_to_pic, y_to_pic)
         self.midpoint_rel_to_keybord = Point(x_to_keyboard, y_to_keyboard)
 
@@ -74,13 +75,13 @@ class detected_button:
         return hash((self.midpoint_rel_to_pic, self.midpoint_rel_to_keybord))
     
     def __str__(self):
-        return ( f"     My midpoint relative to the upper left corner of the picture: {self.midpoint_rel_to_pic}\n"
-                 f"     and relative to the upper left corner of the keyboard: {self.midpoint_rel_to_keybord}"
+        return ( f"     My midpoint relative to the upper left corner of the picture in pixels: {self.midpoint_rel_to_pic}\n"
+                 f"     and relative to the upper left corner of the keyboard in pixels: {self.midpoint_rel_to_keybord}"
         )
 
     def __repr__(self):
-        return ( f"     My midpoint relative to the upper left corner of the picture: {self.midpoint_rel_to_pic}\n"
-                 f"     and relative to the upper left corner of the keyboard: {self.midpoint_rel_to_keybord}"
+        return ( f"     My midpoint relative to the upper left corner of the picture in pixels: {self.midpoint_rel_to_pic}\n"
+                 f"     and relative to the upper left corner of the keyboard in pixels: {self.midpoint_rel_to_keybord}"
         )
     
 
@@ -149,17 +150,31 @@ class button_locator:
     def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary):
         self._reset_myself()
 
+        # 1. using YOLO to detect all the objects (buttons and references) on the captured picture
         results = self.model.predict(image_path, show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
         
+        # 2. separates the detected object into member variables detected_references and detected_buttons
         self._sort_detected_objects_to_lists(results)
 
+        # 3. determine the necessary coordinate transformation to be able to convert the coordinates of the midpoints
+        #    into a coordinate system which is determined by the 4 reference stickers on the keyboard 
         self._refresh_coordinate_transformator()
 
+        # 4. determine all the coordinates of the buttons relative to the keyboard coordinate system
         self._determine_button_coordinates_relative_to_keyboard()
 
+        # 5. organise the buttons into the 5 rows of the keyboard itself. After this, we will be able to tell, that
+        #    the pixel midpoint coordinates of a certain button belongs to which row and in the row to which index on the keyboard
+        #    eg.: in row 2 the third button has pixel coordinates (604,423) in the coordinate system determined by the picture
         self._organize_detected_to_buttons_into_rows()
         
+        # 6. The target dictionary should contains the relative positions of the buttons to eachother. Based on that we can determine
+        #    the position of every button compared to the KRP (which is the left reference cross)
+        #    eg.: button s is (120, 80) mm in KRP system
         self._determine_button_pos_in_KRP_into_dict(target_dictionary)
+
+        # ONLY FOR TESTING:
+        self.__determine_button_pos_compared_to_button0(target_dictionary)
 
     def _sort_detected_objects_to_lists(self, results):
         print("\n-------------------------------")
@@ -317,5 +332,55 @@ class button_locator:
         for i in range( len(current_row_sorted) ):
             empty_target_list.append(current_row_sorted[i])
 
-    def _determine_button_pos_in_KRP_into_dict(self, target_dictionary):
-        pass
+    def _determine_button_pos_in_KRP_into_dict(self, target_dictionary: dict[str, Button]):
+        print("\n--------------------------------------------------------------")
+        print("BEGIN: Determining the buttons position in KRP")
+        print("--------------------------------------------------------------\n")
+        # calculating the ratios
+        w_coeff = self.refs_width_in_mm / abs(self.detected_references[0].x - self.detected_references[1].x)
+        h_coeff = self.refs_height_in_mm / abs(self.detected_references[0].y - self.detected_references[1].y)
+
+        # determining the left reference cross
+        KRP_midpoint = min(self.detected_references, key=lambda x: x.x)
+
+        for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
+            pixel_distance_from_KRP_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x - KRP_midpoint.x
+            pixel_distance_from_KRP_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - KRP_midpoint.y
+
+            button_properties.distance_from_KRP.x = pixel_distance_from_KRP_x * w_coeff
+            button_properties.distance_from_KRP.y= pixel_distance_from_KRP_y * h_coeff
+            print(f"{button_name} distance from KRP is= {button_properties.distance_from_KRP}")
+
+        print("\n--------------------------------------------------------------")
+        print("END: Determining the buttons position in KRP")
+        print("--------------------------------------------------------------\n")
+
+    # ONLY FOR TESTING
+    def __determine_button_pos_compared_to_button0(self, measured_w, measured_h, target_dictionary: dict[str, Button]):
+        print("\n--------------------------------------------------------------")
+        print("BEGIN TEST: Determining the buttons position compared to 0")
+        print("--------------------------------------------------------------\n")
+        buttons_sorted_based_on_x = sorted(self.detected_buttons, key=lambda x: x.midpoint_rel_to_pic.x)
+        upper_left_corner = min(buttons_sorted_based_on_x[:2], key=lambda x: x.midpoint_rel_to_pic.y)
+        lower_left_corner = max(buttons_sorted_based_on_x[:2], key=lambda x: x.midpoint_rel_to_pic.y)
+
+        upper_right_corner = min(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
+        lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
+        print(f"upper_left_corner= {upper_left_corner}, lower_left_corner = {lower_left_corner}, upper_right_corner= {upper_right_corner}, lower_right_corner= {lower_right_corner}")
+
+        w_coeff = measured_w / (upper_right_corner.midpoint_rel_to_pic.x - upper_left_corner.midpoint_rel_to_pic.x)
+        h_coeff = measured_h / (lower_left_corner.midpoint_rel_to_pic.y - upper_left_corner.midpoint_rel_to_pic.y)
+
+        key0 = self.detected_buttons_in_rows[0][0]
+
+        for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
+            pixel_distance_from_key0_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x - key0.midpoint_rel_to_pic.x
+            pixel_distance_from_key0_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - key0.midpoint_rel_to_pic.y
+
+            relative_distance_from_key0_x = pixel_distance_from_key0_x * w_coeff
+            relative_distance_from_key0_y= pixel_distance_from_key0_y * h_coeff
+            print(f"{button_name} distance from key 0 is (x,y)= {relative_distance_from_key0_x} , {relative_distance_from_key0_y} ")
+
+        print("\n--------------------------------------------------------------")
+        print("END TEST: Determining the buttons position compared to 0")
+        print("--------------------------------------------------------------\n")
