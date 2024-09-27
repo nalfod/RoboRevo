@@ -2,6 +2,7 @@ from ultralytics import YOLO
 import os
 import numpy as np
 from enum import Enum
+from pathlib import Path
 
 ##########################
 # BASIC INFRASTRUCTURE
@@ -66,22 +67,22 @@ class detected_button:
     def __init__(self, x_to_pic=0, y_to_pic=0, x_to_keyboard=0, y_to_keyboard=0) -> None:
         # the unit of these two point are pixels!
         self.midpoint_rel_to_pic = Point(x_to_pic, y_to_pic)
-        self.midpoint_rel_to_keybord = Point(x_to_keyboard, y_to_keyboard)
+        self.midpoint_rel_to_keyboard = Point(x_to_keyboard, y_to_keyboard)
 
     def __eq__(self, other):
-        return isinstance(other, Point) and self.midpoint_rel_to_pic == other.midpoint_rel_to_pic and self.midpoint_rel_to_keybord == other.midpoint_rel_to_keybord
+        return isinstance(other, Point) and self.midpoint_rel_to_pic == other.midpoint_rel_to_pic and self.midpoint_rel_to_keyboard == other.midpoint_rel_to_keybord
 
     def __hash__(self):
-        return hash((self.midpoint_rel_to_pic, self.midpoint_rel_to_keybord))
+        return hash((self.midpoint_rel_to_pic, self.midpoint_rel_to_keyboard))
     
     def __str__(self):
         return ( f"     My midpoint relative to the upper left corner of the picture in pixels: {self.midpoint_rel_to_pic}\n"
-                 f"     and relative to the upper left corner of the keyboard in pixels: {self.midpoint_rel_to_keybord}"
+                 f"     and relative to the upper left corner of the keyboard in pixels: {self.midpoint_rel_to_keyboard}"
         )
 
     def __repr__(self):
         return ( f"     My midpoint relative to the upper left corner of the picture in pixels: {self.midpoint_rel_to_pic}\n"
-                 f"     and relative to the upper left corner of the keyboard in pixels: {self.midpoint_rel_to_keybord}"
+                 f"     and relative to the upper left corner of the keyboard in pixels: {self.midpoint_rel_to_keyboard}"
         )
     
 
@@ -134,7 +135,7 @@ class coordinate_transformator:
 ################################
 
 class button_locator:
-    def __init__(self, path_of_pt_file, refs_width_in_mm, refs_height_in_mm):
+    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm):
         self.model = YOLO(path_of_pt_file)
         self.coord_trafo = coordinate_transformator()
 
@@ -147,8 +148,8 @@ class button_locator:
         self.detected_buttons: list[detected_button] = []
         self.detected_buttons_in_rows: list[list[detected_button]] = []
 
-    def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary):
-        self._reset_myself()
+    def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary: dict[str, Button]):
+        self._reset_my_containers()
 
         # 1. using YOLO to detect all the objects (buttons and references) on the captured picture
         results = self.model.predict(image_path, show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
@@ -174,7 +175,7 @@ class button_locator:
         self._determine_button_pos_in_KRP_into_dict(target_dictionary)
 
         # ONLY FOR TESTING:
-        self.__determine_button_pos_compared_to_button0(target_dictionary)
+        self.__determine_button_pos_compared_to_button0(445, 125, target_dictionary)
 
     def _sort_detected_objects_to_lists(self, results):
         print("\n-------------------------------")
@@ -283,10 +284,10 @@ class button_locator:
 
         for i in range( len(self.detected_buttons) ):
             midpoint_compared_to_0 = self.coord_trafo.transform_point(self.detected_buttons[i].midpoint_rel_to_pic.x, self.detected_buttons[i].midpoint_rel_to_pic.y)
-            self.detected_buttons[i].midpoint_rel_to_keybord.x = midpoint_compared_to_0.x
-            self.detected_buttons[i].midpoint_rel_to_keybord.y = midpoint_compared_to_0.y
+            self.detected_buttons[i].midpoint_rel_to_keyboard.x = midpoint_compared_to_0.x
+            self.detected_buttons[i].midpoint_rel_to_keyboard.y = midpoint_compared_to_0.y
 
-            print(f"The midpoint of the {i}. button on the picture= {self.detected_buttons[i].midpoint_rel_to_pic} relativ to upper left ref= {self.detected_buttons[i].midpoint_compared_to_0}")
+            print(f"The midpoint of the {i}. button on the picture= {self.detected_buttons[i].midpoint_rel_to_pic} relativ to upper left ref= {self.detected_buttons[i].midpoint_rel_to_keyboard}")
 
         print("\n--------------------------------------------------------------")
         print("END: Determine button position in keyboard coordinate system")
@@ -296,7 +297,7 @@ class button_locator:
         print("\n--------------------------------------------------------------")
         print("BEGIN: Organizing the detected buttons into rows")
         print("--------------------------------------------------------------\n")
-        self.detected_buttons = sorted(self.detected_buttons, key=lambda x: x.midpoint_rel_to_keybord.y)
+        self.detected_buttons = sorted(self.detected_buttons, key=lambda x: x.midpoint_rel_to_keyboard.y)
 
         for i in range(5):
             self.detected_buttons_in_rows.append(list())
@@ -326,7 +327,7 @@ class button_locator:
         current_row = self.detected_buttons[first_index_of_row_element:last_index_of_row_element+1]
 
         # we sort the row based on midpoint_to0_x, so we got exactly the row order!
-        current_row_sorted = sorted(current_row, key=lambda x: x.midpoint_rel_to_keybord.x)
+        current_row_sorted = sorted(current_row, key=lambda x: x.midpoint_rel_to_keyboard.x)
 
         # fill the results to the target list
         for i in range( len(current_row_sorted) ):
@@ -355,6 +356,15 @@ class button_locator:
         print("END: Determining the buttons position in KRP")
         print("--------------------------------------------------------------\n")
 
+    def _reset_my_containers(self):
+        # Reseting the containers of detected objects
+        self.detected_references: list[Point] = []
+        self.detected_buttons: list[detected_button] = []
+        self.detected_buttons_in_rows: list[list[detected_button]] = []
+
+        # FIXME: probably it is not the most efficient way to clear totally all of the containers at the beginning of every cycle...
+        #        but whatever, it is easier this way :)
+    
     # ONLY FOR TESTING
     def __determine_button_pos_compared_to_button0(self, measured_w, measured_h, target_dictionary: dict[str, Button]):
         print("\n--------------------------------------------------------------")
@@ -384,3 +394,43 @@ class button_locator:
         print("\n--------------------------------------------------------------")
         print("END TEST: Determining the buttons position compared to 0")
         print("--------------------------------------------------------------\n")
+
+
+if __name__ == "__main__":
+    print(os.getcwd())
+    os.chdir(r'C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\URSim_shared\RoboRevo\MachineVision')
+    print(os.getcwd())
+
+    # this dictionary will be on the main level
+    button_collection = {
+        # First row
+        "0": Button(0, 0), "1": Button(1, 0), "2": Button(2, 0), "3": Button(3, 0), "4": Button(4, 0), "5": Button(5, 0),
+        "6": Button(6, 0), "7": Button(7, 0), "8": Button(8, 0), "9": Button(9, 0), "oe": Button(10, 0), "ue": Button(11, 0), "oo": Button(12, 0),
+        "Backspace": Button(13, 0), "Insert": Button(14, 0), "Home": Button(15, 0), "PageUp": Button(16, 0), "NumLock": Button(17, 0),
+        "NumpadDivide": Button(18, 0), "NumpadMultiply": Button(19, 0), "NumpadSubtract": Button(20, 0),
+        # Second row
+        "Tab": Button(0, 1), "q": Button(1, 1), "w": Button(2, 1), "e": Button(3, 1), "r": Button(4, 1), "t": Button(5, 1), "z": Button(6, 1),
+        "u": Button(7, 1), "i": Button(8, 1), "o": Button(9, 1), "p": Button(10, 1), "oee": Button(11, 1), "uu": Button(12, 1), "Enter": Button(13, 1),
+        "Delete": Button(14, 1), "End": Button(15, 1), "PageDown": Button(16, 1), "Numpad7": Button(17, 1), "Numpad8": Button(18, 1), "Numpad9": Button(19, 1), 
+        "NumpadAdd": Button(20, 1),
+        # Third row
+        "CapsLock": Button(0, 2), "a": Button(1, 2), "s": Button(2, 2), "d": Button(3, 2), "f": Button(4, 2), "g": Button(5, 2), "h": Button(6, 2),
+        "j": Button(7, 2), "k": Button(8, 2), "l": Button(9, 2), "ae": Button(10, 2), "aa": Button(11, 2), "uee": Button(12, 2), "Numpad4": Button(13, 2),
+        "Numpad5": Button(14, 2), "Numpad6": Button(15, 2),
+        # Fourth row
+        "Shift": Button(0, 3), "ii": Button(1, 3), "y": Button(2, 3), "x": Button(3, 3), "c": Button(4, 3), "v": Button(5, 3), "b": Button(6, 3),
+        "n": Button(7, 3), "m": Button(8, 3), ",": Button(9, 3), ".": Button(10, 3), "-": Button(11, 3), "ShiftR": Button(12, 3), "ArrowUp": Button(13, 3),
+        "Numpad1": Button(14, 3), "Numpad2": Button(15, 3), "Numpad3": Button(16, 3), "NumpadEnter": Button(17, 3),
+        # Fifth row
+        "Control": Button(0, 4), "Windows": Button(1, 4), "Alt": Button(2, 4), "Space": Button(3, 4), "AltGr": Button(4, 4), "fn": Button(5, 4), "ControlR": Button(6, 4),
+        "ArrowLeft": Button(7, 4), "ArrowDown": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
+    }
+
+    path_of_neural_network = Path("neural_networks/best3_0_small_epoch40.pt")
+    path_of_image = Path(r"C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\IMG_4223.jpg")
+
+    print(f"Path of the neural network= {path_of_neural_network}")
+    button_locator = button_locator(path_of_neural_network, 500, 300)
+
+    print(f"Path of the image= {path_of_image}")
+    button_locator.determine_buttons_position_in_TCP_system(path_of_image, button_collection)
