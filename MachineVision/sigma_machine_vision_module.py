@@ -135,7 +135,7 @@ class coordinate_transformator:
 ################################
 
 class button_locator:
-    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm):
+    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm, verbose_mode = False, test_mode = False):
         self.model = YOLO(path_of_pt_file)
         self.coord_trafo = coordinate_transformator()
 
@@ -147,6 +147,10 @@ class button_locator:
         self.detected_references: list[Point] = []
         self.detected_buttons: list[detected_button] = []
         self.detected_buttons_in_rows: list[list[detected_button]] = []
+
+        self.verbose_mode = verbose_mode
+        # In this mode the distance to KRP is not determined, but the relative distance to key0 in mm and it is printed out
+        self.test_mode = test_mode
 
     def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary: dict[str, Button]):
         self._reset_my_containers()
@@ -172,15 +176,16 @@ class button_locator:
         # 6. The target dictionary should contains the relative positions of the buttons to eachother. Based on that we can determine
         #    the position of every button compared to the KRP (which is the left reference cross)
         #    eg.: button s is (120, 80) mm in KRP system
-        self._determine_button_pos_in_KRP_into_dict(target_dictionary)
-
-        # ONLY FOR TESTING:
-        self.__determine_button_pos_compared_to_button0(445, 125, target_dictionary)
+        if not self.test_mode:
+            self._determine_button_pos_in_KRP_into_dict(target_dictionary)
+        else:
+            self.__determine_button_pos_compared_to_button0(445, 125, target_dictionary)
 
     def _sort_detected_objects_to_lists(self, results):
-        print("\n-------------------------------")
-        print("BEGIN: Sorting detected objects")
-        print("-------------------------------\n")
+        if self.verbose_mode:
+            print("\n-------------------------------")
+            print("BEGIN: Sorting detected objects")
+            print("-------------------------------\n")
         for i in range(len(results[0].boxes)):
             objname = results[0].names[int(results[0].boxes.cls[i])]
             confid = results[0].boxes.cpu().numpy().conf[i]
@@ -189,7 +194,9 @@ class button_locator:
             # position in YOLO format (top-left, bottom-right)
             # more position format: xywh,xywhn; xyxy,xyxyn; I think "n" means normalized
             # check the pixel coordinates with openning of the image in paint
-            print(f"{objname} {confid:.2f} position: {midpoint}")
+            if self.verbose_mode:
+                print(f"{objname} {confid:.2f} position: {midpoint}")
+
             if objname == "button":
                 self.detected_buttons.append( detected_button(midpoint.x, midpoint.y))
             elif objname == "ref":
@@ -203,19 +210,21 @@ class button_locator:
             print(f"There should be 2 references, instead we have {len(self.detected_references)}")
             # TODO: throw an exception here and catch it in the main block
         else:
-            print("---------- REFS ----------")
-            for i in range( len(self.detected_references) ):
-                print(f"The midpoint of the {i}. ref is {self.detected_references[i]}")
+            if self.verbose_mode:
+                print("---------- REFS ----------")
+                for i in range( len(self.detected_references) ):
+                    print(f"The midpoint of the {i}. ref is {self.detected_references[i]}")
 
-            print("")
+                print("")
 
-            print("---------- BUTTONS ----------")
-            for i in range( len(self.detected_buttons) ):
-                print(f"The midpoint of the {i}. button is {self.detected_buttons[i]}")
+                print("---------- BUTTONS ----------")
+                for i in range( len(self.detected_buttons) ):
+                    print(f"The midpoint of the {i}. button is {self.detected_buttons[i]}")
 
-        print("\n-------------------------------")
-        print("END: Sorting detected objects")
-        print("-------------------------------\n")
+        if self.verbose_mode:
+            print("\n-------------------------------")
+            print("END: Sorting detected objects")
+            print("-------------------------------\n")
 
     def _convert_box_corners_to_midpoint(self, detected_box_corners) -> Point:
         #print(f"The corners in yolo format= {yolo_result}")
@@ -230,9 +239,10 @@ class button_locator:
         return midpoint
     
     def _refresh_coordinate_transformator(self) -> None:
-        print("\n-------------------------------")
-        print("BEGIN: Refresh the coordinate transformator")
-        print("-------------------------------\n")
+        if self.verbose_mode:
+            print("\n-------------------------------")
+            print("BEGIN: Refresh the coordinate transformator")
+            print("-------------------------------\n")
         # FIXME: for this method, keyboard should be quite horizontal. Insted this, implement the following solution:
         #        determine the distance in case of every button pairs, and the four ref points will be the ones 
         #        which belongs to the two longest distances
@@ -245,16 +255,19 @@ class button_locator:
 
         upper_right_corner = min(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
         lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
-        print(f"upper_left_corner= {upper_left_corner}, lower_left_corner = {lower_left_corner}, upper_right_corner= {upper_right_corner}, lower_right_corner= {lower_right_corner}")
+        if self.verbose_mode:
+            print(f"upper_left_corner= {upper_left_corner}, lower_left_corner = {lower_left_corner}, upper_right_corner= {upper_right_corner}, lower_right_corner= {lower_right_corner}")
 
         orientation = KeyboardOrientation.A
 
         # Note: in the pixel coordinate system, the origo is the upper left corner!!
         if upper_right_corner.midpoint_rel_to_pic.y > upper_left_corner.midpoint_rel_to_pic.y:
-            print("Case A, so left ctrl is the lowest key!")
+            if self.verbose_mode:
+                print("Case A, so left ctrl is the lowest key!")
             orientation = KeyboardOrientation.A
         elif upper_right_corner.midpoint_rel_to_pic.y < upper_left_corner.midpoint_rel_to_pic.y:
-            print("Case B, so numpad enter is the lowest key!")
+            if self.verbose_mode:
+                print("Case B, so numpad enter is the lowest key!")
             orientation = KeyboardOrientation.B
         else:
             print("Exactly horizontal???? No way.... :)")
@@ -268,35 +281,42 @@ class button_locator:
 
         t = np.array([upper_left_corner.midpoint_rel_to_pic.x, upper_left_corner.midpoint_rel_to_pic.y])
 
-        print(f"The rotational angle is= {theta_rad}")
-        print(f"The translation is= {t}")
+        if self.verbose_mode:
+            print(f"The rotational angle is= {theta_rad}")
+            print(f"The translation is= {t}")
 
         self.coord_trafo.set_rotation_matrix(theta_rad)
         self.coord_trafo.set_translation_vector(t[0], t[1])
-        print("\n-------------------------------")
-        print("END: Refresh the coordinate transformator")
-        print("-------------------------------\n")
+
+        if self.verbose_mode:
+            print("\n-------------------------------")
+            print("END: Refresh the coordinate transformator")
+            print("-------------------------------\n")
 
     def _determine_button_coordinates_relative_to_keyboard(self):
-        print("\n--------------------------------------------------------------")
-        print("BEGIN: Determine button position in keyboard coordinate system")
-        print("--------------------------------------------------------------\n")
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("BEGIN: Determine button position in keyboard coordinate system")
+            print("--------------------------------------------------------------\n")
 
         for i in range( len(self.detected_buttons) ):
             midpoint_compared_to_0 = self.coord_trafo.transform_point(self.detected_buttons[i].midpoint_rel_to_pic.x, self.detected_buttons[i].midpoint_rel_to_pic.y)
             self.detected_buttons[i].midpoint_rel_to_keyboard.x = midpoint_compared_to_0.x
             self.detected_buttons[i].midpoint_rel_to_keyboard.y = midpoint_compared_to_0.y
 
-            print(f"The midpoint of the {i}. button on the picture= {self.detected_buttons[i].midpoint_rel_to_pic} relativ to upper left ref= {self.detected_buttons[i].midpoint_rel_to_keyboard}")
+            if self.verbose_mode:
+                print(f"The midpoint of the {i}. button on the picture= {self.detected_buttons[i].midpoint_rel_to_pic} relativ to upper left ref= {self.detected_buttons[i].midpoint_rel_to_keyboard}")
 
-        print("\n--------------------------------------------------------------")
-        print("END: Determine button position in keyboard coordinate system")
-        print("--------------------------------------------------------------\n")
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("END: Determine button position in keyboard coordinate system")
+            print("--------------------------------------------------------------\n")
 
     def _organize_detected_to_buttons_into_rows(self):
-        print("\n--------------------------------------------------------------")
-        print("BEGIN: Organizing the detected buttons into rows")
-        print("--------------------------------------------------------------\n")
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("BEGIN: Organizing the detected buttons into rows")
+            print("--------------------------------------------------------------\n")
         self.detected_buttons = sorted(self.detected_buttons, key=lambda x: x.midpoint_rel_to_keyboard.y)
 
         for i in range(5):
@@ -314,14 +334,16 @@ class button_locator:
         # 12 elements in the fifth row
         self._determine_one_row_based_on_indexes(78, 89, self.detected_buttons_in_rows[4])
 
-        for i in range( len(self.detected_buttons_in_rows) ):
-            print(f"---------- ROW {i}.----------")
-            for j in range( len(self.detected_buttons_in_rows[i]) ):
-                print(self.detected_buttons_in_rows[i][j])
+        if self.verbose_mode:
+            for i in range( len(self.detected_buttons_in_rows) ):
+                print(f"---------- ROW {i}.----------")
+                for j in range( len(self.detected_buttons_in_rows[i]) ):
+                    print(self.detected_buttons_in_rows[i][j])
 
-        print("\n--------------------------------------------------------------")
-        print("END: Organizing the detected buttons into rows")
-        print("--------------------------------------------------------------\n")
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("END: Organizing the detected buttons into rows")
+            print("--------------------------------------------------------------\n")
 
     def _determine_one_row_based_on_indexes(self, first_index_of_row_element, last_index_of_row_element, empty_target_list):
         current_row = self.detected_buttons[first_index_of_row_element:last_index_of_row_element+1]
@@ -334,9 +356,10 @@ class button_locator:
             empty_target_list.append(current_row_sorted[i])
 
     def _determine_button_pos_in_KRP_into_dict(self, target_dictionary: dict[str, Button]):
-        print("\n--------------------------------------------------------------")
-        print("BEGIN: Determining the buttons position in KRP")
-        print("--------------------------------------------------------------\n")
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("BEGIN: Determining the buttons position in KRP")
+            print("--------------------------------------------------------------\n")
         # calculating the ratios
         w_coeff = self.refs_width_in_mm / abs(self.detected_references[0].x - self.detected_references[1].x)
         h_coeff = self.refs_height_in_mm / abs(self.detected_references[0].y - self.detected_references[1].y)
@@ -350,11 +373,14 @@ class button_locator:
 
             button_properties.distance_from_KRP.x = pixel_distance_from_KRP_x * w_coeff
             button_properties.distance_from_KRP.y= pixel_distance_from_KRP_y * h_coeff
-            print(f"{button_name} distance from KRP is= {button_properties.distance_from_KRP}")
 
-        print("\n--------------------------------------------------------------")
-        print("END: Determining the buttons position in KRP")
-        print("--------------------------------------------------------------\n")
+            if self.verbose_mode:
+                print(f"{button_name} distance from KRP is= {button_properties.distance_from_KRP}")
+
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("END: Determining the buttons position in KRP")
+            print("--------------------------------------------------------------\n")
 
     def _reset_my_containers(self):
         # Reseting the containers of detected objects
@@ -376,7 +402,8 @@ class button_locator:
 
         upper_right_corner = min(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
         lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
-        print(f"upper_left_corner= {upper_left_corner}, lower_left_corner = {lower_left_corner}, upper_right_corner= {upper_right_corner}, lower_right_corner= {lower_right_corner}")
+        if self.verbose_mode:
+            print(f"upper_left_corner= {upper_left_corner}, \nlower_left_corner = {lower_left_corner}, \nupper_right_corner= {upper_right_corner}, \nlower_right_corner= {lower_right_corner}")
 
         w_coeff = measured_w / (upper_right_corner.midpoint_rel_to_pic.x - upper_left_corner.midpoint_rel_to_pic.x)
         h_coeff = measured_h / (lower_left_corner.midpoint_rel_to_pic.y - upper_left_corner.midpoint_rel_to_pic.y)
@@ -389,7 +416,10 @@ class button_locator:
 
             relative_distance_from_key0_x = pixel_distance_from_key0_x * w_coeff
             relative_distance_from_key0_y= pixel_distance_from_key0_y * h_coeff
-            print(f"{button_name} distance from key 0 is (x,y)= {relative_distance_from_key0_x} , {relative_distance_from_key0_y} ")
+            if self.verbose_mode:
+                print(f"{button_name} distance from key 0 is (x,y)= {relative_distance_from_key0_x} , {relative_distance_from_key0_y} ")
+            else:
+                print(f"{button_name} {relative_distance_from_key0_x} {relative_distance_from_key0_y}")
 
         print("\n--------------------------------------------------------------")
         print("END TEST: Determining the buttons position compared to 0")
@@ -427,10 +457,14 @@ if __name__ == "__main__":
     }
 
     path_of_neural_network = Path("neural_networks/best3_0_small_epoch40.pt")
-    path_of_image = Path(r"C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\INPUTS\ObjectDetection_input\Images\v3\raw_images3\to_test\IMG_4223.jpg")
+    path_of_image1 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4223.jpg")
+    path_of_image2 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4224.jpg")
+    path_of_image3 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/3.jpg")
+    path_of_image4 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/4.jpg")
 
-    print(f"Path of the neural network= {path_of_neural_network}")
-    button_locator = button_locator(path_of_neural_network, 500, 300)
+    button_locator = button_locator(path_of_neural_network, 500, 300, False, True)
 
-    print(f"Path of the image= {path_of_image}")
-    button_locator.determine_buttons_position_in_TCP_system(path_of_image, button_collection)
+    button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
+    button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
+    button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
+    button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
