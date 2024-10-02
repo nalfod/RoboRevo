@@ -6,10 +6,13 @@ import time
 from enum import Enum
 import copy
 
-sys.path.append("..")
-
-import rtde.rtde as rtde
-import rtde.rtde_config as rtde_config
+if __name__ == "__main__":
+    sys.path.append("..")
+    from rtde import rtde as rtde
+    from rtde import rtde_config as rtde_config
+else:
+    from ..rtde import rtde as rtde
+    from ..rtde import rtde_config as rtde_config
 
 class CommandType(Enum):
     IDLE = 0

@@ -30,7 +30,7 @@ import logging
 if sys.version_info[0] < 3:
     import serialize
 else:
-    from rtde import serialize
+    from . import serialize
 
 DEFAULT_TIMEOUT = 1.0
 
