@@ -17,13 +17,14 @@ class CommandType(Enum):
     TOUCH_KRP = 2
     MOVE_GENERAL = 3
     PUSH_BUTTON_AT = 4
+    CAMERA = 5
 
 class UR3:
-    def __init__(self, KRP, camera_pos_in_joints):
+    def __init__(self, KRP, camera_pos):
         # the keyboard reference point in the base coordinate system of the robot, has to be measured by the robot before startup!s
         self.KRP = KRP
         self.home_pos_of_joints = [ math.radians(90), math.radians(-90), math.radians(65), math.radians(-65), math.radians(-90), math.radians(0)  ]
-        self.camera_pos_in_joints = camera_pos_in_joints
+        self.camera_pos_in_TCP = camera_pos
 
         self.command_type = CommandType.IDLE
         self.next_position_TCP = []
@@ -103,6 +104,10 @@ class UR3:
                 print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
                 self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
                 self._move_position_push_button()
+                self.command_type = CommandType.IDLE
+            elif self.command_type == CommandType.CAMERA:
+                print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
+                self._move_robot("TCP", [self.camera_pos_in_TCP[0], self.camera_pos_in_TCP[1], self.camera_pos_in_TCP[2]] + [None, None, None])
                 self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
@@ -310,7 +315,7 @@ def get_user_input(input_list, new_data):
         # Read three numbers from the user
         numbers = input("Enter the three coordinates relative to KRP: ").split()
         
-        if len(numbers) == 3 and all(n.isdigit() for n in numbers):
+        if len(numbers) == 3 and all(n.lstrip('-').isdigit() for n in numbers):
             # Update the list with new numbers
             input_list.clear()
             input_list.extend(map(int, numbers))
@@ -340,6 +345,10 @@ if __name__ == "__main__":
     robot.set_command_state(CommandType.TOUCH_KRP)
     while robot.command_type != CommandType.IDLE:
         pass
+
+    robot.set_command_state(CommandType.CAMERA)
+    while robot.command_type != CommandType.IDLE:
+        pass
     
 
     input_list = []
@@ -350,13 +359,11 @@ if __name__ == "__main__":
     input_thread.daemon = True
     input_thread.start()
 
-
-
     # Start the main loop
     while True:
-        if new_data[0] == 1:
+        if new_data[0] == 1 and robot.command_type == CommandType.IDLE:
             robot.set_next_position_TCP(input_list)
             robot.set_command_state(CommandType.PUSH_BUTTON_AT)
-
-        new_data[0] = 0
+            new_data[0] = 0
+        
         
