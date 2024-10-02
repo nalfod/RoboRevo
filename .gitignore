@@ -2,3 +2,4 @@
 
 MachineVision/runs/
 venv/
+MachineVision/*.png
