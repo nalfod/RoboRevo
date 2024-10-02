@@ -17,7 +17,7 @@ coder -> main: source code as plain text
 main -> yolo: Instantiate with:\n-pre-trained model\n-pre-measured w_real\n-pre-measured h_real
 activate yolo
 
-main -> ur3: Instantiate with:\n-pre-measured KRP
+main -> ur3: Instantiate with:\n-pre-measured KRP\n-pre-measured camera_position
 activate ur3
 
 main -> camera: Instantiate with: ?TBD?
@@ -29,7 +29,7 @@ main -> user: asks to start UR3 script
 
 'From now on, it is a loop
 loop while there is letter in the soruce code
-    main -> ur3: send to camera position
+    main -> ur3: set command state to camera position
     ur3 -> main: signal when camera position reached
 
     main -> camera: asks for a picture
@@ -40,7 +40,7 @@ loop while there is letter in the soruce code
 
     main -> main: next letter
 
-    main -> ur3: send new button to press respected to KRP
+    main -> ur3: set command state to button push
     ur3 -> main: signal that button is pressed
 end
 

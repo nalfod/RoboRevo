@@ -3,20 +3,32 @@ import math
 import threading
 import socket
 import time
+from enum import Enum
+import copy
 
 sys.path.append("..")
-# import logging
 
 import rtde.rtde as rtde
 import rtde.rtde_config as rtde_config
 
+class CommandType(Enum):
+    IDLE = 0
+    HOME = 1
+    TOUCH_KRP = 2
+    MOVE_GENERAL = 3
+    PUSH_BUTTON_AT = 4
+    CAMERA = 5
+
 class UR3:
-    def __init__(self, KRP):
-        # the keyboard reference point in the base coordinate system of the robot
-        # TODO: note, that KRP is 3 dimensions now, but it has to be four! The keyboard is not strictly alligned with the robot's coordinate system
-        #       Z axis should be parallel, but the other two can deviate!! FIXME
+    def __init__(self, KRP, camera_pos):
+        # the keyboard reference point in the base coordinate system of the robot, has to be measured by the robot before startup!s
         self.KRP = KRP
         self.home_pos_of_joints = [ math.radians(90), math.radians(-90), math.radians(65), math.radians(-65), math.radians(-90), math.radians(0)  ]
+        self.camera_pos_in_TCP = camera_pos
+
+        self.command_type = CommandType.IDLE
+        self.next_position_TCP = []
+        self.next_position_joint = []
 
         self.ROBOT_HOST = "192.168.56.101"
         self.ROBOT_PORT = 30004
@@ -27,7 +39,6 @@ class UR3:
         setp_names, setp_types = self.conf.get_recipe("setp")
         mode_names, mode_types = self.conf.get_recipe("mode")
         watchdog_names, watchdog_types = self.conf.get_recipe("watchdog")
-        #pushbutton_names, pushbutton_types = self.conf.get_recipe("pushbutton")
 
         self.con = rtde.RTDE(self.ROBOT_HOST, self.ROBOT_PORT)
         print("----------------------------------------------\n")
@@ -37,12 +48,10 @@ class UR3:
         print("\n----------------------------------------------\n\n")
 
         # setup recipes
-        # TODO: revise, which member variable can be a stack variable!! and change them
         self.con.send_output_setup(state_names, state_types)
         self.setp = self.con.send_input_setup(setp_names, setp_types)
         self.mode = self.con.send_input_setup(mode_names, mode_types)
         self.watchdog = self.con.send_input_setup(watchdog_names, watchdog_types)
-        #self.pushbutton = self.con.send_input_setup(pushbutton_names, pushbutton_types)
 
         # setpoints
         self.setp.input_double_register_0 = 0
@@ -65,82 +74,62 @@ class UR3:
         self.move_completed = True
         self.con.send(self.watchdog)
 
-    # static function that converts a dict to a list
-    @staticmethod
-    def setp_to_list(sp):
-        sp_list = []
-        for i in range(0, 6):
-            sp_list.append(sp.__dict__["input_double_register_%i" % i])
-        return sp_list
+    def set_command_state(self, new_command_state: CommandType):
+        self.command_type = new_command_state
 
+    def set_next_position_TCP(self, new_position: list):
+        self.next_position_TCP = copy.deepcopy(new_position)
 
-    # static function that converts a list to dict
-    @staticmethod
-    def list_to_setp(sp, list):
-        for i in range(0, 6):
-            sp.__dict__["input_double_register_%i" % i] = list[i]
-        return sp
-    
-    @staticmethod
-    def print_position_from_list(position, type_of_movement):
-        for i in range(0, 6):
-            if type_of_movement == "joint":
-                print("     My " + str(i) + ". value is= " + str(round(math.degrees(round(position[i], 2)), 2)) + " deg" )
-            else:
-                print("     My " + str(i) + ". value is= " + str( round(position[i] * 1000, 2) ) + " mm")
+    def set_next_position_joint(self, new_position: list):
+        self.next_position_joint = copy.deepcopy(new_position)
 
-    def send_movement_mode_to_robot(self):
+    def main_loop(self):
         while True:
-            self.con.send(self.mode)
-            time.sleep(5/1000)
-            state = self.con.receive()
+            if self.command_type == CommandType.IDLE:
+                self.con.send(self.watchdog)
+            elif self.command_type == CommandType.HOME:
+                print("Send the robot home")
+                self._move_to_home()
+                self.command_type = CommandType.IDLE
+            elif self.command_type == CommandType.TOUCH_KRP:
+                print("Touching KRP")
+                self._touch_KRP()
+                self.command_type = CommandType.IDLE
+            elif self.command_type == CommandType.MOVE_GENERAL:
+                # TODO: make this work if it is needed
+                print("Move general, not implemented yet....")
+                #self.move_robot(....)
+                self.command_type = CommandType.IDLE
+            elif self.command_type == CommandType.PUSH_BUTTON_AT:
+                print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
+                self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
+                self._move_position_push_button()
+                self.command_type = CommandType.IDLE
+            elif self.command_type == CommandType.CAMERA:
+                print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
+                self._move_robot("TCP", [self.camera_pos_in_TCP[0], self.camera_pos_in_TCP[1], self.camera_pos_in_TCP[2]] + [None, None, None])
+                self.command_type = CommandType.IDLE
 
-            target_value = self.mode.input_int_register_1
-            actual_value = state.input_int_register_1
+    def _move_to_home(self):
+        robot._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
+        robot._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
+        robot._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ])
+        robot._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
+        robot._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
+        robot._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
 
-            if target_value == actual_value:
-                break
-            else:
-                # print("Target value is= " + str(target_value) + " but input_int_register_1 is= " + str(actual_value) )
-                pass
+    def _touch_KRP(self):
+        state = self.con.receive()
+        if state is None:
+            print("Recieved state is None, aborting method...")
+            return
+        # a position to return
+        current_position = state.actual_TCP_pose
+        robot._move_robot("TCP", self.KRP + [None, None, None])
+        robot._move_robot("TCP", current_position)
 
-    def send_sync_flag_to_robot(self):
-        while True:
-            self.con.send(self.watchdog)
-            time.sleep(5/1000)
-            state = self.con.receive()
-
-            target_value = self.watchdog.input_int_register_0
-            actual_value = state.input_int_register_0
-
-            if target_value == actual_value:
-                break
-            else:
-                # print("Target value is= " + str(target_value) + " but input_int_register_0 is= " + str(actual_value) )
-                pass
-
-    def send_setp_to_robot(self):
-        while True:
-            self.con.send(self.setp)
-            time.sleep(5/1000)
-            state = self.con.receive()
-
-            register_has_been_updated = True
-            
-            for i in range(0, 6):
-                target_value = self.setp.__dict__["input_double_register_%i" % i]
-                actual_value = state.__dict__["input_double_register_%i" % i]
-                if round(target_value, 3) != round(actual_value, 3):
-                    # print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
-                    register_has_been_updated = False
-                    break
-
-
-            if register_has_been_updated:
-                break
-                
-
-    def move_robot(self, type_of_movement, list_of_sp):
+    # Move the robot to a given coordinate in TCP coordinate system or based on the joint positions
+    def _move_robot(self, type_of_movement, list_of_sp):
         print( "*****BEGIN - move_robot *****")
         print("My type of movement is= " + str(type_of_movement) + " My position is= " + str(list_of_sp) )
         if type_of_movement != "joint" and type_of_movement != "TCP":
@@ -180,19 +169,19 @@ class UR3:
                 UR3.print_position_from_list(target_position_list, type_of_movement)
                 UR3.list_to_setp(self.setp, target_position_list)
 
-                # changing the mode
-                self.send_movement_mode_to_robot()
+                # changing the movement mode
+                self._send_movement_mode_to_robot()
                 # sending new setpoint!
-                self.send_setp_to_robot()
+                self._send_setp_to_robot()
 
                 # input_int_register_0 == 1 --> new command is sent!
                 self.watchdog.input_int_register_0 = 1
-                self.send_sync_flag_to_robot()
+                self._send_sync_flag_to_robot()
  
             elif not self.move_completed and state.output_int_register_0 == 0:
                 self.move_completed = True
                 self.watchdog.input_int_register_0 = 0
-                self.send_sync_flag_to_robot()
+                self._send_sync_flag_to_robot()
                 print("I finished the movement, and currently in= ")            
                 if type_of_movement == "joint":
                     UR3.print_position_from_list(state.actual_q, type_of_movement)
@@ -204,7 +193,7 @@ class UR3:
             # kick watchdog
             self.con.send(self.watchdog)
 
-    def push_button(self, button_is_pushed):
+    def _push_button(self):
         print( "*****BEGIN - push_button *****")
         self.move_completed = True
 
@@ -213,10 +202,6 @@ class UR3:
             if state is None:
                 print("Recieved state is None, aborting method...")
                 break
-
-            # if button_is_pushed[0] == 1:
-                # self.pushbutton.standard_digital_output_0 = 1
-                # button_is_pushed[0] = 0
 
             if self.move_completed and state.output_int_register_0 == 1:
                 # output_int_register_0 == 1 --> robot ready to recieve a new command
@@ -228,59 +213,100 @@ class UR3:
                 print("I am currently in the following TCP positions: ")
                 UR3.print_position_from_list(state.actual_TCP_pose, "TCP")
 
-                # changing the mode
-                self.send_movement_mode_to_robot()
+                # changing the movement mode
+                self._send_movement_mode_to_robot()
 
                 # input_int_register_0 == 1 --> new command is sent!
                 self.watchdog.input_int_register_0 = 1
-                self.send_sync_flag_to_robot()
+                self._send_sync_flag_to_robot()
  
             elif not self.move_completed and state.output_int_register_0 == 0:
                 self.move_completed = True
                 self.watchdog.input_int_register_0 = 0
-                #self.pushbutton.standard_digital_output_0 = 0
-                self.send_sync_flag_to_robot()
-                #self.con.send(self.pushbutton)
+                self._send_sync_flag_to_robot()
                 print("*****END\n")
                 return
 
             # kick watchdog
             self.con.send(self.watchdog)
 
-    def home(self):
-        robot.move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
-        robot.move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
-        robot.move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ])
-        robot.move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
-        robot.move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
-        robot.move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
+    def _move_position_push_button(self):
+        print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
+        self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
+        self._push_button()
 
-    def touch_KRP(self):
-        state = self.con.receive()
-        if state is None:
-            print("Recieved state is None, aborting method...")
-            return
-        # a position to return
-        current_position = state.actual_TCP_pose
-        robot.move_robot("TCP", self.KRP + [None, None, None])
-        robot.move_robot("TCP", current_position)
+    # static function that converts a dict to a list
+    @staticmethod
+    def setp_to_list(sp):
+        sp_list = []
+        for i in range(0, 6):
+            sp_list.append(sp.__dict__["input_double_register_%i" % i])
+        return sp_list
 
-    def init_myself(self):
-        self.home()
-        self.touch_KRP()
 
-    # NOTE: this is only for testing!!! final version may be more sofisticated...
-    def main_loop(self, input_list, new_data, button_is_pushed):
-        while True:
-            # Do something with the input_list
-            if new_data[0] == 1:
-                print("Moving to position= " + str(input_list) + " and pushing a button")
-                robot.move_robot("TCP", [input_list[0] + self.KRP[0], input_list[1] + self.KRP[1], input_list[2] + self.KRP[2]] + [None, None, None])
-                robot.push_button(button_is_pushed)
-                new_data[0] = 0
+    # static function that converts a list to dict
+    @staticmethod
+    def list_to_setp(sp, list):
+        for i in range(0, 6):
+            sp.__dict__["input_double_register_%i" % i] = list[i]
+        return sp
+    
+    @staticmethod
+    def print_position_from_list(position, type_of_movement):
+        for i in range(0, 6):
+            if type_of_movement == "joint":
+                print("     My " + str(i) + ". value is= " + str(round(math.degrees(round(position[i], 2)), 2)) + " deg" )
             else:
-                # kick watchdog
-                self.con.send(self.watchdog)
+                print("     My " + str(i) + ". value is= " + str( round(position[i] * 1000, 2) ) + " mm")
+
+    def _send_movement_mode_to_robot(self):
+        while True:
+            self.con.send(self.mode)
+            time.sleep(5/1000)
+            state = self.con.receive()
+
+            target_value = self.mode.input_int_register_1
+            actual_value = state.input_int_register_1
+
+            if target_value == actual_value:
+                break
+            else:
+                # print("Target value is= " + str(target_value) + " but input_int_register_1 is= " + str(actual_value) )
+                pass
+
+    def _send_sync_flag_to_robot(self):
+        while True:
+            self.con.send(self.watchdog)
+            time.sleep(5/1000)
+            state = self.con.receive()
+
+            target_value = self.watchdog.input_int_register_0
+            actual_value = state.input_int_register_0
+
+            if target_value == actual_value:
+                break
+            else:
+                # print("Target value is= " + str(target_value) + " but input_int_register_0 is= " + str(actual_value) )
+                pass
+
+    def _send_setp_to_robot(self):
+        while True:
+            self.con.send(self.setp)
+            time.sleep(5/1000)
+            state = self.con.receive()
+
+            register_has_been_updated = True
+            
+            for i in range(0, 6):
+                target_value = self.setp.__dict__["input_double_register_%i" % i]
+                actual_value = state.__dict__["input_double_register_%i" % i]
+                if round(target_value, 3) != round(actual_value, 3):
+                    # print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
+                    register_has_been_updated = False
+                    break
+
+            if register_has_been_updated:
+                break
 
 
 # Note: this function emulates the input point of the robot program
@@ -289,7 +315,7 @@ def get_user_input(input_list, new_data):
         # Read three numbers from the user
         numbers = input("Enter the three coordinates relative to KRP: ").split()
         
-        if len(numbers) == 3 and all(n.isdigit() for n in numbers):
+        if len(numbers) == 3 and all(n.lstrip('-').isdigit() for n in numbers):
             # Update the list with new numbers
             input_list.clear()
             input_list.extend(map(int, numbers))
@@ -298,32 +324,6 @@ def get_user_input(input_list, new_data):
             new_data[0] = 1
         else:
             print("Please enter exactly three numbers.")
-
-# Note: this function should be replaced to one which listens on the serial part for arduino
-def create_server_to_listen_pushbutton(button_is_pushed):
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', 12345))  # Bind to localhost on port 12345
-    server_socket.listen(1)  # Allow only one connection at a time
-
-    print("Server is listening for incoming connections...")
-
-    # Accept the connection
-    conn, addr = server_socket.accept()
-    # print(f"Connected by {addr}")
-
-    while True:
-        data = conn.recv(1024)  # Receive up to 1024 bytes of data
-        if not data:
-            break
-        #print(f"Received from client: {data.decode()}")
-
-        button_is_pushed[0] = 1
-        # Echo the received message back to the client
-        conn.sendall("Got it.".encode())
-
-    conn.close()
-    server_socket.close()
-
     
 
 if __name__ == "__main__":
@@ -332,17 +332,27 @@ if __name__ == "__main__":
     # KRP = [115/1000, -420/1000, 25/1000] # first working version in real life
     # KRP = [363/1000, -223/1000, 3/1000] # This is how it will probably look like in final version
     camera_position = [100/1000, -340/1000, 200/1000]
-    robot = UR3(KRP)
-    robot.init_myself()
+    robot = UR3(KRP, camera_position)
+    # Start the robot thread
+    robot_thread = threading.Thread(target=robot.main_loop, args=())
+    robot_thread.daemon = True
+    robot_thread.start()
+
+    robot.set_command_state(CommandType.HOME)
+    while robot.command_type != CommandType.IDLE:
+        pass
+    
+    robot.set_command_state(CommandType.TOUCH_KRP)
+    while robot.command_type != CommandType.IDLE:
+        pass
+
+    robot.set_command_state(CommandType.CAMERA)
+    while robot.command_type != CommandType.IDLE:
+        pass
+    
 
     input_list = []
     new_data = [0]
-    button_is_pushed = [0]
-
-    # Start the server side
-    # server_thread = threading.Thread(target=create_server_to_listen_pushbutton, args=(button_is_pushed,))
-    # server_thread.daemon = True
-    # server_thread.start()
 
     # Start a thread to get user input
     input_thread = threading.Thread(target=get_user_input, args=(input_list, new_data,))
@@ -350,24 +360,10 @@ if __name__ == "__main__":
     input_thread.start()
 
     # Start the main loop
-    robot.main_loop(input_list, new_data, button_is_pushed)
-
-
-    #robot.move_robot("joint", [ math.radians(-90), None, None, None, None, None ])
-    #robot.move_robot("joint", [ None, math.radians(-90), None, None, None, None ])
-    #robot.move_robot("joint", [ None, None, math.radians(-130), None, None, None ])
-    #robot.move_robot("joint", [ None, None, None, math.radians(-50), None, None ])
-    #robot.move_robot("joint", [ None, None, None, None, math.radians(90), None ])
-    #robot.move_robot("joint", [ None, None, None, None, None, math.radians(0) ])
-
-    #robot.move_robot("joint", [ 0, 0, 0, 0, 0, 0 ])
-    #robot.move_robot("joint", [ math.radians(-90), math.radians(-90), math.radians(-130), math.radians(-50), math.radians(90), math.radians(0)  ])
-    #robot.move_robot("TCP", [ None, None, 0.166, None, None, None ])
-    #robot.move_robot("TCP", [ None, -0.208, None, None, None, None ])
-    #robot.push_button()
-    #robot.move_robot("TCP", [ -0.101, None, None, None, None, None ])
-    #robot.push_button()
-    #robot.move_robot("TCP", [ None, -0.268, None, None, None, None ])
-    #robot.push_button()
-    #robot.move_robot("TCP", [ -0.151, None, None, None, None, None ])
-    #robot.push_button()
+    while True:
+        if new_data[0] == 1 and robot.command_type == CommandType.IDLE:
+            robot.set_next_position_TCP(input_list)
+            robot.set_command_state(CommandType.PUSH_BUTTON_AT)
+            new_data[0] = 0
+        
+        

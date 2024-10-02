@@ -5,11 +5,16 @@ class Main {
 
 class UR3 {
     +__init__(KRP_in_TCP, camera_position_in_joints)
-    +send_home(): bool
-    +send_camera_position(): bool
-    +push_button_at_coordinates(x, y): bool
+    +set_command_state(new_command_state: CommandType)
+    +set_new_position(new_position: list)
     ==
+    -move_to_home(): bool
+    -move_to_camera_position(): bool
+    -push_button_at_coordinates(x, y): bool
+    -touch_KRP_point(): bool
+    -custom_move(type_of_movement, list)
     -KRP
+    -camera_position
 }
 
 class button_locator {
