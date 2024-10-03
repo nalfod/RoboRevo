@@ -4,3 +4,5 @@ MachineVision/runs/
 venv/
 __pycache__/
 MachineVision/*.png
+CameraOutput/
+Main/runs/
