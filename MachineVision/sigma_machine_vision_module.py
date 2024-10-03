@@ -135,7 +135,7 @@ class coordinate_transformator:
 ################################
 
 class button_locator:
-    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm, verbose_mode = False, test_mode = False):
+    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm, verbose_mode = False, test_mode = False) -> None:
         self.model = YOLO(path_of_pt_file)
         self.coord_trafo = coordinate_transformator()
 

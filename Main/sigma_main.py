@@ -1,14 +1,22 @@
 import sys
 import os
+from pathlib import Path
+import threading
 
 print(os.getcwd())
 sys.path.append("..")
 print(os.getcwd())
 
-from UR3.UR3_module.sigma_ur3_module import UR3 as UR3
+from UR3.UR3_module.sigma_ur3_module import UR3
+from UR3.UR3_module.sigma_ur3_module import CommandType
 from MachineVision.sigma_machine_vision_module import button_locator
 from MachineVision.sigma_machine_vision_module import Button
 from MachineVision.camera import take_image
+
+# TODO: always measure these!!
+KRP = [363/1000, -223/1000, 3/1000]
+CAMERA_POSITION = [100/1000, -340/1000, 200/1000]
+KEYBOARD_HEIGHT = 30
 
 def main():
     button_collection = {
@@ -35,11 +43,44 @@ def main():
         "ArrowLeft": Button(7, 4), "ArrowDown": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
     }
 
-    take_image(0)
+    # TODO: here should be the source code generator
+    string_to_type = "helloword"
+
+    path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
+    button_loc = button_locator(path_of_neural_network, 500, 300, True, False)
+    robot = UR3(KRP, CAMERA_POSITION)
+
+    # Start the robot thread
+    robot_thread = threading.Thread(target=robot.main_loop, args=())
+    robot_thread.daemon = True
+    robot_thread.start()
+
+    # robot start procedure
+    robot.set_command_state(CommandType.HOME)
+    while robot.command_type != CommandType.IDLE:
+        pass
+    
+    robot.set_command_state(CommandType.TOUCH_KRP)
+    while robot.command_type != CommandType.IDLE:
+        pass
+
+    # taking a pic and determining the button's location
+    robot.set_command_state(CommandType.CAMERA)
+    while robot.command_type != CommandType.IDLE:
+        pass
+
+    path_of_new_image = take_image(0)
+    button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, button_collection)
+
+    for i in range (0, len(string_to_type)):
+        next_coordinates = button_collection[string_to_type[i]].distance_from_KRP
+        print(f"I will type \"{string_to_type[i]} its coordinates are= {next_coordinates}\"")
+        robot.set_next_position_TCP(list(next_coordinates.x, next_coordinates.y, KEYBOARD_HEIGHT))
+        robot.set_command_state(CommandType.PUSH_BUTTON_AT)
+        while robot.command_type != CommandType.IDLE:
+            pass
 
     print("Finished")
-
-
 
 
 if __name__ == "__main__":

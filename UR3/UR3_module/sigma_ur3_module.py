@@ -1,10 +1,12 @@
 import sys
+import os
 import math
 import threading
 import socket
 import time
 from enum import Enum
 import copy
+from pathlib import Path
 
 if __name__ == "__main__":
     sys.path.append("..")
@@ -35,9 +37,11 @@ class UR3:
 
         self.ROBOT_HOST = "192.168.56.101"
         self.ROBOT_PORT = 30004
-        self.config_filename = "control_loop_configuration.xml"
 
-        self.conf = rtde_config.ConfigFile(self.config_filename)
+        script_dir = Path(__file__).parent
+        self.config_filename = script_dir / "control_loop_configuration.xml"
+
+        self.conf = rtde_config.ConfigFile(str(self.config_filename))
         state_names, state_types = self.conf.get_recipe("state")
         setp_names, setp_types = self.conf.get_recipe("setp")
         mode_names, mode_types = self.conf.get_recipe("mode")
@@ -114,12 +118,12 @@ class UR3:
                 self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
-        robot._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
-        robot._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
-        robot._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ])
-        robot._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
-        robot._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
-        robot._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
+        self._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
+        self._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
+        self._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ])
+        self._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
+        self._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
+        self._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
 
     def _touch_KRP(self):
         state = self.con.receive()
@@ -128,8 +132,8 @@ class UR3:
             return
         # a position to return
         current_position = state.actual_TCP_pose
-        robot._move_robot("TCP", self.KRP + [None, None, None])
-        robot._move_robot("TCP", current_position)
+        self._move_robot("TCP", self.KRP + [None, None, None])
+        self._move_robot("TCP", current_position)
 
     # Move the robot to a given coordinate in TCP coordinate system or based on the joint positions
     def _move_robot(self, type_of_movement, list_of_sp):
