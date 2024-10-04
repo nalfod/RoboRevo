@@ -14,8 +14,8 @@ from MachineVision.sigma_machine_vision_module import Button
 from MachineVision.camera import take_image
 
 # TODO: always measure these!!
-KRP = [363/1000, -223/1000, 3/1000]
-CAMERA_POSITION = [100/1000, -340/1000, 200/1000]
+KRP = [368/1000, -250/1000, 3/1000]
+CAMERA_POSITION = [132/1000, -310/1000, 195/1000]
 KEYBOARD_HEIGHT = 30
 
 def main():
@@ -44,10 +44,10 @@ def main():
     }
 
     # TODO: here should be the source code generator
-    string_to_type = "helloword"
+    string_to_type = "wertzuiopsdfghjklxcvbnm"
 
     path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
-    button_loc = button_locator(path_of_neural_network, 500, 300, True, False)
+    button_loc = button_locator(path_of_neural_network, 492, 227, True, False)
     robot = UR3(KRP, CAMERA_POSITION)
 
     # Start the robot thread
@@ -69,13 +69,14 @@ def main():
     while robot.command_type != CommandType.IDLE:
         pass
 
-    path_of_new_image = take_image(0)
+    # path_of_new_image = take_image(1)
+    path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241004_13_37_16_Pro.jpg")
     button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, button_collection)
 
     for i in range (0, len(string_to_type)):
         next_coordinates = button_collection[string_to_type[i]].distance_from_KRP
         print(f"I will type \"{string_to_type[i]} its coordinates are= {next_coordinates}\"")
-        robot.set_next_position_TCP(list(next_coordinates.x, next_coordinates.y, KEYBOARD_HEIGHT))
+        robot.set_next_position_TCP([-next_coordinates.x / 1000, -next_coordinates.y / 1000, KEYBOARD_HEIGHT /1000])
         robot.set_command_state(CommandType.PUSH_BUTTON_AT)
         while robot.command_type != CommandType.IDLE:
             pass

@@ -372,7 +372,7 @@ class button_locator:
             pixel_distance_from_KRP_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - KRP_midpoint.y
 
             button_properties.distance_from_KRP.x = pixel_distance_from_KRP_x * w_coeff
-            button_properties.distance_from_KRP.y= pixel_distance_from_KRP_y * h_coeff
+            button_properties.distance_from_KRP.y= - pixel_distance_from_KRP_y * h_coeff
 
             if self.verbose_mode:
                 print(f"{button_name} distance from KRP is= {button_properties.distance_from_KRP}")

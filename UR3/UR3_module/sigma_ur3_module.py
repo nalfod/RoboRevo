@@ -35,7 +35,8 @@ class UR3:
         self.next_position_TCP = []
         self.next_position_joint = []
 
-        self.ROBOT_HOST = "192.168.56.101"
+        # self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
+        self.ROBOT_HOST = "192.168.0.125" # FOR REAL
         self.ROBOT_PORT = 30004
 
         script_dir = Path(__file__).parent
@@ -110,7 +111,7 @@ class UR3:
             elif self.command_type == CommandType.PUSH_BUTTON_AT:
                 print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
                 self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
-                self._move_position_push_button()
+                self._push_button()
                 self.command_type = CommandType.IDLE
             elif self.command_type == CommandType.CAMERA:
                 print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
@@ -335,10 +336,10 @@ def get_user_input(input_list, new_data):
 
 if __name__ == "__main__":
     
-    KRP = [-0.085, -0.250, 0.01] # for simulation purpose
+    # KRP = [-0.085, -0.250, 0.01] # for simulation purpose
     # KRP = [115/1000, -420/1000, 25/1000] # first working version in real life
-    # KRP = [363/1000, -223/1000, 3/1000] # This is how it will probably look like in final version
-    camera_position = [100/1000, -340/1000, 200/1000]
+    KRP = [368/1000, -250/1000, 3/1000] # This is how it will probably look like in final version
+    camera_position = [132/1000, -310/1000, 195/1000]
     robot = UR3(KRP, camera_position)
     # Start the robot thread
     robot_thread = threading.Thread(target=robot.main_loop, args=())
