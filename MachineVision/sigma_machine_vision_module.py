@@ -360,9 +360,19 @@ class button_locator:
             print("\n--------------------------------------------------------------")
             print("BEGIN: Determining the buttons position in KRP")
             print("--------------------------------------------------------------\n")
+        # calculating the angle difference between the picture and the robot's coordinate system
+        pixel_distance_of_refs = Point(abs(self.detected_references[0].x - self.detected_references[1].x), abs(self.detected_references[0].y - self.detected_references[1].y))
+        
+        degree_of_refs_vector_in_picture = np.arctan( pixel_distance_of_refs.y / pixel_distance_of_refs.x )
+        degree_of_refs_vector_in_robot_sytem = np.arctan( self.refs_height_in_mm / self.refs_width_in_mm )
+        diff_deg_in_rad = degree_of_refs_vector_in_robot_sytem - degree_of_refs_vector_in_picture
+
+        self.coord_trafo.set_rotation_matrix(diff_deg_in_rad)
+        self.coord_trafo.set_translation_vector(0, 0)
+        
         # calculating the ratios
-        w_coeff = self.refs_width_in_mm / abs(self.detected_references[0].x - self.detected_references[1].x)
-        h_coeff = self.refs_height_in_mm / abs(self.detected_references[0].y - self.detected_references[1].y)
+        w_coeff = self.refs_width_in_mm / pixel_distance_of_refs.x
+        h_coeff = self.refs_height_in_mm / pixel_distance_of_refs.y
 
         # determining the left reference cross
         KRP_midpoint = min(self.detected_references, key=lambda x: x.x)
@@ -371,13 +381,17 @@ class button_locator:
             print(f"KRP is on the following pixels {KRP_midpoint}")
             print(f"w_coeff= {w_coeff}")
             print(f"h_coeff= {h_coeff}")
+            print(f"Degree difference between the picture and the robot coordinate system= {diff_deg_in_rad}")
 
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
             pixel_distance_from_KRP_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x - KRP_midpoint.x
             pixel_distance_from_KRP_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - KRP_midpoint.y
 
-            button_properties.distance_from_KRP.x = pixel_distance_from_KRP_x * w_coeff
-            button_properties.distance_from_KRP.y= - pixel_distance_from_KRP_y * h_coeff
+            # TODO: this part is not tested at all!! maybe this is not good.... test it with well measured data
+            transformed_distance_from_KRP_in_pixels = self.coord_trafo.transform_point(pixel_distance_from_KRP_x, - pixel_distance_from_KRP_y)
+
+            button_properties.distance_from_KRP.x = transformed_distance_from_KRP_in_pixels.x * w_coeff
+            button_properties.distance_from_KRP.y= transformed_distance_from_KRP_in_pixels.y * h_coeff
 
             if self.verbose_mode:
                 print(f"{button_name} pixels on pictura is= {self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic} distance from KRP is= {button_properties.distance_from_KRP}")
