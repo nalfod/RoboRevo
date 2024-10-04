@@ -21,10 +21,10 @@ class Point:
         return hash((self.x, self.y))
     
     def __str__(self):
-        return f"(x,y)= {self.x}, {self.y}"
+        return f"(x,y)= {self.x} {self.y}"
 
     def __repr__(self):
-        return f"(x,y)= {self.x}, {self.y}"
+        return f"(x,y)= {self.x} {self.y}"
 
 # container class which can be stored in a dictionary
 # every keyboard button has a relative distance to the key 0 in the upper left corner
@@ -47,10 +47,10 @@ class Button:
         return hash((self.rel_from_button0_x, self.rel_from_button0_y))
     
     def __str__(self):
-        return f"   Button: rel pos to 0 (x,y)= {self.rel_from_button0_x}, {self.rel_from_button0_y}"
+        return f"   Button: rel pos to 0 (x,y)= {self.rel_from_button0_x} {self.rel_from_button0_y}"
 
     def __repr__(self):
-        return f"   Button: rel pos to 0 (x,y)= {self.rel_from_button0_x}, {self.rel_from_button0_y}"
+        return f"   Button: rel pos to 0 (x,y)= {self.rel_from_button0_x} {self.rel_from_button0_y}"
     
 
 
@@ -256,7 +256,7 @@ class button_locator:
         upper_right_corner = min(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
         lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
         if self.verbose_mode:
-            print(f"upper_left_corner= {upper_left_corner}, lower_left_corner = {lower_left_corner}, upper_right_corner= {upper_right_corner}, lower_right_corner= {lower_right_corner}")
+            print(f"upper_left_corner= {upper_left_corner}, \nlower_left_corner = {lower_left_corner}, \nupper_right_corner= {upper_right_corner}, \nlower_right_corner= {lower_right_corner}")
 
         orientation = KeyboardOrientation.A
 
@@ -367,6 +367,11 @@ class button_locator:
         # determining the left reference cross
         KRP_midpoint = min(self.detected_references, key=lambda x: x.x)
 
+        if self.verbose_mode:
+            print(f"KRP is on the following pixels {KRP_midpoint}")
+            print(f"w_coeff= {w_coeff}")
+            print(f"h_coeff= {h_coeff}")
+
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
             pixel_distance_from_KRP_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x - KRP_midpoint.x
             pixel_distance_from_KRP_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - KRP_midpoint.y
@@ -375,7 +380,7 @@ class button_locator:
             button_properties.distance_from_KRP.y= - pixel_distance_from_KRP_y * h_coeff
 
             if self.verbose_mode:
-                print(f"{button_name} distance from KRP is= {button_properties.distance_from_KRP}")
+                print(f"{button_name} pixels on pictura is= {self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic} distance from KRP is= {button_properties.distance_from_KRP}")
 
         if self.verbose_mode:
             print("\n--------------------------------------------------------------")
@@ -462,14 +467,17 @@ if __name__ == "__main__":
     }
 
     path_of_neural_network = Path("neural_networks/best3_0_small_epoch40.pt")
-    path_of_image1 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4223.jpg")
-    path_of_image2 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4224.jpg")
-    path_of_image3 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/3.jpg")
-    path_of_image4 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/4.jpg")
+    #path_of_image1 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4223.jpg")
+    #path_of_image2 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4224.jpg")
+    #path_of_image3 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/3.jpg")
+    #path_of_image4 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/4.jpg")
+    path_of_image5 = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241004_13_37_16_Pro.jpg")
 
-    button_locator = button_locator(path_of_neural_network, 500, 300, False, True)
+    # the real numbers at the test were: 492 227
+    button_locator = button_locator(path_of_neural_network, 492 * 1, 227, True, False)
 
-    button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
-    button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
-    button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
-    button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
+    #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
+    #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
+    #button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
+    #button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
+    button_locator.determine_buttons_position_in_TCP_system(path_of_image5, button_collection)
