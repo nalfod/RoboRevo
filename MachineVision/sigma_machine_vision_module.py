@@ -367,7 +367,7 @@ class button_locator:
         degree_of_refs_vector_in_robot_sytem = np.arctan( self.refs_height_in_mm / self.refs_width_in_mm )
         diff_deg_in_rad = degree_of_refs_vector_in_robot_sytem - degree_of_refs_vector_in_picture
 
-        self.coord_trafo.set_rotation_matrix(diff_deg_in_rad)
+        self.coord_trafo.set_rotation_matrix(0)
         self.coord_trafo.set_translation_vector(0, 0)
         
         # calculating the ratios
@@ -390,11 +390,11 @@ class button_locator:
             # TODO: this part is not tested at all!! maybe this is not good.... test it with well measured data
             transformed_distance_from_KRP_in_pixels = self.coord_trafo.transform_point(pixel_distance_from_KRP_x, - pixel_distance_from_KRP_y)
 
-            button_properties.distance_from_KRP.x = transformed_distance_from_KRP_in_pixels.x * w_coeff
+            button_properties.distance_from_KRP.x = transformed_distance_from_KRP_in_pixels.x * h_coeff
             button_properties.distance_from_KRP.y= transformed_distance_from_KRP_in_pixels.y * h_coeff
 
             if self.verbose_mode:
-                print(f"{button_name} pixels on pictura is= {self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic} distance from KRP is= {button_properties.distance_from_KRP}")
+                print(f"{button_name} pixels on picture is= {self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic} distance from KRP is= {button_properties.distance_from_KRP}")
 
         if self.verbose_mode:
             print("\n--------------------------------------------------------------")
@@ -485,10 +485,10 @@ if __name__ == "__main__":
     #path_of_image2 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4224.jpg")
     #path_of_image3 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/3.jpg")
     #path_of_image4 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/4.jpg")
-    path_of_image5 = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241004_13_37_16_Pro.jpg")
+    path_of_image5 = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241007_17_40_22_Pro.jpg")
 
     # the real numbers at the test were: 492 227
-    button_locator = button_locator(path_of_neural_network, 492 * 1, 227, True, False)
+    button_locator = button_locator(path_of_neural_network, 494, 228, True, False)
 
     #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
     #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)

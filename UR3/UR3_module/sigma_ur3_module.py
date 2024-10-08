@@ -94,7 +94,15 @@ class UR3:
     def main_loop(self):
         while True:
             if self.command_type == CommandType.IDLE:
-                self.con.send(self.watchdog)
+                state = self.con.receive()
+                if state is None:
+                    # FIXME: sometimes the connection broke between the laptop and the robot during IDLE state
+                    #        find out, what is going on!
+                    print("Recieved state is None, trying to reconnect...")
+                    self.con.connect()
+                else:
+                    self.con.send(self.watchdog)
+                #time.sleep(0.1) # to avoid the overflow of the robot's receiving buffer?
             elif self.command_type == CommandType.HOME:
                 print("Send the robot home")
                 self._move_to_home()
@@ -104,9 +112,8 @@ class UR3:
                 self._touch_KRP()
                 self.command_type = CommandType.IDLE
             elif self.command_type == CommandType.MOVE_GENERAL:
-                # TODO: make this work if it is needed
-                print("Move general, not implemented yet....")
-                #self.move_robot(....)
+                print("Moving to position= " + str(self.next_position_TCP))
+                self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
                 self.command_type = CommandType.IDLE
             elif self.command_type == CommandType.PUSH_BUTTON_AT:
                 print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
@@ -119,10 +126,10 @@ class UR3:
                 self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
-        self._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
         self._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
-        self._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ])
+        self._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
         self._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
+        self._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ]) 
         self._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
         self._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
 
@@ -354,9 +361,9 @@ if __name__ == "__main__":
     while robot.command_type != CommandType.IDLE:
         pass
 
-    robot.set_command_state(CommandType.CAMERA)
-    while robot.command_type != CommandType.IDLE:
-        pass
+    #robot.set_command_state(CommandType.CAMERA)
+    #while robot.command_type != CommandType.IDLE:
+    #    pass
     
 
     input_list = []
@@ -371,7 +378,7 @@ if __name__ == "__main__":
     while True:
         if new_data[0] == 1 and robot.command_type == CommandType.IDLE:
             robot.set_next_position_TCP(input_list)
-            robot.set_command_state(CommandType.PUSH_BUTTON_AT)
+            robot.set_command_state(CommandType.MOVE_GENERAL)
             new_data[0] = 0
         
         
