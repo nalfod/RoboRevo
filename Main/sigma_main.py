@@ -48,7 +48,7 @@ def main():
     string_to_type = "wertzuiopsdfghjklxcvbnm"
 
     path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
-    button_loc = button_locator(path_of_neural_network, abs(KRP[0] - OTHER_REF[0]) * 1000, abs(KRP[1] - OTHER_REF[1]) * 1000, True, False)
+    button_loc = button_locator(path_of_neural_network, abs(KRP[0] - OTHER_REF[0]) * 1000, abs(KRP[1] - OTHER_REF[1]) * 1000, [1920, 1080], True, False)
     robot = UR3(KRP, CAMERA_POSITION)
 
     # Start the robot thread

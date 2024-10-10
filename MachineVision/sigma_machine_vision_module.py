@@ -3,6 +3,7 @@ import os
 import numpy as np
 from enum import Enum
 from pathlib import Path
+import math
 
 ##########################
 # BASIC INFRASTRUCTURE
@@ -39,6 +40,9 @@ class Button:
 
         # the position of the button to the ref point (=KRP) in mm
         self.distance_from_KRP = Point()
+
+        # on which pixel is the button's midpoint
+        self.pixel_pos_on_pic = Point()
 
     def __eq__(self, other):
         return isinstance(other, Button) and self.rel_from_button0_x == other.rel_from_button0_x and self.rel_from_button0_y == other.rel_from_button0_y
@@ -135,13 +139,15 @@ class coordinate_transformator:
 ################################
 
 class button_locator:
-    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm, verbose_mode = False, test_mode = False) -> None:
+    def __init__(self, path_of_pt_file: Path, refs_width_in_mm, refs_height_in_mm, image_resolution: list, verbose_mode = False, test_mode = False) -> None:
         self.model = YOLO(path_of_pt_file)
         self.coord_trafo = coordinate_transformator()
 
-        # real life distance of the two crosses, have to be measured manually!
+        # real life distance of the two crosses, have to be measured manually by the robot!
         self.refs_width_in_mm = refs_width_in_mm
         self.refs_height_in_mm = refs_height_in_mm
+
+        self.image_resolution = image_resolution
 
         # Containers of detected objects
         self.detected_references: list[Point] = []
@@ -355,46 +361,122 @@ class button_locator:
         for i in range( len(current_row_sorted) ):
             empty_target_list.append(current_row_sorted[i])
 
+    def _load_pixel_data_of_detected_buttons_into_dict(self, target_dictionary: dict[str, Button]):
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("BEGIN: Loading the detected buttons to the buttons of the keyboard")
+            print("--------------------------------------------------------------\n")
+
+        for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
+            button_properties.pixel_pos_on_pic = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic
+
+            if self.verbose_mode:
+                print(f"{button_name} pixels on picture is= {button_properties.pixel_pos_on_pic}")
+
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print("END: Loading the detected buttons to the buttons of the keyboard")
+            print("--------------------------------------------------------------\n")
+
+    def _determine_button_closest_to_picture_midpoint(self, dictionary_of_buttons: dict[str, Button]) -> str:
+        name_of_midpoint_key = None
+
+        current_minumum_dist = math.sqrt( self.image_resolution[0] ** 2 + self.image_resolution[1] ** 2 )
+
+        middle_of_image = Point(self.image_resolution[0]/2, self.image_resolution[1]/2)
+
+        for index, (button_name, button_properties) in enumerate(dictionary_of_buttons.items()):
+            tmp_min_dist = ( ( button_properties.pixel_pos_on_pic.x - middle_of_image.x ) ** 2 + ( button_properties.pixel_pos_on_pic.y - middle_of_image.y ) ** 2 )
+            if tmp_min_dist < current_minumum_dist:
+                current_minumum_dist = tmp_min_dist
+                name_of_midpoint_key = button_name
+                print(f"     Currently the closest key to the middle of the picture is: {button_name}")
+
+        return name_of_midpoint_key
+    
+    def _determine_mm_per_pixel_ratio_based_on_button(self, ref_button_rel_from_button0 : Point ):
+        # VERY SKETCHY functionality. The goal is to determine the pixel/mm ration based on the fact that we know
+        # that the standard key distance is about 20 mm.... Not so precise
+        if self.verbose_mode:
+            print("\n--------------------------------------------------------------")
+            print(f"BEGIN: Determining the mm/pixel ration. Ref button is in position {ref_button_rel_from_button0} relative to 0 button")
+            print("--------------------------------------------------------------\n")
+
+        # ref button should be in rectangle which has the corners of button "w" and "." 
+        if ref_button_rel_from_button0.x < 2 or ref_button_rel_from_button0.x > 10 or ref_button_rel_from_button0.y < 1 or ref_button_rel_from_button0.y > 3:
+            raise ValueError("Reference button is on the edge of the keyboard, where the distances between the keys are no longer 20 mm")
+        elif self.verbose_mode:
+            print(f"Reference button is on pixels= {self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x].midpoint_rel_to_pic}")
+
+
+        ratio_to_right = 20 / abs(self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x].midpoint_rel_to_pic.x - self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x + 1].midpoint_rel_to_pic.x )
+        ratio_to_left = 20 / abs(self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x].midpoint_rel_to_pic.x - self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x - 1].midpoint_rel_to_pic.x )
+        ratio_to_up = 20 / abs(self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x].midpoint_rel_to_pic.y - self.detected_buttons_in_rows[ref_button_rel_from_button0.y - 1][ref_button_rel_from_button0.x].midpoint_rel_to_pic.y )
+        ratio_to_down = 20 / abs(self.detected_buttons_in_rows[ref_button_rel_from_button0.y][ref_button_rel_from_button0.x].midpoint_rel_to_pic.y - self.detected_buttons_in_rows[ref_button_rel_from_button0.y + 1][ref_button_rel_from_button0.x].midpoint_rel_to_pic.y )
+
+        avg_ratio = sum([ratio_to_right, ratio_to_left, ratio_to_up, ratio_to_down]) / len([ratio_to_right, ratio_to_left, ratio_to_up, ratio_to_down])
+
+
+        if self.verbose_mode:
+            print(f"The mm/pixel ratio to right is {ratio_to_right} , the pixel/mm ratio is {1 / ratio_to_right}")
+            print(f"The mm/pixel ratio to left is {ratio_to_left} , the pixel/mm ratio is {1 / ratio_to_left}")
+            print(f"The mm/pixel ratio to up is {ratio_to_up} , the pixel/mm ratio is {1 / ratio_to_up}")
+            print(f"The mm/pixel ratio to down is {ratio_to_down} , the pixel/mm ratio is {1 / ratio_to_down}")
+            print(f"The avg mm/pixel ration is {avg_ratio} , the pixel/mm ratio is {1 / avg_ratio}")
+            print("\n--------------------------------------------------------------")
+            print(f"END: Determining the mm/pixel ration. Ref button is on {ref_button_rel_from_button0}")
+            print("--------------------------------------------------------------\n")
+
+        # determined by the camera's DFOV, the image size and the camera keyboard distance
+        return 0.327951
+
     def _determine_button_pos_in_KRP_into_dict(self, target_dictionary: dict[str, Button]):
         if self.verbose_mode:
             print("\n--------------------------------------------------------------")
             print("BEGIN: Determining the buttons position in KRP")
             print("--------------------------------------------------------------\n")
-        # calculating the angle difference between the picture and the robot's coordinate system
-        pixel_distance_of_refs = Point(abs(self.detected_references[0].x - self.detected_references[1].x), abs(self.detected_references[0].y - self.detected_references[1].y))
-        
-        degree_of_refs_vector_in_picture = np.arctan( pixel_distance_of_refs.y / pixel_distance_of_refs.x )
-        degree_of_refs_vector_in_robot_sytem = np.arctan( self.refs_height_in_mm / self.refs_width_in_mm )
-        diff_deg_in_rad = degree_of_refs_vector_in_robot_sytem - degree_of_refs_vector_in_picture
 
-        self.coord_trafo.set_rotation_matrix(0)
-        self.coord_trafo.set_translation_vector(0, 0)
-        
-        # calculating the ratios
-        w_coeff = self.refs_width_in_mm / pixel_distance_of_refs.x
-        h_coeff = self.refs_height_in_mm / pixel_distance_of_refs.y
+        self._load_pixel_data_of_detected_buttons_into_dict(target_dictionary)
+        midpoint_button_name = self._determine_button_closest_to_picture_midpoint(target_dictionary)
 
-        # determining the left reference cross
+        if midpoint_button_name is None:
+            raise ValueError("Determination of midpoint key name is not successful...")
+        elif self.verbose_mode:
+            print(f"Midpoint key is= {midpoint_button_name}")
+
+        mm_per_pixel_coeff = self._determine_mm_per_pixel_ratio_based_on_button( Point(target_dictionary[midpoint_button_name].rel_from_button0_x, target_dictionary[midpoint_button_name].rel_from_button0_y) )
+
+        midpoint_of_image = Point(abs(self.image_resolution[0]) / 2, abs(self.image_resolution[1]) / 2)
+
+        # self.refs_width_in_mm
+        # self.refs_height_in_mm
+
+        # determining KRP
         KRP_midpoint = min(self.detected_references, key=lambda x: x.x)
+        KRP_pixel_distance_from_midpoint_of_pic_x = abs( midpoint_of_image.x - KRP_midpoint.x )
+        KRP_pixel_distance_from_midpoint_of_pic_y = abs( midpoint_of_image.y - KRP_midpoint.y )
+        KRP_mm_distance_from_midpoint_of_pic_x = mm_per_pixel_coeff * KRP_pixel_distance_from_midpoint_of_pic_x - ( 0.0137 * KRP_midpoint.x - 12.47 )
+        KRP_mm_distance_from_midpoint_of_pic_y = mm_per_pixel_coeff * KRP_pixel_distance_from_midpoint_of_pic_y - ( -0.0133 * KRP_midpoint.y + 7.4536 )
 
         if self.verbose_mode:
-            print(f"KRP is on the following pixels {KRP_midpoint}")
-            print(f"w_coeff= {w_coeff}")
-            print(f"h_coeff= {h_coeff}")
-            print(f"Degree difference between the picture and the robot coordinate system= {diff_deg_in_rad}")
+            print(f"The pixel midpoint of the image= {midpoint_of_image}")
+            print(f"mm_per_pixel_coeff= {mm_per_pixel_coeff}")
+            print(f"KRP distance from the midpoint of image (mm)= {KRP_mm_distance_from_midpoint_of_pic_x} {KRP_mm_distance_from_midpoint_of_pic_y}")
 
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
-            pixel_distance_from_KRP_x = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.x - KRP_midpoint.x
-            pixel_distance_from_KRP_y = self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic.y - KRP_midpoint.y
+            button_pixel_distance_from_midpoint_of_pic_x = target_dictionary[button_name].pixel_pos_on_pic.x - midpoint_of_image.x
+            button_pixel_distance_from_midpoint_of_pic_y = -1 * ( target_dictionary[button_name].pixel_pos_on_pic.y - midpoint_of_image.y )
+            button_mm_distance_from_midpoint_of_pic_x = mm_per_pixel_coeff * button_pixel_distance_from_midpoint_of_pic_x - ( 0.0137 * button_properties.pixel_pos_on_pic.x - 12.47 )
+            button_mm_distance_from_midpoint_of_pic_y = mm_per_pixel_coeff * button_pixel_distance_from_midpoint_of_pic_y - ( -0.0133 * button_properties.pixel_pos_on_pic.y + 7.4536 )
 
-            # TODO: this part is not tested at all!! maybe this is not good.... test it with well measured data
-            transformed_distance_from_KRP_in_pixels = self.coord_trafo.transform_point(pixel_distance_from_KRP_x, - pixel_distance_from_KRP_y)
+            # TODO: is another coordinate trafo needed? probably not if the picutre is well alligned with the robot's coordinate system
+            # transformed_distance_from_KRP_in_pixels = self.coord_trafo.transform_point(pixel_distance_from_KRP_x, - pixel_distance_from_KRP_y)
 
-            button_properties.distance_from_KRP.x = transformed_distance_from_KRP_in_pixels.x * h_coeff
-            button_properties.distance_from_KRP.y= transformed_distance_from_KRP_in_pixels.y * h_coeff
+            button_properties.distance_from_KRP.x = button_mm_distance_from_midpoint_of_pic_x + KRP_mm_distance_from_midpoint_of_pic_x
+            button_properties.distance_from_KRP.y = button_mm_distance_from_midpoint_of_pic_y + KRP_mm_distance_from_midpoint_of_pic_y
 
             if self.verbose_mode:
-                print(f"{button_name} pixels on picture is= {self.detected_buttons_in_rows[button_properties.rel_from_button0_y][button_properties.rel_from_button0_x].midpoint_rel_to_pic} distance from KRP is= {button_properties.distance_from_KRP}")
+                print(f"{button_name} pixels on picture is= {target_dictionary[button_name].pixel_pos_on_pic} distance from KRP is= {button_properties.distance_from_KRP}")
 
         if self.verbose_mode:
             print("\n--------------------------------------------------------------")
@@ -488,7 +570,7 @@ if __name__ == "__main__":
     path_of_image5 = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241007_17_40_22_Pro.jpg")
 
     # the real numbers at the test were: 492 227
-    button_locator = button_locator(path_of_neural_network, 494, 228, True, False)
+    button_locator = button_locator(path_of_neural_network, 494, 228, [1920, 1080], True, False)
 
     #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
     #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
