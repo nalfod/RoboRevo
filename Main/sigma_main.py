@@ -11,12 +11,15 @@ from UR3.UR3_module.sigma_ur3_module import UR3
 from UR3.UR3_module.sigma_ur3_module import CommandType
 from MachineVision.sigma_machine_vision_module import button_locator
 from MachineVision.sigma_machine_vision_module import Button
+from MachineVision.sigma_machine_vision_module import Point
 from MachineVision.camera import take_image
 
 # TODO: always measure these!!
-KRP = [367/1000, -144/1000, 3/1000]
-OTHER_REF = [-125/1000, -377/1000, 3/1000]
-CAMERA_POSITION = [132/1000, -210/1000, 195/1000]
+# KRP is the l button of the keyboard
+KRP = [141.87/1000, -268.29/1000, 15/1000]
+
+# replace this parameter by calculating it from the KRP!! So the robots moves always that letter l is kind of in the middle of the pic
+CAMERA_POSITION = [132/1000, -245/1000, 195/1000]
 KEYBOARD_HEIGHT = 30
 
 def main():
@@ -48,7 +51,7 @@ def main():
     string_to_type = "wertzuiopsdfghjklxcvbnm"
 
     path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
-    button_loc = button_locator(path_of_neural_network, abs(KRP[0] - OTHER_REF[0]) * 1000, abs(KRP[1] - OTHER_REF[1]) * 1000, [1920, 1080], True, False)
+    button_loc = button_locator(path_of_neural_network, Point(KRP[0] * 1000, KRP[1] * 1000), [1920, 1080], True, False)
     robot = UR3(KRP, CAMERA_POSITION)
 
     # Start the robot thread
@@ -71,7 +74,7 @@ def main():
         pass
 
     # path_of_new_image = take_image(1)
-    path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241007_18_59_48_Pro.jpg")
+    path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241011_16_38_54_Pro.jpg") # TODO: for this image (WIN_20241011_16_38_54_Pro.jpg), position of one of the button has been photod by my phone!!!!
     button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, button_collection)
 
     for i in range (0, len(string_to_type)):
