@@ -409,7 +409,7 @@ class button_locator:
 
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
             button_pixel_distance_from_midpoint_of_pic_x = target_dictionary[button_name].pixel_pos_on_pic.x - midpoint_of_image.x
-            button_pixel_distance_from_midpoint_of_pic_y = target_dictionary[button_name].pixel_pos_on_pic.y - midpoint_of_image.y
+            button_pixel_distance_from_midpoint_of_pic_y = -1 * ( target_dictionary[button_name].pixel_pos_on_pic.y - midpoint_of_image.y )
             button_mm_distance_from_midpoint_of_pic_x = self.mm_per_pixel_ratio * button_pixel_distance_from_midpoint_of_pic_x - self._calculate_x_distance_compensation(button_properties.pixel_pos_on_pic.x)
             button_mm_distance_from_midpoint_of_pic_y = self.mm_per_pixel_ratio * button_pixel_distance_from_midpoint_of_pic_y - self._calculate_y_distance_compensation(button_properties.pixel_pos_on_pic.x, button_properties.pixel_pos_on_pic.y)
 
@@ -417,7 +417,7 @@ class button_locator:
             # transformed_distance_from_KRP_in_pixels = self.coord_trafo.transform_point(pixel_distance_from_KRP_x, - pixel_distance_from_KRP_y)
 
             button_properties.distance_from_KRP.x = button_mm_distance_from_midpoint_of_pic_x - KRP_mm_distance_from_midpoint_of_pic_x
-            button_properties.distance_from_KRP.y = -1 * ( button_mm_distance_from_midpoint_of_pic_y + KRP_mm_distance_from_midpoint_of_pic_y )
+            button_properties.distance_from_KRP.y = button_mm_distance_from_midpoint_of_pic_y - KRP_mm_distance_from_midpoint_of_pic_y
 
             if self.verbose_mode and button_name != "Enter" and button_name != "NumpadAdd" and button_name != "CapsLock" and button_name != "a" and button_name != "Shift" and button_name != "ii" and button_name != "y" and button_name != "NumpadEnter" and button_name != "Control":
                 print(f"{button_name} pixels on picture is= {target_dictionary[button_name].pixel_pos_on_pic} distance from KRP is= {button_properties.distance_from_KRP}")
