@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 
 
-def take_image(camera_idx: int) -> Path:
+def take_image(camera_idx: int, resolution=(1920, 1080), brightness=0.5) -> Path:
     """
         Takes a picutre for image processing in png format.
 
@@ -17,6 +17,13 @@ def take_image(camera_idx: int) -> Path:
     """
 
     cam = cv2.VideoCapture(camera_idx)
+    # Set the resolution
+    cam.set(cv2.CAP_PROP_FRAME_WIDTH, resolution[0])
+    cam.set(cv2.CAP_PROP_FRAME_HEIGHT, resolution[1])
+
+    # Set the brightness (brightness is often on a scale of 0 to 255)
+    cam.set(cv2.CAP_PROP_BRIGHTNESS, brightness * 255)
+
     cv2.namedWindow("test")
 
     ret, frame = cam.read()
@@ -46,7 +53,7 @@ def take_image(camera_idx: int) -> Path:
 
 
 if __name__ == "__main__":
-    path = take_image(0)
+    path = take_image(0, [1920, 1080], 0.5)
 
     if path is not None:
         print(f"Image saved to {path}")
