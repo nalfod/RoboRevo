@@ -398,14 +398,14 @@ class button_locator:
 
         midpoint_of_image = Point(abs(self.image_resolution[0]) / 2, abs(self.image_resolution[1]) / 2)
 
-        # determining KRP
+        # determining KRP, which is letter "l" now
         KRP_mm_distance_from_midpoint_of_pic_x = self.mm_per_pixel_ratio * ( target_dictionary["l"].pixel_pos_on_pic.x - midpoint_of_image.x ) - self._calculate_x_distance_compensation(target_dictionary["l"].pixel_pos_on_pic.x)
         KRP_mm_distance_from_midpoint_of_pic_y = -1 * ( self.mm_per_pixel_ratio * ( target_dictionary["l"].pixel_pos_on_pic.y - midpoint_of_image.y ) - self._calculate_y_distance_compensation(target_dictionary["l"].pixel_pos_on_pic.x, target_dictionary["l"].pixel_pos_on_pic.y) )
 
         if self.verbose_mode:
             print(f"The pixel midpoint of the image= {midpoint_of_image}")
             print(f"mm_per_pixel_coeff= {self.mm_per_pixel_ratio}")
-            print(f"Button l distance from the midpoint of image (mm)= {KRP_mm_distance_from_midpoint_of_pic_x} {KRP_mm_distance_from_midpoint_of_pic_y}")
+            print(f"KRP (button l) distance from the midpoint of image (mm)= {KRP_mm_distance_from_midpoint_of_pic_x} {KRP_mm_distance_from_midpoint_of_pic_y}")
 
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
             button_pixel_distance_from_midpoint_of_pic_x = target_dictionary[button_name].pixel_pos_on_pic.x - midpoint_of_image.x

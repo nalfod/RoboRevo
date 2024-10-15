@@ -16,11 +16,11 @@ from MachineVision.camera import take_image
 
 # TODO: always measure these!!
 # KRP is the l button of the keyboard
-KRP = [141.87/1000, -268.29/1000, 15/1000]
+KRP = [135/1000, -266/1000, 15/1000]
 
 # replace this parameter by calculating it from the KRP!! So the robots moves always that letter l is kind of in the middle of the pic
-CAMERA_POSITION = [132/1000, -245/1000, 195/1000]
-KEYBOARD_HEIGHT = 30
+CAMERA_POSITION = [KRP[0] - 5/1000, KRP[1] + 17/1000, 195/1000]
+KEYBOARD_HEIGHT = 5
 
 def main():
     button_collection = {
@@ -48,7 +48,7 @@ def main():
     }
 
     # TODO: here should be the source code generator
-    string_to_type = "wertzuiopsdfghjklxcvbnm"
+    string_to_type = "123456789qwertzuiopasdfghjklyxcvbnm,.-"
 
     path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
     button_loc = button_locator(path_of_neural_network, Point(KRP[0] * 1000, KRP[1] * 1000), [1920, 1080], True, False)
@@ -74,12 +74,14 @@ def main():
         pass
 
     # path_of_new_image = take_image(1)
-    path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241011_16_38_54_Pro.jpg") # TODO: for this image (WIN_20241011_16_38_54_Pro.jpg), position of one of the button has been photod by my phone!!!!
+    path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg") # TODO: for this image (WIN_20241011_16_38_54_Pro.jpg), position of one of the button has been photod by my phone!!!!
     button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, button_collection)
 
-    for i in range (0, len(string_to_type)):
-        next_coordinates = button_collection[string_to_type[i]].distance_from_KRP
-        print(f"I will type \"{string_to_type[i]} its coordinates are= {next_coordinates}\"")
+    #for i in range (0, len(string_to_type)):
+        #next_coordinates = button_collection[string_to_type[i]].distance_from_KRP
+    for index, (button_name, button_properties) in enumerate(button_collection.items()):
+        next_coordinates = button_properties.distance_from_KRP
+        print(f"I will type \"{button_name} its coordinates are= {next_coordinates}\"")
         robot.set_next_position_TCP([-next_coordinates.x / 1000, -next_coordinates.y / 1000, KEYBOARD_HEIGHT /1000])
         robot.set_command_state(CommandType.PUSH_BUTTON_AT)
         while robot.command_type != CommandType.IDLE:
