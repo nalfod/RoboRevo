@@ -212,11 +212,11 @@ class button_locator:
             else:
                 print("NOT DEFINED OBJECT THROW AN EXCEPTION HERE.....")
         
-        if len(self.detected_buttons) != 92 and len(self.detected_references) != 2:
-            print("ERROR: NUMBER OF DETECTED OBJECTS DOES NOT MATCH UP!!!")
-            print(f"There should be 92 buttons, instead we have {len(self.detected_buttons)}")
-            print(f"There should be 2 references, instead we have {len(self.detected_references)}")
-            # TODO: throw an exception here and catch it in the main block
+        if len(self.detected_buttons) != 90:
+            print("ERROR: NUMBER OF DETECTED BUTTONS DOES NOT MATCH UP!!!")
+            print(f"There should be 90 buttons, instead we have {len(self.detected_buttons)}")
+            # print(f"There should be 2 references, instead we have {len(self.detected_references)}")
+            raise ValueError("Not all of the/too many buttons has been captured!")
         else:
             if self.verbose_mode:
                 print("---------- REFS ----------")
@@ -259,12 +259,13 @@ class button_locator:
         # references on the keyboard on left, the last two one will be the references on the right
         buttons_sorted_based_on_x = sorted(self.detected_buttons, key=lambda x: x.midpoint_rel_to_pic.x)
         upper_left_corner = min(buttons_sorted_based_on_x[:2], key=lambda x: x.midpoint_rel_to_pic.y)
-        lower_left_corner = max(buttons_sorted_based_on_x[:2], key=lambda x: x.midpoint_rel_to_pic.y)
-
         upper_right_corner = min(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
-        lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
+
+        #lower_right_corner = max(buttons_sorted_based_on_x[-2:], key=lambda x: x.midpoint_rel_to_pic.y)
+        #lower_left_corner = max(buttons_sorted_based_on_x[:2], key=lambda x: x.midpoint_rel_to_pic.y)
         if self.verbose_mode:
-            print(f"upper_left_corner= {upper_left_corner}, \nlower_left_corner = {lower_left_corner}, \nupper_right_corner= {upper_right_corner}, \nlower_right_corner= {lower_right_corner}")
+            print(f"upper_left_corner= {upper_left_corner}, \nupper_right_corner= {upper_right_corner}")
+            #print(f"lower_left_corner = {lower_left_corner}, \nlower_right_corner= {lower_right_corner}")
 
         orientation = KeyboardOrientation.A
 
@@ -510,14 +511,19 @@ if __name__ == "__main__":
     #path_of_image1 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4223.jpg")
     #path_of_image2 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/IMG_4224.jpg")
     #path_of_image3 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/3.jpg")
-    #path_of_image4 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/INPUTS/ObjectDetection_input/Images/v3/raw_images3/to_test/4.jpg")
+    path_of_image4 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/URSim_shared/RoboRevo/Main/CameraOutput/opencv_frame_2024-10-16_17-35-19-Copy.png")
     path_of_image5 = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241011_16_38_54_Pro.jpg")
+    path_of_image6 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/URSim_shared/RoboRevo/Main/CameraOutput/opencv_frame_2024-10-16_17-50-14-Copy.png") # should produce error!
 
     # the real numbers at the test were: 492 227
     button_locator = button_locator(path_of_neural_network, Point(141.87, -268.29), [1920, 1080], True, False)
 
-    #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
-    #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
-    #button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
-    #button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
-    button_locator.determine_buttons_position_in_TCP_system(path_of_image5, button_collection)
+    try:
+        #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
+        #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
+        #button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
+        #button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
+        #button_locator.determine_buttons_position_in_TCP_system(path_of_image5, button_collection)
+        button_locator.determine_buttons_position_in_TCP_system(path_of_image6, button_collection)
+    except:
+        print("Exception catched")

@@ -75,14 +75,21 @@ def main():
 
     camera = Camera(camera_idx=0)
     # path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg") # TODO: for this image (WIN_20241011_16_38_54_Pro.jpg), position of one of the button has been photod by my phone!!!!
+    
+    counter = 0
     while True:
-        # FIXME: this should be more sophisticated...
+        # FIXME: this should be more sophisticated? 
         try:
             path_of_new_image = camera.take_image()
             button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, button_collection)
             break
         except:
-            print("Not successful button detection, let's try it again!")
+            if counter == 5:
+                print("It seems that button detection does not working.... change the keyboard or camera position or lightning...")
+                sys.exit()
+            else:
+                counter += 1
+                print(f"Not successful button detection, let's try it again for the {counter + 1}. time!")
 
 
     for i in range (0, len(string_to_type)):
