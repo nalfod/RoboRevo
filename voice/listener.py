@@ -6,7 +6,7 @@ with sr.Microphone() as source:
     audio = r.listen(source)
 
     try:
-        print(f"you said {r.recognize_amazon(audio)}")
+        print(f"you said {r.recognize_tensorflow(audio)}")
     except sr.UnknownValueError:
         print("fos")
     except sr.RequestError as e:
