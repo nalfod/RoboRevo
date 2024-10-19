@@ -21,7 +21,7 @@ class GPT:
             messages = [
                 {
                     "role": "user",
-                    "content": f"{message}. Don't give any explanation, just the answer for the request."
+                    "content": f"{message}. Don't give any explanation, just the code section for the request."
                 }
             ]
         )

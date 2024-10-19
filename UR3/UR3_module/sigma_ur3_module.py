@@ -93,37 +93,38 @@ class UR3:
 
     def main_loop(self):
         while True:
-            if self.command_type == CommandType.IDLE:
-                state = self.con.receive()
-                if state is None:
-                    # FIXME: sometimes the connection broke between the laptop and the robot during IDLE state
-                    #        find out, what is going on!
-                    print("Recieved state is None, trying to reconnect...")
-                    self.con.connect()
-                else:
-                    self.con.send(self.watchdog)
-                #time.sleep(0.1) # to avoid the overflow of the robot's receiving buffer?
-            elif self.command_type == CommandType.HOME:
-                print("Send the robot home")
-                self._move_to_home()
-                self.command_type = CommandType.IDLE
-            elif self.command_type == CommandType.TOUCH_KRP:
-                print("Touching KRP")
-                self._touch_KRP()
-                self.command_type = CommandType.IDLE
-            elif self.command_type == CommandType.MOVE_GENERAL:
-                print("Moving to position= " + str(self.next_position_TCP))
-                self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
-                self.command_type = CommandType.IDLE
-            elif self.command_type == CommandType.PUSH_BUTTON_AT:
-                print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
-                self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
-                self._push_button()
-                self.command_type = CommandType.IDLE
-            elif self.command_type == CommandType.CAMERA:
-                print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
-                self._move_robot("TCP", [self.camera_pos_in_TCP[0], self.camera_pos_in_TCP[1], self.camera_pos_in_TCP[2]] + [None, None, None])
-                self.command_type = CommandType.IDLE
+            match self.command_type:
+                case CommandType.IDLE:
+                    state = self.con.receive()
+                    if state is None:
+                        # FIXME: sometimes the connection broke between the laptop and the robot during IDLE state
+                        #        find out, what is going on!
+                        print("Recieved state is None, trying to reconnect...")
+                        self.con.connect()
+                    else:
+                        self.con.send(self.watchdog)
+                    #time.sleep(0.1) # to avoid the overflow of the robot's receiving buffer?
+                case CommandType.HOME:
+                    print("Send the robot home")
+                    self._move_to_home()
+                    self.command_type = CommandType.IDLE
+                case CommandType.TOUCH_KRP:
+                    print("Touching KRP")
+                    self._touch_KRP()
+                    self.command_type = CommandType.IDLE
+                case CommandType.MOVE_GENERAL:
+                    print("Moving to position= " + str(self.next_position_TCP))
+                    self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
+                    self.command_type = CommandType.IDLE
+                case CommandType.PUSH_BUTTON_AT:
+                    print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
+                    self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
+                    self._push_button()
+                    self.command_type = CommandType.IDLE
+                case CommandType.CAMERA:
+                    print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
+                    self._move_robot("TCP", [self.camera_pos_in_TCP[0], self.camera_pos_in_TCP[1], self.camera_pos_in_TCP[2]] + [None, None, None])
+                    self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
         self._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])

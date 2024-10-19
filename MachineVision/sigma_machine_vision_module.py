@@ -160,7 +160,7 @@ class button_locator:
         # In this mode the distance to KRP is not determined, but the relative distance to key0 in mm and it is printed out
         self.test_mode = test_mode
 
-    def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary: dict[str, Button]):
+    def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary: dict[str, Button]) -> None:
         self._reset_my_containers()
 
         # 1. using YOLO to detect all the objects (buttons and references) on the captured picture
