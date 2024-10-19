@@ -13,6 +13,7 @@ from MachineVision.sigma_machine_vision_module import button_locator
 from MachineVision.sigma_machine_vision_module import Button
 from MachineVision.sigma_machine_vision_module import Point
 from MachineVision.camera import Camera
+from GPT.gpt import GPT
 
 # TODO: always measure these!!
 # KRP is the l button of the keyboard
@@ -48,7 +49,8 @@ def main():
     }
 
     # TODO: here should be the source code generator
-    string_to_type = "elvesziamunkat"
+    chat_bot = GPT("GPT/key.txt")
+    string_to_type = chat_bot.request(message) # FIXME: voice recognition result should go here
 
     path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
     button_loc = button_locator(path_of_neural_network, Point(KRP[0] * 1000, KRP[1] * 1000), [1920, 1080], True, False)
