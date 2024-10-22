@@ -1,0 +1,865 @@
+8.69818115234375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 522.3789112081733, 102.2199971746353
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 867.1652221679688, 
+347.9525146484375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 576.9930711471776, 102.21226682473097
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 929.406005859375, 350.18212890625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 639.1980467961323, 105.28266399318028
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 989.029052734375, 346.9295654296875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 698.8595988137863, 102.83601349254175
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1047.64501953125, 346.153564453125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 757.4806998144678, 102.8520919216564
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1132.860595703125, 
+345.9691162109375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 842.6909889866778, 103.81907829541181
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1243.7998046875, 342.87890625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 953.6618248284999, 102.22814138626404
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1303.166015625, 338.55889892578125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1013.0809874671897, 98.71067416197201
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1360.601318359375, 
+338.62213134765625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1070.5101926137377, 99.54995645309847
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1439.6953125, 331.8447265625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1149.6885414483904, 93.84187441469894
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1495.6767578125, 342.4280090332031
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1205.5218768403383, 105.18060212733897
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1551.076171875, 344.12030029296875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1260.8933676143458, 107.62128597417208
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1611.244140625, 342.7265625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1321.0746756381777, 107.04065435497166
+---------- ROW 1.----------
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 350.9992980957031, 
+415.3953857421875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 59.96299113324496, 162.67463855732544
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 426.8668212890625, 
+415.262451171875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 135.82538465629935, 163.56682466355278
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 486.87506103515625, 414.21197509765625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 195.84234016613183, 163.32726519711514
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 543.1475219726562, 
+412.04595947265625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 252.13893087521362, 161.92179083437043
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 603.2894287109375, 
+409.8282470703125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 312.3053126655353, 160.5169076801986
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 658.2001953125, 407.142333984375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 367.2473581086296, 158.5731843445758
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 718.4837646484375, 
+407.42108154296875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 427.5216578393967, 159.66644737232946
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 780.076904296875, 408.18646240234375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 489.09883303049844, 161.2639939588756
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 841.966064453125, 410.5505676269531
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 550.9504000254719, 164.46411874164423
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 900.765380859375, 405.1048583984375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 609.8179301688858, 159.81339259854573
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 962.7421875, 405.2301025390625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 671.7873867416658, 160.77604494415505
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1024.0633544921875, 405.24407958984375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 733.1027669398139, 161.61858147051578
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1077.155029296875, 
+407.7477111816406
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 786.1557664399448, 164.83934981878915
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1156.752197265625, 
+424.8730773925781
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 865.5142731588342, 183.03865551576877
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1239.09521484375, 399.93634033203125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 948.1867145139929, 159.21679917592633
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1302.51513671875, 401.0905456542969
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1011.5852514395134, 161.2278178880412
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1358.257080078125, 
+398.4449157714844
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1067.357853463744, 159.3356047913285
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1433.3741455078125, 402.7751159667969
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1142.409552644792, 164.6803781763214
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1492.369140625, 400.68597412109375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1201.427390291661, 163.38855697496808
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1551.20849609375, 401.5845947265625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1260.2492323809975, 165.0821225000249
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1608.2283935546875, 430.8439025878906
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1316.8685779737832, 195.1092020720463
+---------- ROW 2.----------
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 356.2234191894531, 
+472.46783447265625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 64.41548250039747, 219.8124646090714
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 445.40228271484375, 474.19427490234375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 153.5628776327792, 222.74371644890252
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 502.47613525390625, 474.594482421875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 210.62611243252766, 223.9150592245727
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 559.8665771484375, 
+470.50445556640625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 268.0665789385499, 220.60085523287887
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 618.204345703125, 469.5513610839844
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 326.41189994953737, 220.4360973574024
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 677.88134765625, 467.706298828125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 386.1083842125226, 219.39754861976692
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 737.44775390625, 464.74224853515625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 445.7094024367783, 217.23861964658963
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 797.4164428710938, 
+465.403564453125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 505.6636813455791, 218.71016150166915
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 856.5675659179688, 
+465.05816650390625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 564.8140715105962, 219.1640345853748
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 915.1485595703125, 
+468.1207580566406
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 623.3483361767688, 223.01788257216498
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 977.8309936523438, 
+466.375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 686.0486364254697, 222.1192378351986
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1033.395263671875, 
+465.322021484375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 741.6220617061554, 221.81713002365612
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1091.9012451171875, 464.828857421875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 800.1293657534035, 222.11453344438013
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1433.651123046875, 
+460.1063537597656
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1141.9118553642918, 222.01012473818975
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1491.0025634765625, 457.17535400390625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1199.297663396904, 219.85431505897049
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1550.84228515625, 458.04278564453125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1259.1202017946714, 221.5302112375162
+---------- ROW 3.----------
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 354.08905029296875, 531.0269775390625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 61.490067674730206, 278.33742266421126
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 420.63140869140625, 532.3914794921875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 128.00791458921614, 280.6009086189281
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 475.110595703125, 533.2115478515625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 182.47104764031215, 282.15701524460854
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 536.4788818359375, 
+531.23291015625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 243.86046653529135, 281.00775559386295
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 592.1201171875, 530.6262817382812
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 299.5048191184383, 281.15299707513094
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 652.2518310546875, 
+527.710205078125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 359.67044514236835, 279.0496756917446
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 709.6625366210938, 
+523.919921875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 417.1271233872573, 276.03546178828896
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 766.9906005859375, 
+527.9465942382812
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 474.3955462552135, 280.8363732116937
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 826.7774047851562, 
+525.31591796875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 534.2124378180324, 279.0137658066923
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 884.9681396484375, 
+525.543212890625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 592.3947893475059, 280.0273028859194
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 946.1602783203125, 
+523.3272705078125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 653.611283280769, 278.63838013763973
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1002.07080078125, 522.9237670898438
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 709.5221538013445, 278.9903666356055
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1113.01025390625, 523.0276489257812
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 820.4500757586567, 280.59323323716166
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1296.764892578125, 
+520.6961059570312
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1004.2194430773144, 280.7447632563829
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1429.319091796875, 
+522.0665893554688
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1136.7430238470756, 283.90617041618634
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1488.26611328125, 519.4820556640625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1195.7195858875, 282.11835438164724
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1545.4859619140625, 517.0166625976562
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1252.967522940948, 280.42633084212235
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1602.9986572265625, 548.0997314453125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1310.054979062797, 312.2836635087558
+---------- ROW 4.----------
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 363.3941650390625, 
+589.0523681640625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 70.01030416286196, 336.48324528121543
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 457.92449951171875, 590.8272705078125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 164.50802690409648, 339.5352627390421
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 528.877197265625, 585.451416015625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 235.52688506217214, 335.1185992923352
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 732.764404296875, 586.5313720703125
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 439.38088729046007, 338.9533446023977
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 961.9219970703125, 
+584.9495849609375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 668.5389333589421, 340.46803871390506
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1046.4742431640625, 583.250244140625
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 753.1064219679698, 339.9113080037581
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1139.664794921875, 
+579.5223388671875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 846.3388372638344, 337.442917282522
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1237.9129638671875, 581.88427734375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 944.5461231526123, 341.13215200446416
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1300.966796875, 578.6317138671875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1007.63814811057, 338.73185767863384
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1356.826171875, 576.5325927734375
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1063.520786725228, 337.3876901963637
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1458.328369140625, 
+575.3309936523438
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1165.0299537669239, 337.5576804864271
+     My midpoint relative to the upper left corner of the picture in pixels: (x,y)= 1544.7786865234375, 571.5555419921875
+     and relative to the upper left corner of the keyboard in pixels: (x,y)= 1251.5233924343695, 334.9506748654059
+
+--------------------------------------------------------------
+END: Organizing the detected buttons into rows
+--------------------------------------------------------------
+
+
+--------------------------------------------------------------
+BEGIN: Determining the buttons position in KRP
+--------------------------------------------------------------
+
+0 distance from KRP is= (x,y)= 18.135000970494712, 152.50622483399798
+1 distance from KRP is= (x,y)= 38.924920844058754, 152.80943027573275
+2 distance from KRP is= (x,y)= 58.77999048951634, 153.14054701870123
+3 distance from KRP is= (x,y)= 79.55870781175452, 153.5431296748284
+4 distance from KRP is= (x,y)= 99.93290046960881, 153.5384020629528
+5 distance from KRP is= (x,y)= 121.42278147835987, 154.06404326618573
+6 distance from KRP is= (x,y)= 142.13210730324658, 155.14503281729804
+7 distance from KRP is= (x,y)= 163.41356725661268, 154.73004153228905
+8 distance from KRP is= (x,y)= 184.8962657683414, 155.40768032557352
+9 distance from KRP is= (x,y)= 204.07921449468208, 155.67201549392362
+oe distance from KRP is= (x,y)= 225.94301415438608, 154.88162802565574
+ue distance from KRP is= (x,y)= 246.8872612326267, 156.03464604328497
+oo distance from KRP is= (x,y)= 267.47774353215607, 156.30973463544368
+Backspace distance from KRP is= (x,y)= 297.41207556990275, 156.37512064500035
+Insert distance from KRP is= (x,y)= 336.3825463092568, 157.47058512675244
+Home distance from KRP is= (x,y)= 357.2365726487812, 159.00200682444014
+PageUp distance from KRP is= (x,y)= 377.41231398592333, 158.97959123678274
+NumLock distance from KRP is= (x,y)= 405.19627073605653, 161.38214844630735
+NumpadDivide distance from KRP is= (x,y)= 424.8613043744773, 157.63042600881727
+NumpadMultiply distance from KRP is= (x,y)= 444.32188341109264, 157.0305169439684
+NumpadSubtract distance from KRP is= (x,y)= 465.4575493950505, 157.5245902491394
+Tab distance from KRP is= (x,y)= 22.761633227783502, 131.76384395719975
+q distance from KRP is= (x,y)= 49.412202667939596, 131.81096861928265
+w distance from KRP is= (x,y)= 70.49175941396484, 132.18335730574194
+e distance from KRP is= (x,y)= 90.25902035328838, 132.95119936634669
+r distance from KRP is= (x,y)= 111.38553133357894, 133.73736768442808
+t distance from KRP is= (x,y)= 130.67445941150564, 134.68951087984544
+z distance from KRP is= (x,y)= 151.8507333040016, 134.59069621881125
+u distance from KRP is= (x,y)= 173.48703005055987, 134.31937240681893
+i distance from KRP is= (x,y)= 195.2273122017696, 133.48130854144378
+o distance from KRP is= (x,y)= 215.88220113131405, 135.41178611843617
+p distance from KRP is= (x,y)= 237.65327153841648, 135.36738767647378
+oee distance from KRP is= (x,y)= 259.1940303544331, 135.3624328795881
+uu distance from KRP is= (x,y)= 277.8439520405592, 134.47490759202682
+Enter distance from KRP is= (x,y)= 305.8046625383103, 128.40404811703254
+Delete distance from KRP is= (x,y)= 334.7299287854348, 137.24400076941873
+End distance from KRP is= (x,y)= 357.00793340028565, 136.83484056633415
+PageDown distance from KRP is= (x,y)= 376.588835342242, 137.77270356112032
+Numpad7 distance from KRP is= (x,y)= 402.9757857013894, 136.23766853993956
+Numpad8 distance from KRP is= (x,y)= 423.6994121994519, 136.97825921767313
+Numpad9 distance from KRP is= (x,y)= 444.3683659589863, 136.65970256025983
+NumpadAdd distance from KRP is= (x,y)= 464.3981846849825, 126.28741947014576
+CapsLock distance from KRP is= (x,y)= 24.596750496841192, 111.5319369796308
+a distance from KRP is= (x,y)= 55.92329702084389, 110.91992219924686
+s distance from KRP is= (x,y)= 75.97206896286309, 110.7780505696429
+d distance from KRP is= (x,y)= 96.13205168713532, 112.2279453037272
+f distance from KRP is= (x,y)= 116.62480914658192, 112.56581268699402
+g distance from KRP is= (x,y)= 137.5880094408456, 113.21987833090326
+h distance from KRP is= (x,y)= 158.51235993031992, 114.2706198206786
+j distance from KRP is= (x,y)= 179.57802336867215, 114.03618652698349
+k distance from KRP is= (x,y)= 200.35649412757974, 114.15862842906199
+l distance from KRP is= (x,y)= 220.9346911411575, 113.07295453940932
+ae distance from KRP is= (x,y)= 242.9536327365436, 113.69181732509594
+aa distance from KRP is= (x,y)= 262.47212199541946, 114.0650931149278
+uee distance from KRP is= (x,y)= 283.02396889305567, 114.23991738932158
+Numpad4 distance from KRP is= (x,y)= 403.0730817356798, 115.91402209164912
+Numpad5 distance from KRP is= (x,y)= 423.2193641148856, 116.95304732590661
+Numpad6 distance from KRP is= (x,y)= 444.23972422127315, 116.64554700564865
+Shift distance from KRP is= (x,y)= 23.846994289014376, 90.773004052101
+ii distance from KRP is= (x,y)= 47.22184124018697, 90.2892947107214
+y distance from KRP is= (x,y)= 66.3591650302187, 89.99858444453889
+x distance from KRP is= (x,y)= 87.91647574982107, 90.70000193554104
+c distance from KRP is= (x,y)= 107.46200121390632, 90.91504877504595
+v distance from KRP is= (x,y)= 128.58493166583054, 91.94878384406962
+b distance from KRP is= (x,y)= 148.75203256625625, 93.29242090345741
+n distance from KRP is= (x,y)= 168.890103314538, 91.86498503036577
+m distance from KRP is= (x,y)= 189.891874689826, 92.79754704158434
+, distance from KRP is= (x,y)= 210.3329824915808, 92.71697209135633
+. distance from KRP is= (x,y)= 231.8284165353431, 93.50251294607665
+- distance from KRP is= (x,y)= 251.4685365572268, 93.64555295573226
+ShiftR distance from KRP is= (x,y)= 290.4390930577393, 93.60872734743792
+ArrowUp distance from KRP is= (x,y)= 354.9880008347134, 94.4352480506362
+Numpad1 distance from KRP is= (x,y)= 401.5513357396914, 93.94941831582955
+Numpad2 distance from KRP is= (x,y)= 422.25811017011347, 94.86562300632514
+Numpad3 distance from KRP is= (x,y)= 442.358167284901, 95.73959292162064
+NumpadEnter distance from KRP is= (x,y)= 462.56109490927986, 84.72079538459776
+Control distance from KRP is= (x,y)= 27.115673642858077, 70.20328378293428
+Windows distance from KRP is= (x,y)= 60.322072600208216, 69.57408948845767
+Alt distance from KRP is= (x,y)= 85.24617343895021, 71.47980389935555
+Space distance from KRP is= (x,y)= 156.86720362728536, 71.09696470243432
+AltGr distance from KRP is= (x,y)= 237.3651569265182, 71.65770058055178
+fn distance from KRP is= (x,y)= 267.06647589668705, 72.26010868051111
+ControlR distance from KRP is= (x,y)= 299.80223905661353, 73.58163306558819
+ArrowLeft distance from KRP is= (x,y)= 334.3146303755175, 72.74433730191366
+ArrowDown distance from KRP is= (x,y)= 356.46403613323434, 73.8973553195429
+ArrowRight distance from KRP is= (x,y)= 376.0861891924174, 74.64148359243282
+Numpad0 distance from KRP is= (x,y)= 411.7416481120614, 75.06744466792667
+NumpadDel distance from KRP is= (x,y)= 442.10971720879763, 76.40582401708205
+
+--------------------------------------------------------------
+END: Determining the buttons position in KRP
+--------------------------------------------------------------
+
+I will type "h its coordinates are= (x,y)= 158.51235993031992, 114.2706198206786"
+Moving to position= [-0.15851235993031992, -0.1142706198206786, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.21448764006968007, -0.3662706198206786, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 132.0 mm
+     My 1. value is= -309.99 mm
+     My 2. value is= 195.02 mm
+     My 3. value is= -6.8 mm
+     My 4. value is= 3139.83 mm
+     My 5. value is= 3.12 mm
+I will move the joints to position= 
+     My 0. value is= 214.49 mm
+     My 1. value is= -366.27 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.8 mm
+     My 4. value is= 3139.83 mm
+     My 5. value is= 3.12 mm
+I finished the movement, and currently in= 
+     My 0. value is= 214.46 mm
+     My 1. value is= -366.34 mm
+     My 2. value is= 31.09 mm
+     My 3. value is= -6.71 mm
+     My 4. value is= 3139.78 mm
+     My 5. value is= 2.81 mm
+*****END
+
+Moving to position= [-0.15851235993031992, -0.1142706198206786, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.21448764006968007, -0.3662706198206786, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 214.47 mm
+     My 1. value is= -366.27 mm
+     My 2. value is= 31.03 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.84 mm
+     My 5. value is= 3.09 mm
+I will move the joints to position= 
+     My 0. value is= 214.49 mm
+     My 1. value is= -366.27 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.84 mm
+     My 5. value is= 3.09 mm
+I finished the movement, and currently in= 
+     My 0. value is= 214.51 mm
+     My 1. value is= -366.26 mm
+     My 2. value is= 30.97 mm
+     My 3. value is= -6.9 mm
+     My 4. value is= 3139.84 mm
+     My 5. value is= 3.12 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 214.51 mm
+     My 1. value is= -366.25 mm
+     My 2. value is= 30.97 mm
+     My 3. value is= -6.9 mm
+     My 4. value is= 3139.82 mm
+     My 5. value is= 3.15 mm
+*****END
+
+I will type "e its coordinates are= (x,y)= 90.25902035328838, 132.95119936634669"
+Moving to position= [-0.09025902035328838, -0.1329511993663467, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.28274097964671163, -0.3849511993663467, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 214.48 mm
+     My 1. value is= -366.23 mm
+     My 2. value is= 30.94 mm
+     My 3. value is= -6.93 mm
+     My 4. value is= 3139.84 mm
+     My 5. value is= 3.34 mm
+I will move the joints to position=
+     My 0. value is= 282.74 mm
+     My 1. value is= -384.95 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.93 mm
+     My 4. value is= 3139.84 mm
+     My 5. value is= 3.34 mm
+I finished the movement, and currently in= 
+     My 0. value is= 282.62 mm
+     My 1. value is= -384.76 mm
+     My 2. value is= 30.79 mm
+     My 3. value is= -6.88 mm
+     My 4. value is= 3140.13 mm
+     My 5. value is= 4.48 mm
+*****END
+
+Moving to position= [-0.09025902035328838, -0.1329511993663467, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.28274097964671163, -0.3849511993663467, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 282.74 mm
+     My 1. value is= -384.95 mm
+     My 2. value is= 31.01 mm
+     My 3. value is= -6.93 mm
+     My 4. value is= 3139.82 mm
+     My 5. value is= 3.31 mm
+I will move the joints to position= 
+     My 0. value is= 282.74 mm
+     My 1. value is= -384.95 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.93 mm
+     My 4. value is= 3139.82 mm
+     My 5. value is= 3.31 mm
+I finished the movement, and currently in= 
+     My 0. value is= 282.75 mm
+     My 1. value is= -384.98 mm
+     My 2. value is= 30.98 mm
+     My 3. value is= -6.89 mm
+     My 4. value is= 3139.82 mm
+     My 5. value is= 3.26 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 282.71 mm
+     My 1. value is= -384.99 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.88 mm
+     My 5. value is= 3.19 mm
+*****END
+
+I will type "l its coordinates are= (x,y)= 220.9346911411575, 113.07295453940932"
+Moving to position= [-0.2209346911411575, -0.11307295453940933, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.1520653088588425, -0.36507295453940936, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 282.75 mm
+     My 1. value is= -384.98 mm
+     My 2. value is= 31.03 mm
+     My 3. value is= -6.88 mm
+     My 4. value is= 3139.77 mm
+     My 5. value is= 3.15 mm
+I will move the joints to position=
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.07 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.88 mm
+     My 4. value is= 3139.77 mm
+     My 5. value is= 3.15 mm
+I finished the movement, and currently in= 
+     My 0. value is= 152.1 mm
+     My 1. value is= -365.06 mm
+     My 2. value is= 31.01 mm
+     My 3. value is= -6.98 mm
+     My 4. value is= 3139.75 mm
+     My 5. value is= 3.25 mm
+*****END
+
+Moving to position= [-0.2209346911411575, -0.11307295453940933, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.1520653088588425, -0.36507295453940936, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 152.09 mm
+     My 1. value is= -365.05 mm
+     My 2. value is= 30.97 mm
+     My 3. value is= -6.86 mm
+     My 4. value is= 3139.72 mm
+     My 5. value is= 3.36 mm
+I will move the joints to position= 
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.07 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.86 mm
+     My 4. value is= 3139.72 mm
+     My 5. value is= 3.36 mm
+I finished the movement, and currently in= 
+     My 0. value is= 152.03 mm
+     My 1. value is= -365.06 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.77 mm
+     My 4. value is= 3139.75 mm
+     My 5. value is= 3.35 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 152.02 mm
+     My 1. value is= -365.08 mm
+     My 2. value is= 31.01 mm
+     My 3. value is= -6.71 mm
+     My 4. value is= 3139.78 mm
+     My 5. value is= 3.29 mm
+*****END
+
+I will type "l its coordinates are= (x,y)= 220.9346911411575, 113.07295453940932"
+Moving to position= [-0.2209346911411575, -0.11307295453940933, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.1520653088588425, -0.36507295453940936, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 152.06 mm
+     My 1. value is= -365.05 mm
+     My 2. value is= 30.95 mm
+     My 3. value is= -6.67 mm
+     My 4. value is= 3139.71 mm
+     My 5. value is= 3.49 mm
+I will move the joints to position= 
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.07 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.67 mm
+     My 4. value is= 3139.71 mm
+     My 5. value is= 3.49 mm
+I finished the movement, and currently in= 
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.03 mm
+     My 2. value is= 31.04 mm
+     My 3. value is= -6.66 mm
+     My 4. value is= 3139.73 mm
+     My 5. value is= 3.56 mm
+*****END
+
+Moving to position= [-0.2209346911411575, -0.11307295453940933, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.1520653088588425, -0.36507295453940936, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 152.08 mm
+     My 1. value is= -365.08 mm
+     My 2. value is= 31.04 mm
+     My 3. value is= -6.59 mm
+     My 4. value is= 3139.66 mm
+     My 5. value is= 3.38 mm
+I will move the joints to position=
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.07 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.59 mm
+     My 4. value is= 3139.66 mm
+     My 5. value is= 3.38 mm
+I finished the movement, and currently in= 
+     My 0. value is= 152.06 mm
+     My 1. value is= -365.1 mm
+     My 2. value is= 30.98 mm
+     My 3. value is= -6.55 mm
+     My 4. value is= 3139.68 mm
+     My 5. value is= 3.32 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.07 mm
+     My 2. value is= 30.96 mm
+     My 3. value is= -6.69 mm
+     My 4. value is= 3139.67 mm
+     My 5. value is= 3.48 mm
+*****END
+
+I will type "o its coordinates are= (x,y)= 215.88220113131405, 135.41178611843617"
+Moving to position= [-0.21588220113131404, -0.13541178611843616, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.15711779886868596, -0.3874117861184362, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 152.07 mm
+     My 1. value is= -365.07 mm
+     My 2. value is= 30.98 mm
+     My 3. value is= -6.58 mm
+     My 4. value is= 3139.65 mm
+     My 5. value is= 3.37 mm
+I will move the joints to position= 
+     My 0. value is= 157.12 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.58 mm
+     My 4. value is= 3139.65 mm
+     My 5. value is= 3.37 mm
+I finished the movement, and currently in= 
+     My 0. value is= 157.06 mm
+     My 1. value is= -387.33 mm
+     My 2. value is= 30.86 mm
+     My 3. value is= -6.6 mm
+     My 4. value is= 3139.67 mm
+     My 5. value is= 3.94 mm
+*****END
+
+Moving to position= [-0.21588220113131404, -0.13541178611843616, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.15711779886868596, -0.3874117861184362, 0.031, None, None, None]
+I am currently in the following TCP positions:
+     My 0. value is= 157.14 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 30.98 mm
+     My 3. value is= -6.58 mm
+     My 4. value is= 3139.6 mm
+     My 5. value is= 3.42 mm
+I will move the joints to position= 
+     My 0. value is= 157.12 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.58 mm
+     My 4. value is= 3139.6 mm
+     My 5. value is= 3.42 mm
+I finished the movement, and currently in= 
+     My 0. value is= 157.13 mm
+     My 1. value is= -387.38 mm
+     My 2. value is= 30.99 mm
+     My 3. value is= -6.56 mm
+     My 4. value is= 3139.63 mm
+     My 5. value is= 3.53 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 157.13 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 31.01 mm
+     My 3. value is= -6.59 mm
+     My 4. value is= 3139.61 mm
+     My 5. value is= 3.42 mm
+*****END
+
+I will type "w its coordinates are= (x,y)= 70.49175941396484, 132.18335730574194"
+Moving to position= [-0.07049175941396485, -0.13218335730574193, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.30250824058603515, -0.38418335730574193, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 157.1 mm
+     My 1. value is= -387.4 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.58 mm
+     My 4. value is= 3139.63 mm
+     My 5. value is= 3.41 mm
+I will move the joints to position=
+     My 0. value is= 302.51 mm
+     My 1. value is= -384.18 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.58 mm
+     My 4. value is= 3139.63 mm
+     My 5. value is= 3.41 mm
+I finished the movement, and currently in= 
+     My 0. value is= 302.4 mm
+     My 1. value is= -384.02 mm
+     My 2. value is= 30.78 mm
+     My 3. value is= -6.55 mm
+     My 4. value is= 3139.95 mm
+     My 5. value is= 4.44 mm
+*****END
+
+Moving to position= [-0.07049175941396485, -0.13218335730574193, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.30250824058603515, -0.38418335730574193, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 302.47 mm
+     My 1. value is= -384.21 mm
+     My 2. value is= 30.99 mm
+     My 3. value is= -6.62 mm
+     My 4. value is= 3139.67 mm
+     My 5. value is= 3.41 mm
+I will move the joints to position=
+     My 0. value is= 302.51 mm
+     My 1. value is= -384.18 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.62 mm
+     My 4. value is= 3139.67 mm
+     My 5. value is= 3.41 mm
+I finished the movement, and currently in= 
+     My 0. value is= 302.57 mm
+     My 1. value is= -384.17 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.71 mm
+     My 4. value is= 3139.59 mm
+     My 5. value is= 3.38 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 302.55 mm
+     My 1. value is= -384.2 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.69 mm
+     My 4. value is= 3139.6 mm
+     My 5. value is= 3.3 mm
+*****END
+
+I will type "o its coordinates are= (x,y)= 215.88220113131405, 135.41178611843617"
+Moving to position= [-0.21588220113131404, -0.13541178611843616, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.15711779886868596, -0.3874117861184362, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 302.5 mm
+     My 1. value is= -384.22 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.61 mm
+     My 4. value is= 3139.65 mm
+     My 5. value is= 3.28 mm
+I will move the joints to position= 
+     My 0. value is= 157.12 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.61 mm
+     My 4. value is= 3139.65 mm
+     My 5. value is= 3.28 mm
+I finished the movement, and currently in= 
+     My 0. value is= 157.18 mm
+     My 1. value is= -387.39 mm
+     My 2. value is= 30.99 mm
+     My 3. value is= -6.78 mm
+     My 4. value is= 3139.62 mm
+     My 5. value is= 3.36 mm
+*****END
+
+Moving to position= [-0.21588220113131404, -0.13541178611843616, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.15711779886868596, -0.3874117861184362, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 157.15 mm
+     My 1. value is= -387.42 mm
+     My 2. value is= 31.01 mm
+     My 3. value is= -6.7 mm
+     My 4. value is= 3139.61 mm
+     My 5. value is= 3.24 mm
+I will move the joints to position= 
+     My 0. value is= 157.12 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.7 mm
+     My 4. value is= 3139.61 mm
+     My 5. value is= 3.24 mm
+I finished the movement, and currently in= 
+     My 0. value is= 157.09 mm
+     My 1. value is= -387.45 mm
+     My 2. value is= 31.02 mm
+     My 3. value is= -6.73 mm
+     My 4. value is= 3139.66 mm
+     My 5. value is= 2.96 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 157.07 mm
+     My 1. value is= -387.41 mm
+     My 2. value is= 31.01 mm
+     My 3. value is= -6.64 mm
+     My 4. value is= 3139.67 mm
+     My 5. value is= 3.2 mm
+*****END
+
+I will type "r its coordinates are= (x,y)= 111.38553133357894, 133.73736768442808"
+Moving to position= [-0.11138553133357894, -0.13373736768442807, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.2616144686664211, -0.38573736768442807, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 157.11 mm
+     My 1. value is= -387.4 mm
+     My 2. value is= 31.02 mm
+     My 3. value is= -6.78 mm
+     My 4. value is= 3139.61 mm
+     My 5. value is= 3.17 mm
+I will move the joints to position= 
+     My 0. value is= 261.61 mm
+     My 1. value is= -385.74 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.78 mm
+     My 4. value is= 3139.61 mm
+     My 5. value is= 3.17 mm
+I finished the movement, and currently in= 
+     My 0. value is= 261.63 mm
+     My 1. value is= -385.77 mm
+     My 2. value is= 31.07 mm
+     My 3. value is= -6.84 mm
+     My 4. value is= 3139.52 mm
+     My 5. value is= 2.85 mm
+*****END
+
+Moving to position= [-0.11138553133357894, -0.13373736768442807, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.2616144686664211, -0.38573736768442807, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 261.59 mm
+     My 1. value is= -385.76 mm
+     My 2. value is= 31.06 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.6 mm
+     My 5. value is= 2.95 mm
+I will move the joints to position= 
+     My 0. value is= 261.61 mm
+     My 1. value is= -385.74 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.6 mm
+     My 5. value is= 2.95 mm
+I finished the movement, and currently in= 
+     My 0. value is= 261.62 mm
+     My 1. value is= -385.7 mm
+     My 2. value is= 30.94 mm
+     My 3. value is= -6.85 mm
+     My 4. value is= 3139.63 mm
+     My 5. value is= 3.28 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions: 
+     My 0. value is= 261.64 mm
+     My 1. value is= -385.73 mm
+     My 2. value is= 30.97 mm
+     My 3. value is= -6.87 mm
+     My 4. value is= 3139.6 mm
+     My 5. value is= 3.02 mm
+*****END
+
+I will type "d its coordinates are= (x,y)= 96.13205168713532, 112.2279453037272"
+Moving to position= [-0.09613205168713532, -0.11222794530372719, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.27686794831286465, -0.3642279453037272, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 261.64 mm
+     My 1. value is= -385.71 mm
+     My 2. value is= 30.99 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.55 mm
+     My 5. value is= 3.0 mm
+I will move the joints to position=
+     My 0. value is= 276.87 mm
+     My 1. value is= -364.23 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.55 mm
+     My 5. value is= 3.0 mm
+I finished the movement, and currently in= 
+     My 0. value is= 276.8 mm
+     My 1. value is= -364.27 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.61 mm
+     My 4. value is= 3139.57 mm
+     My 5. value is= 3.09 mm
+*****END
+
+Moving to position= [-0.09613205168713532, -0.11222794530372719, 0.03] and pushing a button
+*****BEGIN - move_robot *****
+My type of movement is= TCP My position is= [0.27686794831286465, -0.3642279453037272, 0.031, None, None, None]
+I am currently in the following TCP positions: 
+     My 0. value is= 276.86 mm
+     My 1. value is= -364.22 mm
+     My 2. value is= 30.97 mm
+     My 3. value is= -6.86 mm
+     My 4. value is= 3139.56 mm
+     My 5. value is= 3.11 mm
+I will move the joints to position= 
+     My 0. value is= 276.87 mm
+     My 1. value is= -364.23 mm
+     My 2. value is= 31.0 mm
+     My 3. value is= -6.86 mm
+     My 4. value is= 3139.56 mm
+     My 5. value is= 3.11 mm
+I finished the movement, and currently in= 
+     My 0. value is= 276.88 mm
+     My 1. value is= -364.24 mm
+     My 2. value is= 31.03 mm
+     My 3. value is= -6.88 mm
+     My 4. value is= 3139.54 mm
+     My 5. value is= 2.9 mm
+*****END
+
+*****BEGIN - push_button *****
+I am currently in the following TCP positions:
+     My 0. value is= 276.88 mm
+     My 1. value is= -364.24 mm
+     My 2. value is= 31.04 mm
+     My 3. value is= -6.82 mm
+     My 4. value is= 3139.51 mm
+     My 5. value is= 2.96 mm
+*****END

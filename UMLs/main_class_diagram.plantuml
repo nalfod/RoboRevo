@@ -1,0 +1,72 @@
+@startuml
+class Main {
+
+}
+
+class UR3 {
+    +__init__(KRP_in_TCP, camera_position_in_joints)
+    +set_command_state(new_command_state: CommandType)
+    +set_new_position(new_position: list)
+    ==
+    -move_to_home(): bool
+    -move_to_camera_position(): bool
+    -push_button_at_coordinates(x, y): bool
+    -touch_KRP_point(): bool
+    -custom_move(type_of_movement, list)
+    -KRP
+    -camera_position
+}
+
+class button_locator {
+    +__init__(path_of_pt_file, refs_width_in_mm, refs_height_in_mm)
+    +determine_buttons_position_in_TCP(new_image): dict_of_button_collection
+    ==
+    -model : YOLO
+    -coordinate_transformator : CoordinateTransformator
+    -detected_references: list<point>
+    -detected_buttons: list<detected_button>
+    -buttons_in_rows: list<list<detected_button>>
+}
+
+class coordinate_transformator {
+    +__init__()
+    +set_rotation_matrix(new_theta): void
+    +set_translation_vector(new_origin: point): void
+    +transform_point(x, y): point
+    ==
+    -rotation_matrix
+    -translation_vector
+}
+
+struct point {
+    +x
+    +y
+}
+
+struct detected_button {
+    +midpoint_relativ_to_pic: point
+    +midpoint_relative_to_keyboard: point
+}
+
+struct button {
+    +midpoint_pos_index_relative_key_0_x: int
+    +midpoint_pos_index_relative_key_0_y: int
+    +distance_from_KRP: point
+}
+
+entity dict_of_button_collection {
+    +dictionary<button>
+}
+
+Main *-- UR3
+Main *-- button_locator
+Main *-- dict_of_button_collection
+
+button_locator *-- coordinate_transformator
+
+button_locator ..> point
+button_locator ..> detected_button
+button_locator ..> dict_of_button_collection
+
+dict_of_button_collection *-- button
+@enduml
