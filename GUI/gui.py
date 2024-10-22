@@ -13,22 +13,22 @@ class robot_with_camera_mock:
         pass
 
     def send_home(self):
-        print("MOCK - I SEND MYSELF TO HOME")
+        print("MOCK MAINCLASS - I SEND MYSELF TO HOME")
 
     def touch_KRP(self):
-        print("MOCK - I SEND MYSELF TO KRP")
+        print("MOCK MAINCLASS - I SEND MYSELF TO KRP")
 
     def send_camera_position(self):
-        print("MOCK - I SEND MYSELF TO CAMERA POSITION")
+        print("MOCK MAINCLASS - I SEND MYSELF TO CAMERA POSITION")
 
     def update_krp_on_current_position(self):
-        print("MOCK - MY KRP HAS BEEN UPDATED")
+        print("MOCK MAINCLASS - MY KRP HAS BEEN UPDATED")
 
     def update_cam_pos_on_current_position(self):
-        print("MOCK - MY CAMERA POSITION HAS BEEN UPDATED")
+        print("MOCK MAINCLASS - MY CAMERA POSITION HAS BEEN UPDATED")
 
     def generate_code_based_on_input(self, input: str):
-        print(f"MOCK - I WILL GENERATE CODE BASED ON {input}")
+        print(f"MOCK MAINCLASS - I WILL GENERATE CODE BASED ON {input}")
 
     def get_krp(self) -> list:
         return self.KRP
@@ -54,18 +54,23 @@ class pop_up(tk.Toplevel):
 
         current_row = 0
         label = tk.Label(self, text=message)
-        label.grid(row=current_row, column=0, sticky="e", padx=5, pady=5)
+        label.grid(row=current_row, column=0, sticky="e", padx=5, pady=5, columnspan= 4 )
 
-        current_row += 1
+        current_row = self.add_camera_position_adjusting_buttons()
+
         proceed_button = tk.Button(self, text="Proceed", command=lambda: self.on_proceed())
-        proceed_button.grid(row=current_row, column=0, columnspan=2, pady=10)
+        proceed_button.grid(row=current_row, column=0, columnspan=1, pady=10, padx=10, sticky="nsew")
 
         cancel_button = tk.Button(self, text="Cancel", command=lambda: self.on_cancel())
-        cancel_button.grid(row=current_row, column=2, columnspan=2, pady=10)
+        cancel_button.grid(row=current_row, column=2, columnspan=1, pady=10, padx=10, sticky="nsew")
 
         self.grab_set()  # Block input to the parent window until this one is closed
         self.transient(parent)  # Keep popup on top of the parent window
         self.wait_window(self)  # Wait until the popup window is closed
+
+    def add_camera_position_adjusting_buttons(self, current_row):
+        # virtual function
+        return current_row + 1
 
     def on_proceed(self):
         self.result = True
@@ -74,6 +79,67 @@ class pop_up(tk.Toplevel):
     def on_cancel(self):
         self.result = False
         self.destroy()
+
+class pop_up_camera(pop_up):
+    def __init__(self, parent, title: str, message: str):
+        super().__init__(parent, title, message)
+
+        self.adjusting_in_progress = True
+
+        self.move_button_is_pressed = False
+        self.direction_of_movement = None
+        self.magnitude_of_movement = None
+
+    def add_camera_position_adjusting_buttons(self, current_row):
+        current_row += 1
+
+        label = tk.Label(self, text="Movement direction (x or y):")
+        label.grid(row=current_row, column=0, sticky="e", padx=5, pady=5)
+        self.movement_direction_entry = tk.Entry(self)
+        self.movement_direction_entry.grid(row=current_row, column=1, sticky="w", padx=5, pady=5)
+        self.movement_direction_entry.delete(0, tk.END)  # Clear the current contents
+
+        current_row += 1
+
+        label = tk.Label(self, text="Movement magnitude [mm]:")
+        label.grid(row=current_row, column=0, sticky="e", padx=5, pady=5)
+        self.movement_magnitude_entry = tk.Entry(self)
+        self.movement_magnitude_entry.grid(row=current_row, column=1, sticky="w", padx=5, pady=5)
+        self.movement_magnitude_entry.delete(0, tk.END)  # Clear the current contents
+
+        current_row += 1
+
+        self.move_button = tk.Button(self, text="MOVE", command=lambda: self.send_move_command)
+        self.move_button.grid(row=current_row, column=0, columnspan=4, pady=10, sticky="w")
+
+        current_row += 1
+
+    def send_move_command(self):
+        tmp_direction = self.movement_direction_entry.get()
+        if not (tmp_direction == "x" or tmp_direction == "y"):
+            messagebox.showerror("Error", "Direction should be either 'x' or 'y'!")
+            return
+        
+        tmp_magnitude = self.movement_magnitude_entry.get()
+
+        try:
+            tmp_magnitude_int = int(tmp_magnitude)
+        except:
+            messagebox.showerror("Error", "Please give me a number")
+            return
+
+        self.direction_of_movement = tmp_direction
+        self.magnitude_of_movement = tmp_magnitude
+        self.move_button_is_pressed = True
+
+    def on_proceed(self):
+        self.adjusting_in_progress = False
+        super().on_proceed()
+
+    def on_cancel(self):
+        self.adjusting_in_progress = False
+        super().on_cancel()
+
 
 
 
@@ -84,7 +150,7 @@ class MainApp(tk.Tk):
     def __init__(self, robot_with_camera):
         super().__init__()
         self.title("Robot developer")
-        self.geometry("300x150")
+        self.geometry("400x200")
 
         self.robot_with_camera = robot_with_camera
 
@@ -135,7 +201,7 @@ class MainApp(tk.Tk):
         if conf_window.result is not True:
             return
         
-        krp_setting_window = pop_up(self, "Set new KRP", "Move the tool of the robot to touch the midpoint of letter 'l', and press 'Proceed' if it is there!")
+        krp_setting_window = pop_up(self, "Set new KRP", "Move the tool of the robot to touch\nthe midpoint of letter 'l',\nand press 'Proceed' if it is there!")
 
         if krp_setting_window.result is not True:
             return
