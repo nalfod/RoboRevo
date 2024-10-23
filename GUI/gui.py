@@ -22,13 +22,16 @@ class robot_with_camera_mock:
         print("MOCK MAINCLASS - I SEND MYSELF TO CAMERA POSITION")
 
     def update_krp_on_current_position(self):
-        print("MOCK MAINCLASS - MY KRP HAS BEEN UPDATED")
+        print("MOCK MAINCLASS - MY KRP HAS BEEN UPDATED ON MY CURRENT POSITION")
 
     def update_cam_pos_on_current_position(self):
-        print("MOCK MAINCLASS - MY CAMERA POSITION HAS BEEN UPDATED")
+        print("MOCK MAINCLASS - MY CAMERA POSITION HAS BEEN UPDATED ON MY CURRENT POSITION")
 
-    def generate_code_based_on_input(self, input: str):
-        print(f"MOCK MAINCLASS - I WILL GENERATE CODE BASED ON {input}")
+    def move_relative_to_current_pos(self, direction: str, magnitude: int):
+        print(f"MOCK MAINCLASS - I WILL MOVE {magnitude} mm in direction {direction}")
+
+    def type_code_based_on_user_input(self):
+        print(f"MOCK MAINCLASS - I WILL GET THE USER INPUT AND TYPE CODE BASED ON THAT")
 
     def get_krp(self) -> list:
         return self.KRP
@@ -48,15 +51,15 @@ class pop_up(tk.Toplevel):
             #print("My master is not tk.Tk object")
             super().__init__(parent.master)
         self.title(title)
-        self.geometry("400x150")
+        self.geometry("400x250")
 
         self.result = None
 
         current_row = 0
         label = tk.Label(self, text=message)
-        label.grid(row=current_row, column=0, sticky="e", padx=5, pady=5, columnspan= 4 )
+        label.grid(row=current_row, column=0, sticky="nsew", padx=5, pady=5, columnspan= 4 )
 
-        current_row = self.add_camera_position_adjusting_buttons()
+        current_row = self.add_camera_position_adjusting_buttons(current_row)
 
         proceed_button = tk.Button(self, text="Proceed", command=lambda: self.on_proceed())
         proceed_button.grid(row=current_row, column=0, columnspan=1, pady=10, padx=10, sticky="nsew")
@@ -81,14 +84,12 @@ class pop_up(tk.Toplevel):
         self.destroy()
 
 class pop_up_camera(pop_up):
-    def __init__(self, parent, title: str, message: str):
+    def __init__(self, parent, title: str, message: str, robot_with_camera):
+        self.robot_with_camera = robot_with_camera
+        self.robot_with_camera.send_home()
+
+        # dont change the order! init of base class will block the code at the end of the function
         super().__init__(parent, title, message)
-
-        self.adjusting_in_progress = True
-
-        self.move_button_is_pressed = False
-        self.direction_of_movement = None
-        self.magnitude_of_movement = None
 
     def add_camera_position_adjusting_buttons(self, current_row):
         current_row += 1
@@ -109,12 +110,13 @@ class pop_up_camera(pop_up):
 
         current_row += 1
 
-        self.move_button = tk.Button(self, text="MOVE", command=lambda: self.send_move_command)
-        self.move_button.grid(row=current_row, column=0, columnspan=4, pady=10, sticky="w")
+        move_button = tk.Button(self, text="MOVE", command=lambda: self.send_move_command())
+        move_button.grid(row=current_row, column=0, columnspan=4, padx=10, pady=10, sticky="nsew")
 
-        current_row += 1
+        return current_row + 1
 
     def send_move_command(self):
+        print("send_move_command - begin")
         tmp_direction = self.movement_direction_entry.get()
         if not (tmp_direction == "x" or tmp_direction == "y"):
             messagebox.showerror("Error", "Direction should be either 'x' or 'y'!")
@@ -128,16 +130,13 @@ class pop_up_camera(pop_up):
             messagebox.showerror("Error", "Please give me a number")
             return
 
-        self.direction_of_movement = tmp_direction
-        self.magnitude_of_movement = tmp_magnitude
-        self.move_button_is_pressed = True
+        # print(f"My new direction is= {tmp_direction} and my new magnitude is= {tmp_magnitude_int}")
+        self.robot_with_camera.move_relative_to_current_pos(tmp_direction, tmp_magnitude_int)
 
     def on_proceed(self):
-        self.adjusting_in_progress = False
         super().on_proceed()
 
     def on_cancel(self):
-        self.adjusting_in_progress = False
         super().on_cancel()
 
 
@@ -165,7 +164,7 @@ class MainApp(tk.Tk):
         self.robot_positions_labels.append(label2)
         
         number_of_rows += 1
-        label3 = tk.Label(self, text="Camera_position:")
+        label3 = tk.Label(self, text="Camera position:")
         label3.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
         label4 = tk.Label(self, text=self.robot_with_camera.get_camera_pos())
         label4.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
@@ -174,26 +173,26 @@ class MainApp(tk.Tk):
 
         number_of_rows += 1
         send_home_button = tk.Button(self, text="Send home", command=self.robot_with_camera.send_home)
-        send_home_button.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
+        send_home_button.grid(row=number_of_rows, column=0, sticky="nsew", padx=5, pady=5)
 
         touch_krp_button = tk.Button(self, text="Touch KRP", command=self.robot_with_camera.touch_KRP)
-        touch_krp_button.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
+        touch_krp_button.grid(row=number_of_rows, column=1, sticky="nsew", padx=5, pady=5)
 
-        touch_krp_button = tk.Button(self, text="Go to camera pos", command=self.robot_with_camera.send_camera_position)
-        touch_krp_button.grid(row=number_of_rows, column=2, sticky="e", padx=5, pady=5)
+        touch_krp_button = tk.Button(self, text="Go to cam pos", command=self.robot_with_camera.send_camera_position)
+        touch_krp_button.grid(row=number_of_rows, column=2, sticky="nsew", padx=5, pady=5)
 
         number_of_rows += 1
 
         send_home_button = tk.Button(self, text="Set new KRP", command=self.set_new_krp)
-        send_home_button.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
+        send_home_button.grid(row=number_of_rows, column=0, sticky="nsew", padx=5, pady=5)
 
-        touch_krp_button = tk.Button(self, text="Set new camera_position", command=self.set_new_camera_position)
-        touch_krp_button.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
+        touch_krp_button = tk.Button(self, text="Set new cam pos", command=self.set_new_camera_position)
+        touch_krp_button.grid(row=number_of_rows, column=1, sticky="nsew", padx=5, pady=5)
 
         number_of_rows += 1
 
         touch_krp_button = tk.Button(self, text="TYPE CODE", command=self.type_code)
-        touch_krp_button.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
+        touch_krp_button.grid(row=number_of_rows, column=0, sticky="nsew", padx=5, pady=5)
 
     def set_new_krp(self):
         conf_window = pop_up(self, "Attention", "This will change the KRP, do you want to proceed?")
@@ -204,8 +203,10 @@ class MainApp(tk.Tk):
         krp_setting_window = pop_up(self, "Set new KRP", "Move the tool of the robot to touch\nthe midpoint of letter 'l',\nand press 'Proceed' if it is there!")
 
         if krp_setting_window.result is not True:
+            messagebox.showinfo("Info", "New position has been discard!!")
             return
         else:
+            messagebox.showinfo("Info", "Position has been updated!")
             self.robot_with_camera.update_krp_on_current_position()
 
     def set_new_camera_position(self):
@@ -214,16 +215,17 @@ class MainApp(tk.Tk):
         if conf_window.result is not True:
             return
         
-        krp_setting_window = pop_up(self, "Set new KRP", "Move the tool of the robot to touch the midpoint of letter 'l', and press 'Proceed' if it is there!")
+        camera_setting_window = pop_up_camera(self, "Set new camera position", "Move robot is 'x' and 'y' direction\nwith a predefined magnitude,\nand press 'Proceed' if you are satisfied\nwith the new position!", self.robot_with_camera)
 
-        # NOT READY
-        if krp_setting_window.result is not True:
+        if camera_setting_window.result is not True:
+            messagebox.showinfo("Info", "New position has been discard!!")
             return
         else:
+            messagebox.showinfo("Info", "Position has been updated!")
             self.robot_with_camera.update_cam_pos_on_current_position()
 
     def type_code(self):
-        print("WRITE ME PLEASE")
+        self.robot_with_camera.type_code_based_on_user_input()
 
 
 if __name__ == "__main__":
