@@ -30,8 +30,13 @@ class robot_with_camera_mock:
     def move_relative_to_current_pos(self, direction: str, magnitude: int):
         print(f"MOCK MAINCLASS - I WILL MOVE {magnitude} mm in direction {direction}")
 
-    def type_code_based_on_user_input(self):
-        print(f"MOCK MAINCLASS - I WILL GET THE USER INPUT AND TYPE CODE BASED ON THAT")
+    def listen_the_instruction(self) -> bool:
+        print(f"MOCK MAINCLASS - I AM LISTENING THE INSTRUCTION")
+        return True
+    
+    def type_the_code(self) -> bool:
+        print(f"MOCK MAINCLASS - I AM TYPING THE CODE")
+        return True
 
     def get_krp(self) -> list:
         return self.KRP
@@ -225,7 +230,16 @@ class MainApp(tk.Tk):
             self.robot_with_camera.update_cam_pos_on_current_position()
 
     def type_code(self):
-        self.robot_with_camera.type_code_based_on_user_input()
+        # FIXME: try - catch blocks would be more sophisticated so the error can be determined here
+        result_of_code_generation = self.robot_with_camera.listen_the_instruction()
+        if not result_of_code_generation:
+            messagebox.showerror("Error", "Speech recognition or code generation did not work, try it again!!")
+            return
+
+        result_of_code_typing = self.robot_with_camera.type_the_code()
+        if not result_of_code_typing:
+            messagebox.showerror("Error", "Image recognition or typing did not work, try it again!!")
+            return
 
 
 if __name__ == "__main__":
