@@ -34,6 +34,12 @@ class robot_with_camera_mock:
         print(f"MOCK MAINCLASS - I AM LISTENING THE INSTRUCTION")
         return True
     
+    def get_the_instruction_from_CL(self) -> bool:
+        print(f"MOCK MAINCLASS - TYPE THE CODE:")
+        code_to_generate = input()
+        print(f"MOCK MAINCLASS - I WILL TYPE: {code_to_generate}")
+        return True
+    
     def type_the_code(self) -> bool:
         print(f"MOCK MAINCLASS - I AM TYPING THE CODE")
         return True
@@ -199,6 +205,10 @@ class MainApp(tk.Tk):
         touch_krp_button = tk.Button(self, text="TYPE CODE", command=self.type_code)
         touch_krp_button.grid(row=number_of_rows, column=0, sticky="nsew", padx=5, pady=5)
 
+        self.code_input_mode_var = tk.IntVar()  # Variable to hold the value of the radio button
+        code_input_mode_var = tk.Checkbutton(self, text="CL input (test mode)", variable=self.code_input_mode_var)
+        code_input_mode_var.grid(row=number_of_rows, column=2 , pady=10)
+
     def set_new_krp(self):
         conf_window = pop_up(self, "Attention", "This will change the KRP, do you want to proceed?")
 
@@ -231,7 +241,11 @@ class MainApp(tk.Tk):
 
     def type_code(self):
         # FIXME: try - catch blocks would be more sophisticated so the error can be determined here
-        result_of_code_generation = self.robot_with_camera.listen_the_instruction()
+        result_of_code_generation = False
+        if bool(self.code_input_mode_var.get()):
+            result_of_code_generation = self.robot_with_camera.get_the_instruction_from_CL()
+        else:
+            result_of_code_generation = self.robot_with_camera.listen_the_instruction()
         if not result_of_code_generation:
             messagebox.showerror("Error", "Speech recognition or code generation did not work, try it again!!")
             return
