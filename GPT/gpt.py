@@ -16,14 +16,15 @@ class GPT:
             raise e("The location of the key file does not exist")
 
     def request(self, message: str) -> str:
-        session = self.client.completions.create(
+        session = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages = [
                 {
                     "role": "user",
                     "content": f"{message}. Don't give any explanation, just the code section for the request."
                 }
-            ]
+            ],
+            stream=False
         )
 
         response = session.choices[0].message.content
