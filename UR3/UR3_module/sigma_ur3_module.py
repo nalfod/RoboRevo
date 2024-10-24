@@ -37,8 +37,8 @@ class UR3:
         self.next_position_TCP = []
         self.next_position_joint = []
 
-        # self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
-        self.ROBOT_HOST = "192.168.0.125" # FOR REAL
+        self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
+        # self.ROBOT_HOST = "192.168.0.125" # FOR REAL
         self.ROBOT_PORT = 30004
 
         script_dir = Path(__file__).parent
@@ -360,8 +360,8 @@ class UR3:
             for i in range(0, 6):
                 target_value = self.setp.__dict__["input_double_register_%i" % i]
                 actual_value = state.__dict__["input_double_register_%i" % i]
-                if round(target_value, 3) != round(actual_value, 3):
-                    # print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
+                if abs(target_value - actual_value) > 1e-4:
+                    print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
                     register_has_been_updated = False
                     break
 

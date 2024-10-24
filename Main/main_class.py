@@ -16,7 +16,7 @@ from MachineVision.camera import Camera
 
 from tkinter import messagebox
 
-KEYBOARD_HEIGHT = 30
+KEYBOARD_HEIGHT = 5
 
 class robot_developer:
     def __init__(self, KRP: list, camera_position: list):
@@ -117,7 +117,7 @@ class robot_developer:
     
     def get_the_instruction_from_CL(self) -> bool:
         print(f"Please enter the text which the robot will type:")
-        self.current_code_to_type = "" = input()
+        self.current_code_to_type = input()
         print(f"I WILL TYPE: {self.current_code_to_type}")
         return True
     

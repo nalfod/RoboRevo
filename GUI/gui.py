@@ -156,7 +156,7 @@ class pop_up_camera(pop_up):
 ##################
 # MAIN_GUI
 ##################
-class MainApp(tk.Tk):
+class MainGui(tk.Tk):
     def __init__(self, robot_with_camera):
         super().__init__()
         self.title("Robot developer")
@@ -258,5 +258,5 @@ class MainApp(tk.Tk):
 
 if __name__ == "__main__":
     mock_robot = robot_with_camera_mock()
-    app = MainApp(mock_robot)
+    app = MainGui(mock_robot)
     app.mainloop()
