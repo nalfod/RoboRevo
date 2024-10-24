@@ -15,6 +15,7 @@ from MachineVision.sigma_machine_vision_module import Point
 from MachineVision.camera import Camera
 
 from tkinter import messagebox
+from tkinter import simpledialog
 
 KEYBOARD_HEIGHT = 5
 
@@ -50,7 +51,7 @@ class robot_developer:
         # result of the chatgpt
         self.current_code_to_type = ""
         # a string which has been modified based on the mapping of the keyboard
-        self.current_code_to_type_after_parsing = ""
+        self.current_code_to_type_after_transform = ""
 
         # Creating the button locator
         path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
@@ -117,26 +118,29 @@ class robot_developer:
     
     def get_the_instruction_from_CL(self) -> bool:
         print(f"Please enter the text which the robot will type:")
-        self.current_code_to_type = input()
+        self.current_code_to_type = simpledialog.askstring("Input", "Please enter the text which has to be typed!")
         print(f"I WILL TYPE: {self.current_code_to_type}")
         return True
     
     def type_the_code(self) -> bool:
+        self._transform_source_code_based_on_keyboard_maping()
+
         result_of_button_locator = self._determine_current_button_position()
 
         if not result_of_button_locator:
             return False
         
-        for i in range (0, len(self.current_code_to_type_after_parsing)):
-            next_coordinates = self.button_collection[self.current_code_to_type_after_parsing[i]].distance_from_KRP
+        for i in range (0, len(self.current_code_to_type_after_transform)):
+            next_coordinates = self.button_collection[self.current_code_to_type_after_transform[i]].distance_from_KRP
         #for index, (button_name, button_properties) in enumerate(button_collection.items()):
             #next_coordinates = button_properties.distance_from_KRP
-            #print(f"I will type \"{button_name} its coordinates are= {next_coordinates}\"")
+            print(f"I will type \"{self.current_code_to_type_after_transform[i]} its coordinates are= {next_coordinates}\"")
             self.robot.set_next_position_TCP([-next_coordinates.x / 1000, -next_coordinates.y / 1000, KEYBOARD_HEIGHT /1000])
             self.robot.set_command_state(CommandType.PUSH_BUTTON_AT)
             while self.robot.command_type != CommandType.IDLE:
                 pass
-
+        
+        messagebox.showinfo("Info", "I finished the task, can I get my salary now?")
         return True
 
     def get_krp(self) -> list:
@@ -149,10 +153,15 @@ class robot_developer:
         for i in range(5):
             # FIXME: this should be more sophisticated? 
             try:
-                path_of_new_image = self.camera.take_image()
+                # path_of_new_image = self.camera.take_image()
+                path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
                 self.button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, self.button_collection)
                 return True
             except:
                 print(f"Not successful button detection, let's try it again for the {i + 2}. time!")
         
         return False
+    
+    def _transform_source_code_based_on_keyboard_maping(self):
+        # FIXME: finish this function, it can be a static function as well maybe?
+        self.current_code_to_type_after_transform = self.current_code_to_type

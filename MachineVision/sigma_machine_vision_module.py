@@ -164,7 +164,7 @@ class button_locator:
         self._reset_my_containers()
 
         # 1. using YOLO to detect all the objects (buttons and references) on the captured picture
-        results = self.model.predict(image_path, show = True, save=True, imgsz=720, conf=0.5, show_labels=False)
+        results = self.model.predict(image_path, show = False, save=True, imgsz=720, conf=0.5, show_labels=False)
         
         # 2. separates the detected object into member variables detected_references and detected_buttons
         self._sort_detected_objects_to_lists(results)
