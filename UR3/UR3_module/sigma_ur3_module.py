@@ -94,34 +94,26 @@ class UR3:
         self.next_position_joint = copy.deepcopy(new_position)
 
     def set_KRP_linear_coordinates_by_current_pos(self):
-        state = self.con.receive()
-        if state is None:
-            print("Recieved state is None, aborting method...")
-            return self.KRP
-        current_position = state.actual_TCP_pose
+        current_position = self.get_current_TCP_position()
 
-        if len( current_position ) != 3:
+        if len( current_position ) < 3:
             return self.KRP
         else:
             for i in range (3):
                 self.KRP[i] = current_position[i]
         
-        return self.KRP
+        return self.KRP[:3]
 
     def set_camera_pos_linear_coordinates_by_current_pos(self):
-        state = self.con.receive()
-        if state is None:
-            print("Recieved state is None, aborting method...")
-            return self.camera_pos_in_TCP
-        current_position = state.actual_TCP_pose
+        current_position = self.get_current_TCP_position()
 
-        if len( current_position ) != 3:
+        if len( current_position ) < 3:
             return self.camera_pos_in_TCP
         else:
             for i in range (3):
                 self.camera_pos_in_TCP[i] = current_position[i]
 
-        return self.camera_pos_in_TCP
+        return self.camera_pos_in_TCP[:3]
     
     def get_current_TCP_position(self):
         state = self.con.receive()
@@ -361,7 +353,7 @@ class UR3:
                 target_value = self.setp.__dict__["input_double_register_%i" % i]
                 actual_value = state.__dict__["input_double_register_%i" % i]
                 if abs(target_value - actual_value) > 1e-4:
-                    print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
+                    # print("Target value is= " + str(target_value) + " but input_double_register_" + str(i) + " is= " + str(actual_value))
                     register_has_been_updated = False
                     break
 

@@ -97,7 +97,7 @@ class pop_up(tk.Toplevel):
 class pop_up_camera(pop_up):
     def __init__(self, parent, title: str, message: str, robot_with_camera):
         self.robot_with_camera = robot_with_camera
-        self.robot_with_camera.send_home()
+        self.robot_with_camera.send_camera_position()
 
         # dont change the order! init of base class will block the code at the end of the function
         super().__init__(parent, title, message)
@@ -170,14 +170,16 @@ class MainGui(tk.Tk):
         # Yearly data widgets:
         label1 = tk.Label(self, text="KRP:")
         label1.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
-        label2 = tk.Label(self, text=self.robot_with_camera.get_krp())
+        new_krp_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_krp()]
+        label2 = tk.Label(self, text=new_krp_to_display)
         label2.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
         self.robot_positions_labels.append(label2)
         
         number_of_rows += 1
         label3 = tk.Label(self, text="Camera position:")
         label3.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
-        label4 = tk.Label(self, text=self.robot_with_camera.get_camera_pos())
+        new_cam_pos_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_camera_pos()]
+        label4 = tk.Label(self, text=new_cam_pos_to_display)
         label4.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
         self.robot_positions_labels.append(label4)
 
@@ -223,12 +225,16 @@ class MainGui(tk.Tk):
         else:
             messagebox.showinfo("Info", "Position has been updated!")
             self.robot_with_camera.update_krp_on_current_position()
+            new_krp_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_krp()]
+            self.robot_positions_labels[0].config(text=new_krp_to_display)
 
     def set_new_camera_position(self):
         conf_window = pop_up(self, "Attention", "This will change the camera position, do you want to proceed?")
 
         if conf_window.result is not True:
             return
+        
+        messagebox.showwarning("Warning", "The robot will move to camera position, step away!!")
         
         camera_setting_window = pop_up_camera(self, "Set new camera position", "Move robot is 'x' and 'y' direction\nwith a predefined magnitude,\nand press 'Proceed' if you are satisfied\nwith the new position!", self.robot_with_camera)
 
@@ -238,6 +244,8 @@ class MainGui(tk.Tk):
         else:
             messagebox.showinfo("Info", "Position has been updated!")
             self.robot_with_camera.update_cam_pos_on_current_position()
+            new_cam_pos_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_camera_pos()]
+            self.robot_positions_labels[1].config(text=new_cam_pos_to_display)
 
     def type_code(self):
         # FIXME: try - catch blocks would be more sophisticated so the error can be determined here
