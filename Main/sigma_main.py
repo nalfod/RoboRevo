@@ -7,12 +7,11 @@ print(os.getcwd())
 sys.path.append("..")
 print(os.getcwd())
 
-from UR3.UR3_module.sigma_ur3_module import UR3
-from UR3.UR3_module.sigma_ur3_module import CommandType
-from MachineVision.sigma_machine_vision_module import button_locator
-from MachineVision.sigma_machine_vision_module import Button
-from MachineVision.sigma_machine_vision_module import Point
+from UR3.UR3_module.sigma_ur3_module import UR3, CommandType
+from MachineVision.sigma_machine_vision_module import button_locator, Button, Point
 from MachineVision.camera import Camera
+from GPT.gpt import GPT
+from voice.listener import Listener
 
 # TODO: always measure these!!
 # KRP is the l button of the keyboard
@@ -47,16 +46,18 @@ def main():
         "ArrowLeft": Button(7, 4), "ArrowDown": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
     }
 
-    # TODO: here should be the source code generator
-    string_to_type = "elvesziamunkat"
+    # Source code generation based on microphone input
+    audio_recorder = Listener("GPT/key.txt")
+    message = audio_recorder.listen()
+    chat_bot = GPT("GPT/key.txt")
+    string_to_type = chat_bot.request(message)
 
     path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
     button_loc = button_locator(path_of_neural_network, Point(KRP[0] * 1000, KRP[1] * 1000), [1920, 1080], True, False)
     robot = UR3(KRP, CAMERA_POSITION)
 
     # Start the robot thread
-    robot_thread = threading.Thread(target=robot.main_loop, args=())
-    robot_thread.daemon = True
+    robot_thread = threading.Thread(target=robot.main_loop, args=(), daemon=True)
     robot_thread.start()
 
     # robot start procedure
@@ -75,8 +76,7 @@ def main():
 
     camera = Camera(camera_idx=0)
     # path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg") # TODO: for this image (WIN_20241011_16_38_54_Pro.jpg), position of one of the button has been photod by my phone!!!!
-    
-    counter = 0
+
     while True:
         # FIXME: this should be more sophisticated? 
         try:
@@ -85,15 +85,15 @@ def main():
             break
         except:
             if counter == 5:
-                print("It seems that button detection does not working.... change the keyboard or camera position or lightning...")
+                print("It seems that button detection does not work... change the keyboard or camera position or lightning...")
                 sys.exit()
             else:
                 counter += 1
-                print(f"Not successful button detection, let's try it again for the {counter + 1}. time!")
+                print(f"Not successful button detection, let's try it again for the {counter + 1}th time!")
 
 
-    for i in range (0, len(string_to_type)):
-        next_coordinates = button_collection[string_to_type[i]].distance_from_KRP
+    for c in string_to_type:
+        next_coordinates = button_collection[c].distance_from_KRP
     #for index, (button_name, button_properties) in enumerate(button_collection.items()):
         #next_coordinates = button_properties.distance_from_KRP
         #print(f"I will type \"{button_name} its coordinates are= {next_coordinates}\"")
