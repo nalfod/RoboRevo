@@ -29,12 +29,12 @@ class robot_developer:
             "0": Button(0, 0), "1": Button(1, 0), "2": Button(2, 0), "3": Button(3, 0), "4": Button(4, 0), "5": Button(5, 0),
             "6": Button(6, 0), "7": Button(7, 0), "8": Button(8, 0), "9": Button(9, 0), "oe": Button(10, 0), "ue": Button(11, 0), "oo": Button(12, 0),
             "Backspace": Button(13, 0), "Insert": Button(14, 0), "Home": Button(15, 0), "PageUp": Button(16, 0), "NumLock": Button(17, 0),
-            "NumpadDivide": Button(18, 0), "NumpadMultiply": Button(19, 0), "NumpadSubtract": Button(20, 0),
+            "/": Button(18, 0), "*": Button(19, 0), "NumpadSubtract": Button(20, 0),
             # Second row
             "Tab": Button(0, 1), "q": Button(1, 1), "w": Button(2, 1), "e": Button(3, 1), "r": Button(4, 1), "t": Button(5, 1), "z": Button(6, 1),
             "u": Button(7, 1), "i": Button(8, 1), "o": Button(9, 1), "p": Button(10, 1), "oee": Button(11, 1), "uu": Button(12, 1), "Enter": Button(13, 1),
             "Delete": Button(14, 1), "End": Button(15, 1), "PageDown": Button(16, 1), "Numpad7": Button(17, 1), "Numpad8": Button(18, 1), "Numpad9": Button(19, 1), 
-            "NumpadAdd": Button(20, 1),
+            "+": Button(20, 1),
             # Third row
             "CapsLock": Button(0, 2), "a": Button(1, 2), "s": Button(2, 2), "d": Button(3, 2), "f": Button(4, 2), "g": Button(5, 2), "h": Button(6, 2),
             "j": Button(7, 2), "k": Button(8, 2), "l": Button(9, 2), "ae": Button(10, 2), "aa": Button(11, 2), "uee": Button(12, 2), "Numpad4": Button(13, 2),
@@ -48,10 +48,12 @@ class robot_developer:
             "ArrowLeft": Button(7, 4), "ArrowDown": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
         }
 
+
+
         # result of the chatgpt
-        self.current_code_to_type = ""
+        self.current_code_to_type = None
         # a string which has been modified based on the mapping of the keyboard
-        self.current_code_to_type_after_transform = ""
+        self.remapped_code_to_type = []
 
         # Creating the button locator
         path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
@@ -123,18 +125,18 @@ class robot_developer:
         return True
     
     def type_the_code(self) -> bool:
-        self._transform_source_code_based_on_keyboard_maping()
+        self._remap_keys()
 
         result_of_button_locator = self._determine_current_button_position()
 
         if not result_of_button_locator:
             return False
         
-        for i in range (0, len(self.current_code_to_type_after_transform)):
-            next_coordinates = self.button_collection[self.current_code_to_type_after_transform[i]].distance_from_KRP
+        for button in self.remapped_code_to_type:
+            next_coordinates = self.button_collection[button].distance_from_KRP
         #for index, (button_name, button_properties) in enumerate(button_collection.items()):
             #next_coordinates = button_properties.distance_from_KRP
-            print(f"I will type \"{self.current_code_to_type_after_transform[i]} its coordinates are= {next_coordinates}\"")
+            print(f"I will type \"{button} its coordinates are= {next_coordinates}\"")
             self.robot.set_next_position_TCP([-next_coordinates.x / 1000, -next_coordinates.y / 1000, KEYBOARD_HEIGHT /1000])
             self.robot.set_command_state(CommandType.PUSH_BUTTON_AT)
             while self.robot.command_type != CommandType.IDLE:
@@ -162,6 +164,54 @@ class robot_developer:
         
         return False
     
-    def _transform_source_code_based_on_keyboard_maping(self):
-        # FIXME: finish this function, it can be a static function as well maybe?
-        self.current_code_to_type_after_transform = self.current_code_to_type
+    def _remap_keys(self) -> None:
+        key_remap_dict = {
+            '[': "oe",
+            '(': "8",
+            ')': "9",
+            '=': "7",
+            ']': "ue",
+            '{': "oo",
+            '%': "5",
+            '}': "uu",
+            '!': "4",
+            '<': "aa",
+            '>': "uee",
+            '&': "Insert",
+            '|': "Home",
+            '^': "PageUp",
+            '~': "Delete",
+            "'": "1",
+            '"': "2",
+            ':': "3",
+            ';': "0",
+            '\\': "6",
+            '$': "ee",
+            '#': "End",
+            '\n': "Enter",
+            '\t': "Tab",
+            ' ': "Space",
+            '0': "Numpad0",
+            '1': "Numpad1",
+            '2': "Numpad2",
+            '3': "Numpad3",
+            '4': "Numpad4",
+            '5': "Numpad5",
+            '6': "Numpad6",
+            '7': "Numpad7",
+            '8': "Numpad8",
+            '9': "Numpad9"
+        }
+
+        for c in self.current_code_to_type:
+            # Handling uppercase letters
+            if c.isupper():
+                self.remapped_code_to_type.extend(["CapsLock", c.lower(), "CapsLock"])
+                continue
+
+            if remapped_char := key_remap_dict.get(c, None):
+                self.remapped_code_to_type.append(remapped_char)
+                continue
+
+            self.remapped_code_to_type.append(c)
+            
