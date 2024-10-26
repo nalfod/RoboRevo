@@ -21,7 +21,7 @@ class GPT:
             messages = [
                 {
                     "role": "user",
-                    "content": f"{message}. Don't give any explanation, just the code section for the request."
+                    "content": f"{message}. No additional info (eg.: explanation, the coding language, leading/trailing '`' characters) is needed, just the code section for the request (starting with 'def', ending with the last line of the function)."
                 }
             ],
             stream=False

@@ -30,11 +30,11 @@ class robot_with_camera_mock:
     def move_relative_to_current_pos(self, direction: str, magnitude: int):
         print(f"MOCK MAINCLASS - I WILL MOVE {magnitude} mm in direction {direction}")
 
-    def listen_the_instruction(self) -> bool:
+    def listen_the_input_generate_code(self) -> bool:
         print(f"MOCK MAINCLASS - I AM LISTENING THE INSTRUCTION")
         return True
     
-    def get_the_instruction_from_CL(self) -> bool:
+    def get_code_to_generate_from_direct_input(self) -> bool:
         print(f"MOCK MAINCLASS - TYPE THE CODE:")
         code_to_generate = input()
         print(f"MOCK MAINCLASS - I WILL TYPE: {code_to_generate}")
@@ -251,9 +251,9 @@ class MainGui(tk.Tk):
         # FIXME: try - catch blocks would be more sophisticated so the error can be determined here
         result_of_code_generation = False
         if bool(self.code_input_mode_var.get()):
-            result_of_code_generation = self.robot_with_camera.get_the_instruction_from_CL()
+            result_of_code_generation = self.robot_with_camera.get_code_to_generate_from_direct_input()
         else:
-            result_of_code_generation = self.robot_with_camera.listen_the_instruction()
+            result_of_code_generation = self.robot_with_camera.listen_the_input_generate_code()
         if not result_of_code_generation:
             messagebox.showerror("Error", "Speech recognition or code generation did not work, try it again!!")
             return

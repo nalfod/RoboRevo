@@ -14,6 +14,10 @@ from MachineVision.sigma_machine_vision_module import Button
 from MachineVision.sigma_machine_vision_module import Point
 from MachineVision.camera import Camera
 
+from GPT.gpt import GPT
+from voice.listener import Listener
+
+
 from tkinter import messagebox
 from tkinter import simpledialog
 
@@ -69,6 +73,10 @@ class robot_developer:
         # Creating the camera
         self.camera = Camera( camera_idx=0 )
 
+        # creating audio recorder and chatbot api:
+        self.audio_recorder = Listener("../GPT/key.txt")
+        self.chat_bot = GPT("../GPT/key.txt")
+
         messagebox.showinfo("Info", "Please start the program on the UR3 robot!")
 
     def send_home(self):
@@ -114,19 +122,24 @@ class robot_developer:
             while self.robot.command_type != CommandType.IDLE:
                 pass
 
-    def listen_the_instruction(self) -> bool:
-        print(f"MOCK MAINCLASS - I AM LISTENING THE INSTRUCTION")
+    def listen_the_input_generate_code(self) -> bool:
+        messagebox.showinfo("Info", "After exiting this window, please describe the coding problem which you want to solve!")
+        message = self.audio_recorder.listen()
+        self.current_code_to_type = self.chat_bot.request(message)
+        messagebox.showinfo("Info", f"I will type the following code:\n{self.current_code_to_type}")
         return True
     
-    def get_the_instruction_from_CL(self) -> bool:
-        print(f"Please enter the text which the robot will type:")
+    def get_code_to_generate_from_direct_input(self) -> bool:
         self.current_code_to_type = simpledialog.askstring("Input", "Please enter the text which has to be typed!")
         print(f"I WILL TYPE: {self.current_code_to_type}")
         return True
     
     def type_the_code(self) -> bool:
+        # translating between initial code and keyboard maping
         self._remap_keys()
 
+        # going to camera position, taking a picture and determining the button positions
+        self.send_camera_position()
         result_of_button_locator = self._determine_current_button_position()
 
         if not result_of_button_locator:
@@ -142,6 +155,7 @@ class robot_developer:
             while self.robot.command_type != CommandType.IDLE:
                 pass
         
+        self.send_home()
         messagebox.showinfo("Info", "I finished the task, can I get my salary now?")
         return True
 
@@ -165,6 +179,8 @@ class robot_developer:
         return False
     
     def _remap_keys(self) -> None:
+        self.remapped_code_to_type.clear()
+
         key_remap_dict = {
             '[': "oe",
             '(': "8",
@@ -200,7 +216,9 @@ class robot_developer:
             '6': "Numpad6",
             '7': "Numpad7",
             '8': "Numpad8",
-            '9': "Numpad9"
+            '9': "Numpad9",
+            '_': "-",
+            '-': "NumpadSubtract"
         }
 
         for c in self.current_code_to_type:
