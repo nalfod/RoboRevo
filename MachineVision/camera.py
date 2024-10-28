@@ -2,6 +2,7 @@ import cv2
 from datetime import datetime
 from pathlib import Path
 import time
+import threading
 
 class Camera:
     def __init__(self, camera_idx=0, resolution=(1920, 1080)) -> None:        
@@ -28,6 +29,8 @@ class Camera:
 
             # what can be also set: CAP_PROP_CONTRAST  CAP_PROP_SATURATION 
 
+        self.preview_mode = False
+
     def set_resolution(self, width, height):
         print(f"Camera.set_resolution - Setting the resolution to {width}x{height}")
         retValWidth = self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, width)
@@ -53,6 +56,15 @@ class Camera:
                 None if wrong camera index given
                 otherwise the path of the saved image
         """
+
+        # NOTE: this is a test to prevent the sporadic error where the read() returns a previously captured image
+        #       if it does not work, one can try: set(cv2.CAP_PROP_BUFFERSIZE, 1) setting for the instance
+        # Clear buffer by reading and discarding multiple frames
+        for _ in range(5):  # Adjust this number if necessary
+            ret, frame = self.cam.read()
+            if not ret:
+                print("Failed to read from camera")
+                return None
 
         cv2.namedWindow("test")
 
@@ -82,6 +94,27 @@ class Camera:
 
         cv2.destroyAllWindows()
         return save_path
+    
+    def open_preview_camera_window(self):
+        #cv2.namedWindow("preview")
+        self.preview_mode = True
+
+        while self.preview_mode:
+            ret, frame = self.cam.read()
+            if not ret:
+                print(f"Could not take a picture with camera index {self.camera_idx}")
+                return None
+            
+            print("open_preview_camera_image - Displaying the picture on the preview frame")
+            #cv2.imshow("preview", frame)
+            cv2.imshow("Camera Preview", frame)
+
+            time.sleep(0.1)
+
+    def close_preview_camera_window(self):
+        print("close_preview_camera_window - Closing preview window")
+        self.preview_mode = False
+        cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
@@ -98,3 +131,13 @@ if __name__ == "__main__":
         print(f"Image saved to {path}")
     else:
         print("Returned None... maybe wrong camera index?")
+
+    # Start a thread to get user input
+    preview_thread = threading.Thread(target=camera.open_preview_camera_window, args=())
+    preview_thread.daemon = True
+    preview_thread.start()
+
+    time.sleep(5)
+
+    camera.close_preview_camera_window()
+
