@@ -155,7 +155,7 @@ class robot_developer:
             while self.robot.command_type != CommandType.IDLE:
                 pass
         
-        self.send_home()
+        self.send_camera_position()
         messagebox.showinfo("Info", "I finished the task, can I get my salary now?")
         return True
 
@@ -169,8 +169,8 @@ class robot_developer:
         for i in range(5):
             # FIXME: this should be more sophisticated? 
             try:
-                # path_of_new_image = self.camera.take_image()
-                path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
+                path_of_new_image = self.camera.take_image()
+                # path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
                 self.button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, self.button_collection)
                 return True
             except:
