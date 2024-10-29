@@ -52,8 +52,6 @@ class robot_developer:
             "ArrowLeft": Button(7, 4), "ArrowDown": Button(8, 4), "ArrowRight": Button(9, 4), "Numpad0": Button(10, 4), "NumpadDel": Button(11, 4)
         }
 
-
-
         # result of the chatgpt
         self.current_code_to_type = None
         # a string which has been modified based on the mapping of the keyboard
@@ -85,6 +83,11 @@ class robot_developer:
             pass
 
     def touch_KRP(self):
+        # FIXME: should work like this, no need to pass KRP to the robot at all!!!!
+        #self.robot.set_next_position_TCP( self.KRP )
+        #self.robot.set_command_state(CommandType.MOVE_GENERAL)
+        #while self.robot.command_type != CommandType.IDLE:
+        #    pass
         self.robot.set_command_state(CommandType.TOUCH_KRP)
         while self.robot.command_type != CommandType.IDLE:
             pass
@@ -123,15 +126,35 @@ class robot_developer:
                 pass
 
     def listen_the_input_generate_code(self) -> bool:
+        self.robot.set_command_state(CommandType.LISTENING)
+        while self.robot.command_type != CommandType.IDLE:
+            pass
+
         messagebox.showinfo("Info", "After exiting this window, please describe the coding problem which you want to solve!")
         message = self.audio_recorder.listen()
         self.current_code_to_type = self.chat_bot.request(message)
+        
+        self.robot.set_command_state(CommandType.NOD)
+        while self.robot.command_type != CommandType.IDLE:
+            pass
+
         messagebox.showinfo("Info", f"I will type the following code:\n{self.current_code_to_type}")
+        self.send_home()
+
         return True
     
     def get_code_to_generate_from_direct_input(self) -> bool:
+        self.robot.set_command_state(CommandType.LISTENING)
+        while self.robot.command_type != CommandType.IDLE:
+            pass
+        
         self.current_code_to_type = simpledialog.askstring("Input", "Please enter the text which has to be typed!")
+        
+        self.robot.set_command_state(CommandType.NOD)
+        while self.robot.command_type != CommandType.IDLE:
+            pass
         print(f"I WILL TYPE: {self.current_code_to_type}")
+        self.send_home()
         return True
     
     def type_the_code(self) -> bool:
@@ -164,6 +187,10 @@ class robot_developer:
     
     def get_camera_pos(self) -> list:
         return self.camera_pos
+    
+    def set_camera_position(self, ls):
+        self.robot.set_camera_position(ls)
+        self.camera_pos = ls
 
     def _determine_current_button_position(self) -> bool:
         for i in range(5):

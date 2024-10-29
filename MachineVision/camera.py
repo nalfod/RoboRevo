@@ -20,7 +20,8 @@ class Camera:
         # Set camera properties for automatic adjustments (if available)
         retValAutoExp = self.cam.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # Enable auto-exposure if available
         retValAutoWB = self.cam.set(cv2.CAP_PROP_AUTO_WB, 1)        # Enable auto white-balance if available
-        print(f"Camera.__init__  - retValAutoExp= {retValAutoExp} retValAutoWB= {retValAutoWB}")
+        retBufferSize = self.cam.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        print(f"Camera.__init__  - retValAutoExp= {retValAutoExp} retValAutoWB= {retValAutoWB} retBufferSize= {retBufferSize}")
 
         if retValAutoWB is not True:
             print("Camera.__init__  - Auto white balance failed.... setting brightness manually")
@@ -60,7 +61,8 @@ class Camera:
         # NOTE: this is a test to prevent the sporadic error where the read() returns a previously captured image
         #       if it does not work, one can try: set(cv2.CAP_PROP_BUFFERSIZE, 1) setting for the instance
         # Clear buffer by reading and discarding multiple frames
-        for _ in range(5):  # Adjust this number if necessary
+        for _ in range(50):  # Adjust this number if necessary
+            print("Throwing away garbage")
             ret, frame = self.cam.read()
             if not ret:
                 print("Failed to read from camera")

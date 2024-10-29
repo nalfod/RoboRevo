@@ -23,6 +23,8 @@ class CommandType(Enum):
     MOVE_GENERAL = 3
     PUSH_BUTTON_AT = 4
     CAMERA = 5
+    NOD = 6
+    LISTENING = 7
 
 class UR3:
     def __init__(self, KRP, camera_pos):
@@ -83,6 +85,10 @@ class UR3:
 
         self.move_completed = True
         self.con.send(self.watchdog)
+
+    def set_camera_position(self, new_position: list):
+        for i in range(len(new_position)):
+            self.camera_pos_in_TCP[i] = new_position[i]
 
     def set_command_state(self, new_command_state: CommandType):
         self.command_type = new_command_state
@@ -155,18 +161,30 @@ class UR3:
                     self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
                     self._push_button()
                     self.command_type = CommandType.IDLE
+                case CommandType.NOD:
+                    print("Nodding")
+                    self._nod()
+                    self.command_type = CommandType.IDLE
                 case CommandType.CAMERA:
                     print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
                     self._move_robot("TCP", [self.camera_pos_in_TCP[0], self.camera_pos_in_TCP[1], self.camera_pos_in_TCP[2]] + [None, None, None])
                     self.command_type = CommandType.IDLE
+                case CommandType.LISTENING:
+                    print("Send the robot to listening mode")
+                    self._move_to_listening_pos()
+                    self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
-        self._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
-        self._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
-        self._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
-        self._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ]) 
-        self._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
-        self._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
+        #self._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
+        #self._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
+        #self._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
+        #self._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ]) 
+        #self._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
+        #self._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
+        self._move_robot("joint", self.home_pos_of_joints)
+
+    def _move_to_listening_pos(self):
+        self._move_robot("joint", [ math.radians(180), math.radians(-90), math.radians(25), math.radians(-120), math.radians(-90), math.radians(0) ])
 
     def _touch_KRP(self):
         state = self.con.receive()
@@ -176,7 +194,7 @@ class UR3:
         # a position to return
         current_position = state.actual_TCP_pose
         self._move_robot("TCP", self.KRP)
-        self._move_robot("TCP", current_position)
+        # self._move_robot("TCP", current_position)
 
     # Move the robot to a given coordinate in TCP coordinate system or based on the joint positions
     def _move_robot(self, type_of_movement, list_of_sp):
@@ -245,6 +263,14 @@ class UR3:
 
     def _push_button(self):
         print( "*****BEGIN - push_button *****")
+        self._execute_general_movement_mode( 2 )
+
+    def _nod(self):
+        print( "*****BEGIN - NOD WITH HEAD *****")
+        self._execute_general_movement_mode( 3 )
+
+
+    def _execute_general_movement_mode(self, movement_mode : int):
         self.move_completed = True
 
         while True:
@@ -257,8 +283,7 @@ class UR3:
                 # output_int_register_0 == 1 --> robot ready to recieve a new command
                 self.move_completed = False
 
-                # number of push button mode in the program of the robot!
-                self.mode.input_int_register_1 = 2
+                self.mode.input_int_register_1 = movement_mode
 
                 print("I am currently in the following TCP positions: ")
                 UR3.print_position_from_list(state.actual_TCP_pose, "TCP")
@@ -279,12 +304,6 @@ class UR3:
 
             # kick watchdog
             self.con.send(self.watchdog)
-
-    # FIXME: might not need, to afraid to delete
-    #def _move_position_push_button(self):
-    #    print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
-    #    self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [self.KRP[3], self.KRP[4], self.KRP[5]])
-    #    self._push_button()
 
     # static function that converts a dict to a list
     @staticmethod
