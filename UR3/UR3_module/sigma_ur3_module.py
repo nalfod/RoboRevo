@@ -19,28 +19,26 @@ else:
 class CommandType(Enum):
     IDLE = 0
     HOME = 1
-    TOUCH_KRP = 2
-    MOVE_GENERAL = 3
-    PUSH_BUTTON_AT = 4
-    CAMERA = 5
-    NOD = 6
-    LISTENING = 7
+    MOVE_GENERAL = 2
+    PUSH_BUTTON_AT = 3
+    NOD = 4
+    LISTENING = 5
 
 class UR3:
-    def __init__(self, KRP, camera_pos):
+    def __init__(self):
         self.home_pos_of_joints = [ math.radians(90), math.radians(-90), math.radians(65), math.radians(-65), math.radians(-90), math.radians(0)  ]
 
         # the keyboard reference point in the base coordinate system of the robot, has to be measured by the robot before startup!
         # NOTE: KRP and camera pos have been extended by the rotation coordinates, might cause error!
-        self.KRP = [ KRP[0], KRP[1], KRP[2] ] + [-0.0, 3.14159, -0.0] 
-        self.camera_pos_in_TCP = [ camera_pos[0], camera_pos[1], camera_pos[2] ] + [-0.0, 3.14159, -0.0]
+        # self.KRP = [ KRP[0], KRP[1], KRP[2] ] + [-0.0, 3.14159, -0.0] 
+        # self.camera_pos_in_TCP = [ camera_pos[0], camera_pos[1], camera_pos[2] ] + [-0.0, 3.14159, -0.0]
 
         self.command_type = CommandType.IDLE
         self.next_position_TCP = []
         self.next_position_joint = []
 
-        # self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
-        self.ROBOT_HOST = "192.168.0.125" # FOR REAL
+        self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
+        # self.ROBOT_HOST = "192.168.0.125" # FOR REAL
         self.ROBOT_PORT = 30004
 
         script_dir = Path(__file__).parent
@@ -86,40 +84,22 @@ class UR3:
         self.move_completed = True
         self.con.send(self.watchdog)
 
-    def set_camera_position(self, new_position: list):
-        for i in range(len(new_position)):
-            self.camera_pos_in_TCP[i] = new_position[i]
-
     def set_command_state(self, new_command_state: CommandType):
         self.command_type = new_command_state
 
     def set_next_position_TCP(self, new_position: list):
         self.next_position_TCP = copy.deepcopy(new_position)
+        for i in range(len(self.next_position_TCP), 6):
+            self.next_position_TCP.append(None)
+
+        print(f"My new next TCP position is= {self.next_position_TCP}")
 
     def set_next_position_joint(self, new_position: list):
         self.next_position_joint = copy.deepcopy(new_position)
+        for i in range(len(self.next_position_joint), 6):
+            self.next_position_joint.append(None)
 
-    def set_KRP_linear_coordinates_by_current_pos(self):
-        current_position = self.get_current_TCP_position()
-
-        if len( current_position ) < 3:
-            return self.KRP
-        else:
-            for i in range (3):
-                self.KRP[i] = current_position[i]
-        
-        return self.KRP[:3]
-
-    def set_camera_pos_linear_coordinates_by_current_pos(self):
-        current_position = self.get_current_TCP_position()
-
-        if len( current_position ) < 3:
-            return self.camera_pos_in_TCP
-        else:
-            for i in range (3):
-                self.camera_pos_in_TCP[i] = current_position[i]
-
-        return self.camera_pos_in_TCP[:3]
+        print(f"My new next joint position is= {self.next_position_joint}")
     
     def get_current_TCP_position(self):
         state = self.con.receive()
@@ -137,8 +117,6 @@ class UR3:
                 case CommandType.IDLE:
                     state = self.con.receive()
                     if state is None:
-                        # FIXME: sometimes the connection broke between the laptop and the robot during IDLE state
-                        #        find out, what is going on!
                         print("Recieved state is None, trying to reconnect...")
                         self.con.connect()
                     else:
@@ -148,26 +126,18 @@ class UR3:
                     print("Send the robot home")
                     self._move_to_home()
                     self.command_type = CommandType.IDLE
-                case CommandType.TOUCH_KRP:
-                    print("Touching KRP")
-                    self._touch_KRP()
-                    self.command_type = CommandType.IDLE
                 case CommandType.MOVE_GENERAL:
                     print("Moving to position= " + str(self.next_position_TCP))
-                    self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
+                    self._move_robot("TCP", self.next_position_TCP)
                     self.command_type = CommandType.IDLE
                 case CommandType.PUSH_BUTTON_AT:
                     print("Moving to position= " + str(self.next_position_TCP) + " and pushing a button")
-                    self._move_robot("TCP", [self.next_position_TCP[0] + self.KRP[0], self.next_position_TCP[1] + self.KRP[1], self.next_position_TCP[2] + self.KRP[2]] + [None, None, None])
+                    self._move_robot("TCP", self.next_position_TCP)
                     self._push_button()
                     self.command_type = CommandType.IDLE
                 case CommandType.NOD:
                     print("Nodding")
                     self._nod()
-                    self.command_type = CommandType.IDLE
-                case CommandType.CAMERA:
-                    print("Moving to position= " + str(self.camera_pos_in_TCP) + " and waiting to take a picture!")
-                    self._move_robot("TCP", [self.camera_pos_in_TCP[0], self.camera_pos_in_TCP[1], self.camera_pos_in_TCP[2]] + [None, None, None])
                     self.command_type = CommandType.IDLE
                 case CommandType.LISTENING:
                     print("Send the robot to listening mode")
@@ -175,26 +145,10 @@ class UR3:
                     self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
-        #self._move_robot("joint", [ None, self.home_pos_of_joints[1], None, None, None, None ])
-        #self._move_robot("joint", [ self.home_pos_of_joints[0], None, None, None, None, None ])
-        #self._move_robot("joint", [ None, None, None, self.home_pos_of_joints[3], None, None ])
-        #self._move_robot("joint", [ None, None, self.home_pos_of_joints[2], None, None, None ]) 
-        #self._move_robot("joint", [ None, None, None, None, self.home_pos_of_joints[4], None ])
-        #self._move_robot("joint", [ None, None, None, None, None, self.home_pos_of_joints[5] ])
         self._move_robot("joint", self.home_pos_of_joints)
 
     def _move_to_listening_pos(self):
         self._move_robot("joint", [ math.radians(180), math.radians(-90), math.radians(25), math.radians(-120), math.radians(-90), math.radians(0) ])
-
-    def _touch_KRP(self):
-        state = self.con.receive()
-        if state is None:
-            print("Recieved state is None, aborting method...")
-            return
-        # a position to return
-        current_position = state.actual_TCP_pose
-        self._move_robot("TCP", self.KRP)
-        # self._move_robot("TCP", current_position)
 
     # Move the robot to a given coordinate in TCP coordinate system or based on the joint positions
     def _move_robot(self, type_of_movement, list_of_sp):
@@ -398,11 +352,11 @@ def get_user_input(input_list, new_data):
 
 if __name__ == "__main__":
     
-    # KRP = [-0.085, -0.250, 0.01] # for simulation purpose
-    # KRP = [115/1000, -420/1000, 25/1000] # first working version in real life
-    KRP = [368/1000, -250/1000, 3/1000] # This is how it will probably look like in final version
-    camera_position = [132/1000, -310/1000, 195/1000]
-    robot = UR3(KRP, camera_position)
+    # KRP = [-0.085, -0.250, 0.01] + [-0.0, 3.14159, -0.0] # for simulation purpose
+    # KRP = [115/1000, -420/1000, 25/1000] + [-0.0, 3.14159, -0.0] # first working version in real life
+    KRP = [368/1000, -250/1000, 3/1000] + [-0.0, 3.14159, -0.0] # This is how it will probably look like in final version
+    camera_position = [132/1000, -310/1000, 195/1000] + [-0.0, 3.14159, -0.0]
+    robot = UR3()
     # Start the robot thread
     robot_thread = threading.Thread(target=robot.main_loop, args=())
     robot_thread.daemon = True
@@ -412,7 +366,9 @@ if __name__ == "__main__":
     while robot.command_type != CommandType.IDLE:
         pass
     
-    robot.set_command_state(CommandType.TOUCH_KRP)
+    # TOUCHING KRP:
+    robot.set_next_position_TCP(KRP)
+    robot.set_command_state(CommandType.MOVE_GENERAL)
     while robot.command_type != CommandType.IDLE:
         pass
 
