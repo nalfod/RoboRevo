@@ -21,8 +21,8 @@ from voice.listener import Listener
 from tkinter import messagebox
 from tkinter import simpledialog
 
-KEYBOARD_HEIGHT = 30 #TODO: has to be measured!!
-CAMERA_TOOL_DISTANCE = 170 #TODO: has to be measured!!
+KEYBOARD_HEIGHT = 25 # actually 22, but lets round up
+CAMERA_TOOL_DISTANCE = 157
 
 class robot_developer:
     def __init__(self, KRP: list, camera_position: list):
@@ -203,8 +203,8 @@ class robot_developer:
         for i in range(5):
             # FIXME: this should be more sophisticated? 
             try:
-                # path_of_new_image = self.camera.take_image()
-                path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
+                path_of_new_image = self.camera.take_image()
+                # path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241030_17_43_50_Pro.jpg")
                 self.button_loc.determine_buttons_position_comp_to_ref_button(path_of_new_image, self.button_collection, self.KRP_button)
                 return True
             except:

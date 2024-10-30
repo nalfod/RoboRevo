@@ -37,8 +37,8 @@ class UR3:
         self.next_position_TCP = []
         self.next_position_joint = []
 
-        self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
-        # self.ROBOT_HOST = "192.168.0.125" # FOR REAL
+        # self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
+        self.ROBOT_HOST = "192.168.0.125" # FOR REAL
         self.ROBOT_PORT = 30004
 
         script_dir = Path(__file__).parent

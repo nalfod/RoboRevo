@@ -160,7 +160,7 @@ class MainGui(tk.Tk):
     def __init__(self, robot_with_camera):
         super().__init__()
         self.title("Robot developer")
-        self.geometry("400x200")
+        self.geometry("500x200")
 
         self.robot_with_camera = robot_with_camera
 
@@ -230,7 +230,7 @@ class MainGui(tk.Tk):
 
             if messagebox.askyesno("Set new cam pos?", "Do you want to reset the camera position according to the new KRP?"):
                 new_krp = self.robot_with_camera.get_krp()
-                self.robot_with_camera.set_camera_position([new_krp[0] - 5, new_krp[1] + 17, 195])
+                self.robot_with_camera.set_camera_position([new_krp[0] - 5, new_krp[1] + 17, 195] + [-0.0, 3.14159, -0.0])
                 
                 new_cam_pos_to_display = [ ( round(x, 2) ) for x in self.robot_with_camera.get_camera_pos()]
                 self.robot_positions_labels[1].config(text=new_cam_pos_to_display)
