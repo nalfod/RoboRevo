@@ -76,7 +76,7 @@ class robot_developer:
         self.camera = Camera( camera_idx=0 )
 
         # creating audio recorder and chatbot api:
-        self.audio_recorder = Listener("../GPT/key.txt")
+        self.audio_recorder = Listener("../GPT/key.txt", 1)
         self.chat_bot = GPT("../GPT/key.txt")
 
         messagebox.showinfo("Info", "Please start the program on the UR3 robot!")
