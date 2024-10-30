@@ -87,12 +87,13 @@ class UR3:
     def set_command_state(self, new_command_state: CommandType):
         self.command_type = new_command_state
 
+    # input unit should be m!!
     def set_next_position_TCP(self, new_position: list):
         self.next_position_TCP = copy.deepcopy(new_position)
         for i in range(len(self.next_position_TCP), 6):
             self.next_position_TCP.append(None)
 
-        print(f"My new next TCP position is= {self.next_position_TCP}")
+        print(f"My new next TCP position is (unit= m)= {self.next_position_TCP}")
 
     def set_next_position_joint(self, new_position: list):
         self.next_position_joint = copy.deepcopy(new_position)
@@ -101,6 +102,7 @@ class UR3:
 
         print(f"My new next joint position is= {self.next_position_joint}")
     
+    # returned in m
     def get_current_TCP_position(self):
         state = self.con.receive()
         if state is None:

@@ -21,10 +21,12 @@ from voice.listener import Listener
 from tkinter import messagebox
 from tkinter import simpledialog
 
-KEYBOARD_HEIGHT = 5
+KEYBOARD_HEIGHT = 30 #TODO: has to be measured!!
+CAMERA_TOOL_DISTANCE = 170 #TODO: has to be measured!!
 
 class robot_developer:
     def __init__(self, KRP: list, camera_position: list):
+        # In mm!
         self.KRP = KRP
         self.camera_pos = camera_position
         
@@ -59,10 +61,10 @@ class robot_developer:
 
         # Creating the button locator
         path_of_neural_network = Path("../MachineVision/neural_networks/best3_0_small_epoch40.pt")
-        self.button_loc = button_locator(path_of_neural_network, Point(self.KRP[0] * 1000, self.KRP[1] * 1000), [1920, 1080], True, False)
+        self.button_loc = button_locator(path_of_neural_network, [1920, 1080], self._get_camera_keyboard_distance() , True, False)
 
         # Creating the robot
-        self.robot = UR3(self.KRP, self.camera_pos)
+        self.robot = UR3()
         # Start the robot thread
         self.robot_thread = threading.Thread(target=self.robot.main_loop, args=())
         self.robot_thread.daemon = True
@@ -83,25 +85,26 @@ class robot_developer:
             pass
 
     def touch_KRP(self):
-        # FIXME: should work like this, no need to pass KRP to the robot at all!!!!
-        #self.robot.set_next_position_TCP( self.KRP )
-        #self.robot.set_command_state(CommandType.MOVE_GENERAL)
-        #while self.robot.command_type != CommandType.IDLE:
-        #    pass
-        self.robot.set_command_state(CommandType.TOUCH_KRP)
+        self.robot.set_next_position_TCP( [x / 1000 for x in self.KRP[:3]] + self.KRP[3:] )
+        self.robot.set_command_state(CommandType.MOVE_GENERAL)
         while self.robot.command_type != CommandType.IDLE:
             pass
 
     def send_camera_position(self):
-        self.robot.set_command_state(CommandType.CAMERA)
+        self.robot.set_next_position_TCP( [x / 1000 for x in self.camera_pos[:3]] + self.camera_pos[3:] )
+        self.robot.set_command_state(CommandType.MOVE_GENERAL)
         while self.robot.command_type != CommandType.IDLE:
             pass
 
     def update_krp_on_current_position(self):
-        self.KRP = self.robot.set_KRP_linear_coordinates_by_current_pos()
+        current_position = self.robot.get_current_TCP_position()
+        self.KRP = [ x * 1000 for x in current_position]
 
     def update_cam_pos_on_current_position(self):
-        self.camera_pos = self.robot.set_camera_pos_linear_coordinates_by_current_pos()
+        current_position = self.robot.get_current_TCP_position()
+        self.camera_pos = [ x * 1000 for x in current_position]
+
+        self.button_loc.set_distance_from_keyboard( self._get_camera_keyboard_distance() )
 
     def move_relative_to_current_pos(self, direction: str, magnitude: int):
         # FIXME: what is the dimension?? mm or m?
@@ -139,8 +142,8 @@ class robot_developer:
             pass
 
         messagebox.showinfo("Info", f"I will type the following code:\n{self.current_code_to_type}")
+        
         self.send_home()
-
         return True
     
     def get_code_to_generate_from_direct_input(self) -> bool:
@@ -153,7 +156,9 @@ class robot_developer:
         self.robot.set_command_state(CommandType.NOD)
         while self.robot.command_type != CommandType.IDLE:
             pass
+
         print(f"I WILL TYPE: {self.current_code_to_type}")
+
         self.send_home()
         return True
     
@@ -169,11 +174,12 @@ class robot_developer:
             return False
         
         for button in self.remapped_code_to_type:
-            next_coordinates = self.button_collection[button].distance_from_KRP
+            next_coordinates_KRP = self.button_collection[button].distance_from_KRP
         #for index, (button_name, button_properties) in enumerate(button_collection.items()):
             #next_coordinates = button_properties.distance_from_KRP
-            print(f"I will type \"{button} its coordinates are= {next_coordinates}\"")
-            self.robot.set_next_position_TCP([-next_coordinates.x / 1000, -next_coordinates.y / 1000, KEYBOARD_HEIGHT /1000])
+            next_coordinates_robot = [ -next_coordinates_KRP.x + self.KRP[0], -next_coordinates_KRP.y + self.KRP[1], self.KRP[2] + 5 ] # the last coordinate means that it is 5 mm above letter l
+            print(f"I will type \"{button} its coordinates from KRP= {next_coordinates_KRP} its coordinates compared to the robot= {next_coordinates_robot} \"")
+            self.robot.set_next_position_TCP( [ x / 1000 for x in next_coordinates_robot] )
             self.robot.set_command_state(CommandType.PUSH_BUTTON_AT)
             while self.robot.command_type != CommandType.IDLE:
                 pass
@@ -189,15 +195,14 @@ class robot_developer:
         return self.camera_pos
     
     def set_camera_position(self, ls):
-        self.robot.set_camera_position(ls)
         self.camera_pos = ls
 
     def _determine_current_button_position(self) -> bool:
         for i in range(5):
             # FIXME: this should be more sophisticated? 
             try:
-                path_of_new_image = self.camera.take_image()
-                # path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
+                # path_of_new_image = self.camera.take_image()
+                path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
                 self.button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, self.button_collection)
                 return True
             except:
@@ -259,4 +264,7 @@ class robot_developer:
                 continue
 
             self.remapped_code_to_type.append(c)
+
+    def _get_camera_keyboard_distance(self):
+        return ( self.camera_pos[2] + CAMERA_TOOL_DISTANCE - KEYBOARD_HEIGHT )
             

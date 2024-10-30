@@ -170,7 +170,7 @@ class MainGui(tk.Tk):
         # Yearly data widgets:
         label1 = tk.Label(self, text="KRP:")
         label1.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
-        new_krp_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_krp()]
+        new_krp_to_display = [ ( round(x, 2) ) for x in self.robot_with_camera.get_krp()]
         label2 = tk.Label(self, text=new_krp_to_display)
         label2.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
         self.robot_positions_labels.append(label2)
@@ -178,7 +178,7 @@ class MainGui(tk.Tk):
         number_of_rows += 1
         label3 = tk.Label(self, text="Camera position:")
         label3.grid(row=number_of_rows, column=0, sticky="e", padx=5, pady=5)
-        new_cam_pos_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_camera_pos()]
+        new_cam_pos_to_display = [ ( round(x, 2) ) for x in self.robot_with_camera.get_camera_pos()]
         label4 = tk.Label(self, text=new_cam_pos_to_display)
         label4.grid(row=number_of_rows, column=1, sticky="e", padx=5, pady=5)
         self.robot_positions_labels.append(label4)
@@ -225,14 +225,14 @@ class MainGui(tk.Tk):
         else:
             messagebox.showinfo("Info", "Position has been updated!")
             self.robot_with_camera.update_krp_on_current_position()
-            new_krp_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_krp()]
+            new_krp_to_display = [ ( round(x, 2) ) for x in self.robot_with_camera.get_krp()]
             self.robot_positions_labels[0].config(text=new_krp_to_display)
 
             if messagebox.askyesno("Set new cam pos?", "Do you want to reset the camera position according to the new KRP?"):
                 new_krp = self.robot_with_camera.get_krp()
-                self.robot_with_camera.set_camera_position([new_krp[0] - 5/1000, new_krp[1] + 17/1000, 195/1000])
+                self.robot_with_camera.set_camera_position([new_krp[0] - 5, new_krp[1] + 17, 195])
                 
-                new_cam_pos_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_camera_pos()]
+                new_cam_pos_to_display = [ ( round(x, 2) ) for x in self.robot_with_camera.get_camera_pos()]
                 self.robot_positions_labels[1].config(text=new_cam_pos_to_display)
 
 
@@ -253,7 +253,7 @@ class MainGui(tk.Tk):
         else:
             messagebox.showinfo("Info", "Position has been updated!")
             self.robot_with_camera.update_cam_pos_on_current_position()
-            new_cam_pos_to_display = [ ( round(x * 1000, 2) ) for x in self.robot_with_camera.get_camera_pos()]
+            new_cam_pos_to_display = [ ( round(x, 2) ) for x in self.robot_with_camera.get_camera_pos()]
             self.robot_positions_labels[1].config(text=new_cam_pos_to_display)
 
     def type_code(self):
