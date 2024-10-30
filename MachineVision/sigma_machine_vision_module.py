@@ -161,7 +161,7 @@ class button_locator:
     def set_distance_from_keyboard(self, distance_from_keyboard):
         self.distance_from_keyboard = distance_from_keyboard
 
-    def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary: dict[str, Button]) -> None:
+    def determine_buttons_position_comp_to_ref_button(self, image_path, target_dictionary: dict[str, Button], reference_button: str) -> None:
         self._reset_my_containers()
 
         # 1. using YOLO to detect all the objects (buttons and references) on the captured picture
@@ -186,7 +186,7 @@ class button_locator:
         #    the position of every button compared to the KRP (which is the left reference cross)
         #    eg.: button s is (120, 80) mm in KRP system
         if not self.test_mode:
-            self._determine_button_pos_in_KRP_into_dict(target_dictionary)
+            self._determine_button_pos_compared_to_ref_button(target_dictionary, reference_button)
         else:
             self.__determine_button_pos_compared_to_button0(445, 125, target_dictionary)
 
@@ -390,7 +390,7 @@ class button_locator:
         # return ( ( -0.0133 * y_position + 7.4536 ) + ( 0.0013 * x_position - 1.3247 ) )
         return 0
 
-    def _determine_button_pos_in_KRP_into_dict(self, target_dictionary: dict[str, Button]):
+    def _determine_button_pos_compared_to_ref_button(self, target_dictionary: dict[str, Button], reference_button: str):
         if self.verbose_mode:
             print("\n--------------------------------------------------------------")
             print("BEGIN: Determining the buttons position in KRP")
@@ -403,14 +403,14 @@ class button_locator:
         # mm_per_pixel_ratio = 0.32795 # <-- this was the magic number with which it worked
         mm_per_pixel_ratio = (2 * self.distance_from_keyboard * math.tan(math.radians(95 / 2))) / ( math.sqrt( self.image_resolution[0] * self.image_resolution[0] + self.image_resolution[1] * self.image_resolution[1]) )
 
-        # determining KRP, which is letter "l" now
-        KRP_mm_distance_from_midpoint_of_pic_x = mm_per_pixel_ratio * ( target_dictionary["l"].pixel_pos_on_pic.x - midpoint_of_image.x ) - self._calculate_x_distance_compensation(target_dictionary["l"].pixel_pos_on_pic.x)
-        KRP_mm_distance_from_midpoint_of_pic_y = -1 * ( mm_per_pixel_ratio * ( target_dictionary["l"].pixel_pos_on_pic.y - midpoint_of_image.y ) - self._calculate_y_distance_compensation(target_dictionary["l"].pixel_pos_on_pic.x, target_dictionary["l"].pixel_pos_on_pic.y) )
+        # determining KRP, which is determined by the caller
+        KRP_mm_distance_from_midpoint_of_pic_x = mm_per_pixel_ratio * ( target_dictionary[reference_button].pixel_pos_on_pic.x - midpoint_of_image.x ) - self._calculate_x_distance_compensation(target_dictionary[reference_button].pixel_pos_on_pic.x)
+        KRP_mm_distance_from_midpoint_of_pic_y = -1 * ( mm_per_pixel_ratio * ( target_dictionary[reference_button].pixel_pos_on_pic.y - midpoint_of_image.y ) - self._calculate_y_distance_compensation(target_dictionary[reference_button].pixel_pos_on_pic.x, target_dictionary[reference_button].pixel_pos_on_pic.y) )
 
         if self.verbose_mode:
             print(f"The pixel midpoint of the image= {midpoint_of_image}")
             print(f"mm_per_pixel_coeff= {mm_per_pixel_ratio}")
-            print(f"KRP (button l) distance from the midpoint of image (mm)= {KRP_mm_distance_from_midpoint_of_pic_x} {KRP_mm_distance_from_midpoint_of_pic_y}")
+            print(f"KRP (button {reference_button}) distance from the midpoint of image (mm)= {KRP_mm_distance_from_midpoint_of_pic_x} {KRP_mm_distance_from_midpoint_of_pic_y}")
 
         for index, (button_name, button_properties) in enumerate(target_dictionary.items()):
             button_pixel_distance_from_midpoint_of_pic_x = target_dictionary[button_name].pixel_pos_on_pic.x - midpoint_of_image.x
@@ -525,8 +525,8 @@ if __name__ == "__main__":
         #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
         #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
         #button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
-        button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
-        button_locator.determine_buttons_position_in_TCP_system(path_of_image5, button_collection)
-        button_locator.determine_buttons_position_in_TCP_system(path_of_image6, button_collection)
+        button_locator.determine_buttons_position_comp_to_ref_button(path_of_image4, button_collection, "l")
+        button_locator.determine_buttons_position_comp_to_ref_button(path_of_image5, button_collection, "l")
+        button_locator.determine_buttons_position_comp_to_ref_button(path_of_image6, button_collection, "l")
     except:
         print("Exception catched")

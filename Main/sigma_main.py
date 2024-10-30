@@ -81,7 +81,7 @@ def main():
         # FIXME: this should be more sophisticated? 
         try:
             path_of_new_image = camera.take_image()
-            button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, button_collection)
+            button_loc.determine_buttons_position_comp_to_ref_button(path_of_new_image, button_collection)
             break
         except:
             if counter == 5:

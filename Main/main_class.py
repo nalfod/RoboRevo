@@ -29,6 +29,8 @@ class robot_developer:
         # In mm!
         self.KRP = KRP
         self.camera_pos = camera_position
+
+        self.KRP_button = "l"
         
         self.button_collection = {
             # First row
@@ -203,7 +205,7 @@ class robot_developer:
             try:
                 # path_of_new_image = self.camera.take_image()
                 path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241015_08_18_58_Pro.jpg")
-                self.button_loc.determine_buttons_position_in_TCP_system(path_of_new_image, self.button_collection)
+                self.button_loc.determine_buttons_position_comp_to_ref_button(path_of_new_image, self.button_collection, self.KRP_button)
                 return True
             except:
                 print(f"Not successful button detection, let's try it again for the {i + 2}. time!")

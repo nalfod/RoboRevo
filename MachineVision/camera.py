@@ -61,7 +61,7 @@ class Camera:
         # NOTE: this is a test to prevent the sporadic error where the read() returns a previously captured image
         #       if it does not work, one can try: set(cv2.CAP_PROP_BUFFERSIZE, 1) setting for the instance
         # Clear buffer by reading and discarding multiple frames
-        for _ in range(50):  # Adjust this number if necessary
+        for _ in range(5):  # Adjust this number if necessary
             print("Throwing away garbage")
             ret, frame = self.cam.read()
             if not ret:
