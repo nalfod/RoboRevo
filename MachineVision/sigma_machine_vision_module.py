@@ -139,17 +139,17 @@ class coordinate_transformator:
 ################################
 
 class button_locator:
-    def __init__(self, path_of_pt_file: Path, position_of_KRP_rel_to_robot: Point, image_resolution: list, verbose_mode = False, test_mode = False) -> None:
+    def __init__(self, path_of_pt_file: Path, image_resolution: list, distance_from_keyboard: int, verbose_mode = False, test_mode = False) -> None:
         self.model = YOLO(path_of_pt_file)
         self.coord_trafo = coordinate_transformator()
 
         self.image_resolution = image_resolution
+        self.set_distance_from_keyboard( distance_from_keyboard )
 
         # determined based on the resolution of the image, the distance between the camera and the keyboard and the DFOV of the camera!
-        self.mm_per_pixel_ratio = 0.32795
+        # self.mm_per_pixel_ratio = 0.32795 # <-- this was the magic number with which it worked
 
-        # KRP is letter L
-        self.position_of_KRP_rel_to_robot = position_of_KRP_rel_to_robot
+        self.mm_per_pixel_ratio = (2 * self.distance_from_keyboard * math.tan(math.radians(95 / 2))) / ( math.sqrt( self.image_resolution[0] * self.image_resolution[0] + self.image_resolution[1] * self.image_resolution[1]) )
 
         # Containers of detected objects
         self.detected_references: list[Point] = []
@@ -159,6 +159,9 @@ class button_locator:
         self.verbose_mode = verbose_mode
         # In this mode the distance to KRP is not determined, but the relative distance to key0 in mm and it is printed out
         self.test_mode = test_mode
+
+    def set_distance_from_keyboard(self, distance_from_keyboard):
+        self.distance_from_keyboard = distance_from_keyboard
 
     def determine_buttons_position_in_TCP_system(self, image_path, target_dictionary: dict[str, Button]) -> None:
         self._reset_my_containers()
@@ -515,15 +518,14 @@ if __name__ == "__main__":
     path_of_image5 = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241011_16_38_54_Pro.jpg")
     path_of_image6 = Path("C:/Users/Z004KZJX/Documents/MUNKA/ROBOREVO/URSim_shared/RoboRevo/Main/CameraOutput/opencv_frame_2024-10-16_17-50-14-Copy.png") # should produce error!
 
-    # the real numbers at the test were: 492 227
-    button_locator = button_locator(path_of_neural_network, Point(141.87, -268.29), [1920, 1080], True, False)
+    button_locator = button_locator(path_of_neural_network, [1920, 1080], 337, True, False)
 
     try:
         #button_locator.determine_buttons_position_in_TCP_system(path_of_image1, button_collection)
         #button_locator.determine_buttons_position_in_TCP_system(path_of_image2, button_collection)
         #button_locator.determine_buttons_position_in_TCP_system(path_of_image3, button_collection)
-        #button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
-        #button_locator.determine_buttons_position_in_TCP_system(path_of_image5, button_collection)
+        button_locator.determine_buttons_position_in_TCP_system(path_of_image4, button_collection)
+        button_locator.determine_buttons_position_in_TCP_system(path_of_image5, button_collection)
         button_locator.determine_buttons_position_in_TCP_system(path_of_image6, button_collection)
     except:
         print("Exception catched")
