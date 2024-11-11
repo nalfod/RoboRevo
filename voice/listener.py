@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import threading
 import speech_recognition as sr
 
 
@@ -23,9 +23,11 @@ class Listener:
         with sr.Microphone(self.mic_idx) as source:
             print("say something")
             try:
-                audio = self.recognizer.listen(source, timeout=7)
+                print("Starting audio capturing")
+                # audio = self.recognizer.listen(source, timeout=7)
+                audio = self.call_with_timeout(self.recognizer.listen, 10, source)
                 print("Audio capturing is done!")
-            except sr.WaitTimeoutError:
+            except RuntimeError:
                 print("Time out occured")
                 return "Do nothing"
         
@@ -38,10 +40,47 @@ class Listener:
             except sr.RequestError as e:
                 print(f"error: {e}")
 
+    def call_with_timeout(self, func, timeout, *args, **kwargs):
+        """
+        Calls a function and enforces a timeout.
+        
+        Args:
+            func: The function to call.
+            timeout: Maximum time (in seconds) to wait for the function.
+            *args, **kwargs: Arguments to pass to the function.
+        
+        Returns:
+            str: Result or error message if timed out.
+        """
+        result = {"status": None}  # Use a mutable type to store results across threads.
+
+        def wrapper():
+            try:
+                result["status"] = func(*args, **kwargs)
+            except Exception as e:
+                result["status"] = "Function raised an exception"
+
+        # Run the function in a separate thread
+        thread = threading.Thread(target=wrapper)
+        thread.start()
+
+        # Wait for the thread to finish or timeout
+        thread.join(timeout)
+
+        if thread.is_alive():
+            print("Timeout reached! Moving forward with error...")
+            thread.join(0)
+            raise RuntimeError("Timeout!!")
+        else:
+            if result["status"] == "Function raised an exception":
+                raise RuntimeError("Other error")
+            else:
+                return result["status"]
+
 
 
 if __name__ == "__main__":
-    audio_recorder = Listener("../GPT/key.txt", 1)
+    audio_recorder = Listener("../GPT/key.txt", 0)
 
     message = audio_recorder.listen()
 

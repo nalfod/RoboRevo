@@ -29,6 +29,7 @@ class robot_developer:
         # In mm!
         self.KRP = KRP
         self.camera_pos = camera_position
+        self.abort_button = False
 
         self.KRP_button = "l"
         
@@ -76,7 +77,8 @@ class robot_developer:
         self.camera = Camera( camera_idx=0 )
 
         # creating audio recorder and chatbot api:
-        self.audio_recorder = Listener("../GPT/key.txt", 1)
+        # NOTE: webcam microphone should be the default mic
+        self.audio_recorder = Listener("../GPT/key.txt", 0)
         self.chat_bot = GPT("../GPT/key.txt")
 
         messagebox.showinfo("Info", "Please start the program on the UR3 robot!")
@@ -136,14 +138,19 @@ class robot_developer:
             pass
 
         messagebox.showinfo("Info", "After exiting this window, please describe the coding problem which you want to solve!")
+        
         message = self.audio_recorder.listen()
+        if message == "Do nothing":
+            self.send_home()
+            return False
+        
         self.current_code_to_type = self.chat_bot.request(message)
         
         self.robot.set_command_state(CommandType.NOD)
         while self.robot.command_type != CommandType.IDLE:
             pass
 
-        messagebox.showinfo("Info", f"I will type the following code:\n{self.current_code_to_type}")
+        #messagebox.showinfo("Info", f"I will type the following code:\n{self.current_code_to_type}")
         
         self.send_home()
         return True
@@ -175,7 +182,10 @@ class robot_developer:
         if not result_of_button_locator:
             return False
         
+        self.abort_button = False
         for button in self.remapped_code_to_type:
+            if self.abort_button:
+                break
             next_coordinates_KRP = self.button_collection[button].distance_from_KRP
         #for index, (button_name, button_properties) in enumerate(button_collection.items()):
             #next_coordinates = button_properties.distance_from_KRP
@@ -198,6 +208,9 @@ class robot_developer:
     
     def set_camera_position(self, ls):
         self.camera_pos = ls
+
+    def abort_code_generation(self):
+        self.abort_button = True
 
     def _determine_current_button_position(self) -> bool:
         for i in range(5):
@@ -255,17 +268,33 @@ class robot_developer:
             '-': "NumpadSubtract"
         }
 
+        was_upper = False
         for c in self.current_code_to_type:
             # Handling uppercase letters
             if c.isupper():
-                self.remapped_code_to_type.extend(["CapsLock", c.lower(), "CapsLock"])
+                if not was_upper:
+                    self.remapped_code_to_type.extend(["CapsLock", c.lower()])
+                    was_upper = True
+                else:
+                    self.remapped_code_to_type.append(c.lower())
                 continue
-
+            elif c.islower():
+                if was_upper:
+                    self.remapped_code_to_type.extend(["CapsLock", c])
+                    was_upper = False
+                else:
+                    self.remapped_code_to_type.append(c)
+                continue
+ 
             if remapped_char := key_remap_dict.get(c, None):
                 self.remapped_code_to_type.append(remapped_char)
                 continue
-
+ 
             self.remapped_code_to_type.append(c)
+       
+        if was_upper:
+            self.remapped_code_to_type.append("CapsLock")
+ 
 
     def _get_camera_keyboard_distance(self):
         return ( self.camera_pos[2] + CAMERA_TOOL_DISTANCE - KEYBOARD_HEIGHT )

@@ -160,7 +160,7 @@ class MainGui(tk.Tk):
     def __init__(self, robot_with_camera):
         super().__init__()
         self.title("Robot developer")
-        self.geometry("500x200")
+        self.geometry("500x300")
 
         self.robot_with_camera = robot_with_camera
 
@@ -210,6 +210,10 @@ class MainGui(tk.Tk):
         self.code_input_mode_var = tk.IntVar()  # Variable to hold the value of the radio button
         code_input_mode_var = tk.Checkbutton(self, text="CL input (test mode)", variable=self.code_input_mode_var)
         code_input_mode_var.grid(row=number_of_rows, column=2 , pady=10)
+
+        number_of_rows += 1
+        abort_button = tk.Button(self, text="ABORT CODING", command=self.robot_with_camera.abort_code_generation)
+        abort_button.grid(row=number_of_rows, column=0, sticky="nsew", padx=5, pady=5)
 
     def set_new_krp(self):
         conf_window = pop_up(self, "Attention", "This will change the KRP, do you want to proceed?")
@@ -263,13 +267,15 @@ class MainGui(tk.Tk):
             result_of_code_generation = self.robot_with_camera.get_code_to_generate_from_direct_input()
         else:
             result_of_code_generation = self.robot_with_camera.listen_the_input_generate_code()
+
         if not result_of_code_generation:
-            messagebox.showerror("Error", "Speech recognition or code generation did not work, try it again!!")
+            print("Speech recognition module failed....")
+            messagebox.showinfo("Error", "Speech recognition or code generation did not work, try it again!!")
             return
 
         result_of_code_typing = self.robot_with_camera.type_the_code()
         if not result_of_code_typing:
-            messagebox.showerror("Error", "Image recognition or typing did not work, try it again!!")
+            messagebox.showinfo("Error", "Image recognition or typing did not work, try it again!!")
             return
 
 
