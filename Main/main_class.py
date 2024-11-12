@@ -138,9 +138,11 @@ class robot_developer:
             pass
 
         messagebox.showinfo("Info", "After exiting this window, please describe the coding problem which you want to solve!")
-        
-        message = self.audio_recorder.listen()
-        if message == "Do nothing":
+        try:
+            message = self.audio_recorder.listen()
+        except:
+            print("An error happend during the listening, returning home...")
+            # A "head-shake" would be nice! Like the noding but horizontally
             self.send_home()
             return False
         
