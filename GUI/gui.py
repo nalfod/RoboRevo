@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+import time
+import threading
 
 ##################
 # MOCK ROBOT WITH CAMERA CLASS 
@@ -10,7 +12,7 @@ class robot_with_camera_mock:
     def __init__(self):
         self.KRP = [0, 0, 0, 0, 0, 0]
         self.camera_pos = [0, 0, 500, 0, 0, 0]
-        pass
+        self.abort_button = False
 
     def send_home(self):
         print("MOCK MAINCLASS - I SEND MYSELF TO HOME")
@@ -40,15 +42,31 @@ class robot_with_camera_mock:
         print(f"MOCK MAINCLASS - I WILL TYPE: {code_to_generate}")
         return True
     
-    def type_the_code(self) -> bool:
-        print(f"MOCK MAINCLASS - I AM TYPING THE CODE")
+    def update_button_pos(self) -> bool:
+        print(f"MOCK MAINCLASS - I AM DETERMINING BUTTON POSITION")
         return True
+
+    def type_the_code(self) -> None:
+        thread = threading.Thread(target=self._type_code, daemon=True)
+        thread.start()
+    
+    def _type_code(self):
+        for i in range(10):
+            if self.abort_button:
+                print(f"MOCK MAINCLASS - I AM TYPING THE CODE - HAS BEEN ABORTED")
+                break
+            print(f"MOCK MAINCLASS - I AM TYPING THE CODE")
+            time.sleep(1)
 
     def get_krp(self) -> list:
         return self.KRP
     
     def get_camera_pos(self) -> list:
         return self.camera_pos
+    
+    def abort_code_generation(self):
+        self.abort_button = True
+        print(f"MOCK MAINCLASS - ABORTING CODE GENERATION")
 
 ##################
 # POPUPS
@@ -272,11 +290,14 @@ class MainGui(tk.Tk):
             print("Speech recognition module failed....")
             messagebox.showinfo("Error", "Speech recognition or code generation did not work, try it again!!")
             return
-
-        result_of_code_typing = self.robot_with_camera.type_the_code()
-        if not result_of_code_typing:
-            messagebox.showinfo("Error", "Image recognition or typing did not work, try it again!!")
+        
+        result_of_button_pos_update = self.robot_with_camera.update_button_pos()
+        if not result_of_button_pos_update:
+            messagebox.showinfo("Error", "Image recognition did not work, try it again!!")
             return
+
+        self.robot_with_camera.type_the_code()
+        
 
 
 if __name__ == "__main__":

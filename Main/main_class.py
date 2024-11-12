@@ -173,34 +173,23 @@ class robot_developer:
         self.send_home()
         return True
     
-    def type_the_code(self) -> bool:
+    def update_button_pos(self) -> bool:
         # translating between initial code and keyboard maping
         self._remap_keys()
 
         # going to camera position, taking a picture and determining the button positions
         self.send_camera_position()
+
         result_of_button_locator = self._determine_current_button_position()
 
         if not result_of_button_locator:
             return False
-        
-        self.abort_button = False
-        for button in self.remapped_code_to_type:
-            if self.abort_button:
-                break
-            next_coordinates_KRP = self.button_collection[button].distance_from_KRP
-        #for index, (button_name, button_properties) in enumerate(button_collection.items()):
-            #next_coordinates = button_properties.distance_from_KRP
-            next_coordinates_robot = [ -next_coordinates_KRP.x + self.KRP[0], -next_coordinates_KRP.y + self.KRP[1], self.KRP[2] + 5 ] # the last coordinate means that it is 5 mm above letter l
-            print(f"I will type \"{button} its coordinates from KRP= {next_coordinates_KRP} its coordinates compared to the robot= {next_coordinates_robot} \"")
-            self.robot.set_next_position_TCP( [ x / 1000 for x in next_coordinates_robot] )
-            self.robot.set_command_state(CommandType.PUSH_BUTTON_AT)
-            while self.robot.command_type != CommandType.IDLE:
-                pass
-        
-        self.send_camera_position()
-        messagebox.showinfo("Info", "I finished the task, can I get my salary now?")
-        return True
+        else:
+            return True
+    
+    def type_the_code(self) -> None:
+        thread = threading.Thread(target=self._type_the_code, daemon=True)
+        thread.start()
 
     def get_krp(self) -> list:
         return self.KRP
@@ -218,14 +207,44 @@ class robot_developer:
         for i in range(5):
             # FIXME: this should be more sophisticated? 
             try:
-                path_of_new_image = self.camera.take_image()
-                # path_of_new_image = Path("C:/Users/Z004KZJX/Pictures/Camera Roll/WIN_20241030_17_43_50_Pro.jpg")
+                # FOR SIMULATION:
+                path_of_new_image = Path(r"C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\URSim_shared\RoboRevo\Main\CameraOutput\opencv_frame_2024-11-11_19-10-08.png")
+                # FOR REAL APPLICATION:
+                # path_of_new_image = self.camera.take_image()
+
                 self.button_loc.determine_buttons_position_comp_to_ref_button(path_of_new_image, self.button_collection, self.KRP_button)
                 return True
             except:
                 print(f"Not successful button detection, let's try it again for the {i + 2}. time!")
         
         return False
+    
+    def _type_the_code(self) -> None:
+        self.abort_button = False
+        for button in self.remapped_code_to_type:
+            if self.abort_button:
+                print("I have been aborted....")
+                self._finish_typing( False )
+                return
+            
+            next_coordinates_KRP = self.button_collection[button].distance_from_KRP
+        #for index, (button_name, button_properties) in enumerate(button_collection.items()):
+            #next_coordinates = button_properties.distance_from_KRP
+            next_coordinates_robot = [ -next_coordinates_KRP.x + self.KRP[0], -next_coordinates_KRP.y + self.KRP[1], self.KRP[2] + 5 ] # the last coordinate means that it is 5 mm above letter l
+            print(f"I will type \"{button} its coordinates from KRP= {next_coordinates_KRP} its coordinates compared to the robot= {next_coordinates_robot} \"")
+            self.robot.set_next_position_TCP( [ x / 1000 for x in next_coordinates_robot] )
+            self.robot.set_command_state(CommandType.PUSH_BUTTON_AT)
+            while self.robot.command_type != CommandType.IDLE:
+                pass
+
+        self._finish_typing( True )
+    
+    def _finish_typing(self, result: bool) -> None:
+        self.send_camera_position()
+        if result:
+            messagebox.showinfo("Info", "I finished the task, can I get my salary now?")
+        else:
+            messagebox.showinfo("Info", "Code generation has been aborted!!")
     
     def _remap_keys(self) -> None:
         self.remapped_code_to_type.clear()
