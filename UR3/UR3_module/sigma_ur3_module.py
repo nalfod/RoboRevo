@@ -23,6 +23,7 @@ class CommandType(Enum):
     PUSH_BUTTON_AT = 3
     NOD = 4
     LISTENING = 5
+    NOPE = 6
 
 class UR3:
     def __init__(self):
@@ -37,8 +38,8 @@ class UR3:
         self.next_position_TCP = []
         self.next_position_joint = []
 
-        self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
-        # self.ROBOT_HOST = "192.168.0.125" # FOR REAL
+        # self.ROBOT_HOST = "192.168.56.101" # FOR SIMULATION
+        self.ROBOT_HOST = "192.168.0.125" # FOR REAL
         self.ROBOT_PORT = 30004
 
         script_dir = Path(__file__).parent
@@ -145,6 +146,10 @@ class UR3:
                     print("Send the robot to listening mode")
                     self._move_to_listening_pos()
                     self.command_type = CommandType.IDLE
+                case CommandType.NOPE:
+                    print("Head-shaking")
+                    self._head_shake()
+                    self.command_type = CommandType.IDLE
 
     def _move_to_home(self):
         self._move_robot("joint", self.home_pos_of_joints)
@@ -224,6 +229,10 @@ class UR3:
     def _nod(self):
         print( "*****BEGIN - NOD WITH HEAD *****")
         self._execute_general_movement_mode( 3 )
+
+    def _head_shake(self):
+        print( "*****BEGIN - HEAD SHAKE *****")
+        self._execute_general_movement_mode( 4 )
 
 
     def _execute_general_movement_mode(self, movement_mode : int):

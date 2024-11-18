@@ -142,12 +142,16 @@ class robot_developer:
             message = self.audio_recorder.listen()
         except:
             print("An error happend during the listening, returning home...")
-            # A "head-shake" would be nice! Like the noding but horizontally
+            self.robot.set_command_state(CommandType.NOPE)
+            while self.robot.command_type != CommandType.IDLE:
+                pass
             self.send_home()
             return False
         
         self.current_code_to_type = self.chat_bot.request(message)
         
+        # TODO: these type of commands should be a single function inside this class
+        # the argument should be one singe state!!!!
         self.robot.set_command_state(CommandType.NOD)
         while self.robot.command_type != CommandType.IDLE:
             pass
@@ -208,9 +212,9 @@ class robot_developer:
             # FIXME: this should be more sophisticated? 
             try:
                 # FOR SIMULATION:
-                path_of_new_image = Path(r"C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\URSim_shared\RoboRevo\Main\CameraOutput\opencv_frame_2024-11-11_19-10-08.png")
+                # path_of_new_image = Path(r"C:\Users\Z004KZJX\Documents\MUNKA\ROBOREVO\URSim_shared\RoboRevo\Main\CameraOutput\opencv_frame_2024-11-11_19-10-08.png")
                 # FOR REAL APPLICATION:
-                # path_of_new_image = self.camera.take_image()
+                path_of_new_image = self.camera.take_image()
 
                 self.button_loc.determine_buttons_position_comp_to_ref_button(path_of_new_image, self.button_collection, self.KRP_button)
                 return True
