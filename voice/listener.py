@@ -23,11 +23,13 @@ class Listener:
     def listen(self) -> str:
         with sr.Microphone(self.mic_idx) as source:
             is_there_an_error = False
-            self.recognizer.adjust_for_ambient_noise( source, duration=0.5 )
-            print("say something")
+            self.recognizer.adjust_for_ambient_noise( source, duration= 0.2 )
+            # magic number, almost completly randomly determined.....
+            self.recognizer.energy_threshold *= 3
+            print(f"say something, current adjusted energy threshold limit= {self.recognizer.energy_threshold}")
             try:
                 print("Starting audio capturing")
-                audio = self.recognizer.listen(source, timeout=3)
+                audio = self.recognizer.listen(source, timeout=3, phrase_time_limit=20)
                 # audio = self.call_with_timeout(self.recognizer.listen, 1, source)
                 # audio = self.call_with_timeout(Listener._print_on_console, 3, source)
                 print("Audio capturing is done!")
