@@ -84,21 +84,15 @@ class robot_developer:
         messagebox.showinfo("Info", "Please start the program on the UR3 robot!")
 
     def send_home(self):
-        self.robot.set_command_state(CommandType.HOME)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.HOME)
 
     def touch_KRP(self):
         self.robot.set_next_position_TCP( [x / 1000 for x in self.KRP[:3]] + self.KRP[3:] )
-        self.robot.set_command_state(CommandType.MOVE_GENERAL)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.MOVE_GENERAL)
 
     def send_camera_position(self):
         self.robot.set_next_position_TCP( [x / 1000 for x in self.camera_pos[:3]] + self.camera_pos[3:] )
-        self.robot.set_command_state(CommandType.MOVE_GENERAL)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.MOVE_GENERAL)
 
     def update_krp_on_current_position(self):
         current_position = self.robot.get_current_TCP_position()
@@ -128,23 +122,17 @@ class robot_developer:
                 return
 
             self.robot.set_next_position_TCP( next_position )
-            self.robot.set_command_state(CommandType.MOVE_GENERAL)
-            while self.robot.command_type != CommandType.IDLE:
-                pass
+            self._perform_command_with_robot(CommandType.MOVE_GENERAL)
 
     def listen_the_input_generate_code(self) -> bool:
-        self.robot.set_command_state(CommandType.LISTENING)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.LISTENING)
 
         messagebox.showinfo("Info", "After exiting this window, please describe the coding problem which you want to solve!")
         try:
             message = self.audio_recorder.listen()
         except:
             print("An error happend during the listening, returning home...")
-            self.robot.set_command_state(CommandType.NOPE)
-            while self.robot.command_type != CommandType.IDLE:
-                pass
+            self._perform_command_with_robot(CommandType.NOPE)
             self.send_home()
             return False
         
@@ -152,9 +140,7 @@ class robot_developer:
         
         # TODO: these type of commands should be a single function inside this class
         # the argument should be one singe state!!!!
-        self.robot.set_command_state(CommandType.NOD)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.NOD)
 
         #messagebox.showinfo("Info", f"I will type the following code:\n{self.current_code_to_type}")
         
@@ -162,15 +148,11 @@ class robot_developer:
         return True
     
     def get_code_to_generate_from_direct_input(self) -> bool:
-        self.robot.set_command_state(CommandType.LISTENING)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.LISTENING)
         
         self.current_code_to_type = simpledialog.askstring("Input", "Please enter the text which has to be typed!")
         
-        self.robot.set_command_state(CommandType.NOD)
-        while self.robot.command_type != CommandType.IDLE:
-            pass
+        self._perform_command_with_robot(CommandType.NOD)
 
         print(f"I WILL TYPE: {self.current_code_to_type}")
 
@@ -237,9 +219,7 @@ class robot_developer:
             next_coordinates_robot = [ -next_coordinates_KRP.x + self.KRP[0], -next_coordinates_KRP.y + self.KRP[1], self.KRP[2] + 5 ] # the last coordinate means that it is 5 mm above letter l
             print(f"I will type \"{button} its coordinates from KRP= {next_coordinates_KRP} its coordinates compared to the robot= {next_coordinates_robot} \"")
             self.robot.set_next_position_TCP( [ x / 1000 for x in next_coordinates_robot] )
-            self.robot.set_command_state(CommandType.PUSH_BUTTON_AT)
-            while self.robot.command_type != CommandType.IDLE:
-                pass
+            self._perform_command_with_robot(CommandType.PUSH_BUTTON_AT)
 
         self._finish_typing( True )
     
@@ -323,4 +303,9 @@ class robot_developer:
 
     def _get_camera_keyboard_distance(self):
         return ( self.camera_pos[2] + CAMERA_TOOL_DISTANCE - KEYBOARD_HEIGHT )
+
+    def _perform_command_with_robot(self, command: CommandType):
+        self.robot.set_command_state(command)
+        while self.robot.command_type != CommandType.IDLE:
+            pass
             
