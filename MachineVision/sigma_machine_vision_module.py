@@ -401,6 +401,7 @@ class button_locator:
         midpoint_of_image = Point(abs(self.image_resolution[0]) / 2, abs(self.image_resolution[1]) / 2)
 
         # mm_per_pixel_ratio = 0.32795 # <-- this was the magic number with which it worked
+        # 95° is the angle of view of the camera according to the technical sheet
         mm_per_pixel_ratio = (2 * self.distance_from_keyboard * math.tan(math.radians(95 / 2))) / ( math.sqrt( self.image_resolution[0] * self.image_resolution[0] + self.image_resolution[1] * self.image_resolution[1]) )
 
         # determining KRP, which is determined by the caller
